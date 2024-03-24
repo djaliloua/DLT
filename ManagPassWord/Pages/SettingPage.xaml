@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ManagPassWord.Pages.SettingPage"
+             BackgroundColor="{DynamicResource Surface}"
+             Title="Settings">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <BoxView StyleClass="Divider" Margin="20"/>
+        <VerticalStackLayout Grid.Row="1"
+                             Margin="20">
+            <HorizontalStackLayout 
+                                   Margin="10">
+                <Button Text="Export"
+                        Margin="10"
+                        Command="{Binding ExportCommand}">
+
+                </Button>
+                <Entry Text="{Binding FileName, FallbackValue='File not present'}"
+                       Margin="10"
+                       
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center" />
+            </HorizontalStackLayout>
+            <Button Text="Open" Margin="10" Command="{Binding OpenCommand}"/>
+        </VerticalStackLayout>
+        <BoxView StyleClass="Divider"
+                 Margin="20"
+                 Grid.Row="2" />
+        <Label Text="{Binding Version}"
+               Grid.Row="3"
+               Margin="20" />
+
+    </Grid>
+</ContentPage>

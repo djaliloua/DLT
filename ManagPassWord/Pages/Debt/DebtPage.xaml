@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             x:Class="ManagPassWord.DebtPage"
+             xmlns:converters="clr-namespace:ManagPassWord.Converters"
+             BackgroundColor="{DynamicResource Surface}"
+             Title="Debts">
+    <ContentPage.Resources>
+        <converters:ConverterBoolToString x:Key="conv"/>
+    </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding GoSearchCommand}" CommandParameter="debt">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Search}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="Settings"
+                     Command="{Binding SettingCommand}"
+                     Order="Secondary" />
+        <ToolbarItem Text="About"
+                     Order="Secondary" />
+    </ContentPage.ToolbarItems>
+    <ScrollView>
+        <Grid Margin="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Label Text="Debt" />
+            <BoxView Color="{StaticResource Surface}"
+                     Grid.Row="1" />
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <material:TextField Title="Name"
+                                    x:Name="name"
+                                    Text="{Binding Name}" />
+                <material:TextField Title="Amount"
+                                    x:Name="amount"
+                                    Text="{Binding Amount}"
+                                    Grid.Column="1" />
+                <Button HorizontalOptions="End"
+                        Command="{Binding AddCommand}"
+                        Grid.Column="2">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference amount}, Path=Text.Length}" Value="0">
+                            <Setter Property="IsEnabled"
+                                    Value="True" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Button"
+                                     Binding="{Binding Source={x:Reference name}, Path=Text.Length}"
+                                     Value="0">
+                            <Setter Property="IsEnabled"
+                                    Value="False" />
+                        </DataTrigger>
+                    </Button.Triggers>
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialRegular"
+                                         Glyph="{x:Static m:MaterialRound.Add}" />
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+            <BoxView Color="{StaticResource Surface}"
+                     Grid.Row="3" />
+            <ListView  Grid.Row="4"
+                       RowHeight="100"
+                       x:Name="listview"
+                       SeparatorVisibility="Default"
+                       VerticalScrollBarVisibility="Never"
+                       SelectedItem="{Binding SelectedDebt}"
+                       ItemsSource="{Binding Debts}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <SwipeView>
+                                <SwipeView.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                          BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
+                                                          Command="{Binding OpenCommand}">
+                                    </TapGestureRecognizer>
+                                </SwipeView.GestureRecognizers>
+                                <Frame CornerRadius="15">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Label HorizontalOptions="Start"
+                                                   VerticalOptions="Center"
+                                                   VerticalTextAlignment="Center"
+                                                   Text="{Binding DebtDate, 
+                                            StringFormat='{0:dd}/{0:mm}/{0:yyyy}'}" />
+                                            <Label Text="{Binding IsCompleted,Converter={StaticResource conv}}"
+                                                   HorizontalOptions="End"
+                                                   Grid.Column="1">
+                                                
+                                            </Label>
+                                        </Grid>
+                                        <Label Text="{Binding Name}"
+                                               HorizontalOptions="Start"
+                                               VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"
+                                               Grid.Row="1" />
+                                        <Label Text="{Binding Amount, StringFormat='{0:c}'}"
+                                               HorizontalOptions="Start"
+                                               VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"
+                                               Grid.Row="2" />
+                                    </Grid>
+                                </Frame>
+                            </SwipeView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </ScrollView>
+</ContentPage>

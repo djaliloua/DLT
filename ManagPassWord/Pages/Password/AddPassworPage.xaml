@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ManagPassWord.AddPassworPage"
+             xmlns:converters="clr-namespace:ManagPassWord.Converters"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             BackgroundColor="{DynamicResource Surface}"
+            >
+    <ContentPage.Resources>
+        <converters:ConverterBoolToBool x:Key="boolTobool"/>
+        <Style TargetType="Entry">
+            <Setter Property="VerticalOptions"
+                    Value="Center" />
+            <Setter Property="Margin"
+                    Value="15" />
+            <Setter Property="VerticalTextAlignment"
+                    Value="Center" />
+        </Style>
+        <Style TargetType="Button">
+          
+            <Style.Triggers>
+                <DataTrigger TargetType="Button"
+                             Binding="{Binding Source={x:Reference site}, Path=Text.Length}"
+                             Value="0">
+                    <Setter Property="IsVisible"
+                            Value="False" />
+                   
+                </DataTrigger>
+                <DataTrigger TargetType="Button"
+                             Binding="{Binding Source={x:Reference password}, Path=Text.Length}"
+                             Value="0">
+                    <Setter Property="IsVisible"
+                            Value="False" />
+
+                </DataTrigger>
+                <DataTrigger TargetType="Button"
+                             Binding="{Binding Source={x:Reference site}, Path=IsVisible}"
+                             Value="false">
+                    <Setter Property="Text"
+                            Value="Update" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </ContentPage.Resources>
+    <Shell.TitleView>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Text=""
+                   VerticalOptions="End"
+                   Margin="15"
+                   FontSize="Subtitle"
+                   FontAttributes="Bold"
+                   TextColor="{DynamicResource White}"
+                   HorizontalOptions="Start" />
+            <Button Grid.Column="1"
+                    Text="Save"
+                    FontSize="Subtitle"
+                    FontAttributes="Bold"
+                    Command="{Binding SaveCommand}"
+                    VerticalOptions="End">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={x:Reference site}, Path=Text.Length}"
+                                 Value="0">
+                        <Setter Property="IsVisible"
+                                Value="False" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={x:Reference password}, Path=Text.Length}"
+                                 Value="0">
+                        <Setter Property="IsVisible"
+                                Value="False" />
+                    </DataTrigger>
+                </Button.Triggers>
+                
+            </Button>
+        </Grid>
+    </Shell.TitleView>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+       
+        <material:TextField Title="Site"
+                            Grid.Row="0"
+                            x:Name="site"
+                            IsVisible="{Binding IsEditPage, Converter={x:StaticResource boolTobool}}"
+                            Margin="15"
+                            Text="{Binding Site}">
+          
+        </material:TextField>
+      
+        <material:TextField Title="Site"
+                            Grid.Row="0"
+                            Margin="15"
+                            Text="{Binding Site}" />
+        
+        <material:TextField Title="UserName"
+                            Grid.Row="1"
+                            Margin="15"
+                            x:Name="username"
+                            Text="{Binding UserName}" />
+       
+        <material:TextField Title="Password"
+                            Grid.Row="2"
+                            Margin="15"
+                            x:Name="password"
+                            Text="{Binding Password}"
+                            IsPassword="True">
+            <material:TextField.Attachments>
+                <material:TextFieldPasswordShowHideAttachment />
+                
+            </material:TextField.Attachments>
+        </material:TextField>
+     
+        <material:TextField Title="Note"
+                            Grid.Row="3"
+                            HeightRequest="150"
+                            Margin="15"
+                            Text="{Binding Note}" />
+    </Grid>
+    
+</ContentPage>

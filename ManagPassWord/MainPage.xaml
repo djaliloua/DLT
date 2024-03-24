@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:triggersAction="clr-namespace:ManagPassWord.Triggers"
+             xmlns:local="clr-namespace:ManagPassWord.Views"
+             xmlns:custom="clr-namespace:ManagPassWord.CustomClasses"
+             x:Class="ManagPassWord.MainPage"
+             BackgroundColor="{DynamicResource Surface}"
+             x:Name="page"
+             Title="Password Manager">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding GoSearchCommand}" CommandParameter="password">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Search}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="Settings"
+                     Command="{Binding SettingCommand}"
+                     Order="Secondary" />
+        <ToolbarItem Text="About"
+                     Command="{Binding AboutCommand}"
+                     Order="Secondary" />
+    </ContentPage.ToolbarItems>
+    <ScrollView>
+        <Grid >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Text="Password Manager" />
+                <!--<Button 
+                        HorizontalOptions="End"
+                        Grid.Column="1"
+                    Command="{Binding SettingCommand}"
+                        VerticalOptions="Start">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialRegular"
+                                         Glyph="{x:Static m:MaterialRound.Settings}" />
+                    </Button.ImageSource>
+                </Button>-->
+            </Grid>
+            <Grid Grid.Row="1"
+                  Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                
+                <!--<Entry Placeholder="Search passords" VerticalOptions="Center"/>-->
+                <!--<SearchBar Placeholder="Search passords"
+                           x:Name="search">
+                    <SearchBar.Triggers>
+                        <EventTrigger Event="Focused">
+                            <triggersAction:OnFocusTriggerAction />
+                        </EventTrigger>
+                    </SearchBar.Triggers>
+                </SearchBar>-->
+                <Button FontAttributes="Bold"
+                        HorizontalOptions="End"
+                        Command="{Binding AddCommand}"
+                        Grid.Column="1">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialRegular"
+                                         Glyph="{x:Static m:MaterialRound.Add}" />
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+            
+            <ListView Grid.Row="2"
+                      x:Name="listview"
+                      ItemsSource="{Binding Users}"
+                      SelectedItem="{Binding SelectedUser}"
+                      SeparatorVisibility="Default"
+                      VerticalScrollBarVisibility="Never"
+                      RowHeight="90"
+                      Margin="10">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <SwipeView>
+                                <SwipeView.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                          BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
+                                                          Command="{Binding OpenCommand}">
+                                    </TapGestureRecognizer>
+                                </SwipeView.GestureRecognizers>
+                                <Frame>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <Label 
+                                            FontSize="Default"
+                                               FontAttributes="Bold"
+                                               Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}"/>
+                                        <Label FontSize="Default"
+                                               FontAttributes="Bold"
+                                               Text="{Binding Site, StringFormat=' {0}', FallbackValue='No Value'}"
+                                               Grid.Row="1" />
+                                    </Grid>
+                                </Frame>
+                            </SwipeView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </ScrollView>
+</ContentPage>

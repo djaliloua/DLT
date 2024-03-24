@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ManagPassWord.Pages.Debt.DebtDetailsPage"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             BackgroundColor="{DynamicResource Surface}"
+             Title="Details">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Label Text="{Binding DebtDetails.DebtDate, StringFormat='{0:dd}/{0:mm}/{0:yyyy}'}"/>
+        <BoxView Grid.Row="1"
+                 Color="{x:StaticResource Surface}" />
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <!--Name-->
+            <Label Text="Name">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="2"
+                                          Command="{Binding EditCommand}" CommandParameter="Name"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Text="{Binding DebtDetails.Name}"
+                   Grid.Row="0"
+                   Grid.Column="1" />
+
+            <Label Text="Amount"
+                   Grid.Row="1"
+                   Grid.Column="0">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer NumberOfTapsRequired="2"
+                                          Command="{Binding EditCommand}"
+                                          CommandParameter="Amount" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label Text="{Binding DebtDetails.Amount}"
+                   Grid.Row="1"
+                   Grid.Column="1" />
+
+            <Label Text="Payed"
+                   Grid.Row="2"
+                   VerticalOptions="Start"
+                   Grid.Column="0" />
+            <material:CheckBox IsChecked="{Binding DebtDetails.IsCompleted}"
+                   Grid.Row="2"
+                   VerticalOptions="Start"
+                   Grid.Column="1" />
+
+            <Label Text="Payement Date"
+                   Grid.Row="3"
+                   Grid.Column="0" />
+            <Label Text="{Binding DebtDetails.PayementDate, 
+                Mode=TwoWay, 
+                StringFormat='{0:dd}/{0:mm}/{0:yyyy}'}"
+                   Grid.Row="3"
+                   Grid.Column="1" />
+           
+            <material:TextField Title="Note"
+                                x:Name="note"
+                                Text="{Binding DebtDetails.Description}"
+                                Grid.Row="4"
+                                ClearButtonVisibility="WhileEditing"
+                                AllowClear="True"
+                                Grid.ColumnSpan="2"
+                                Grid.Column="0" />
+            
+        </Grid>
+        <HorizontalStackLayout Grid.Row="3" HorizontalOptions="End">
+            <Button Text="Save"
+                    Margin="10"
+                    WidthRequest="100"
+                    VerticalOptions="Center" />
+            <Button Text="Delete"
+                    WidthRequest="100"
+                    VerticalOptions="Center"
+                    Margin="10" />
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             x:Class="ManagPassWord.Details"
+             
+             Title="">
+    <ContentPage.Resources>
+        <Style TargetType="Button" x:Key="IsEye">
+            <Style.Triggers>
+                <Trigger TargetType="Button" Property="IsPressed" Value="True">
+                    <Setter Property="ImageSource">
+                        <Setter.Value>
+                            <FontImageSource FontFamily="MaterialRegular"
+                                             Glyph="{x:Static m:MaterialRound.Visibility}" />
+                            </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Button"
+               x:Key="IsCopied">
+            <Style.Triggers>
+                <Trigger TargetType="Button"
+                         Property="IsPressed"
+                         Value="True">
+                    <Setter Property="ImageSource">
+                        <Setter.Value>
+                            <FontImageSource FontFamily="MaterialRegular"
+                                             Glyph="{x:Static m:MaterialRound.Done}" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Label" x:Key="title">
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="VerticalOptions" Value="End"/>
+            <Setter Property="VerticalTextAlignment"
+                    Value="Center" />
+            <Setter Property="FontSize" Value="Title"/>
+        </Style>
+        <Style TargetType="Label"
+               x:Key="info">
+            <Setter Property="HorizontalOptions"
+                    Value="Center" />
+            <Setter Property="VerticalOptions"
+                    Value="End" />
+            <Setter Property="VerticalTextAlignment"
+                    Value="Center" />
+            <Setter Property="FontSize"
+                    Value="Subtitle"  />
+            <Setter Property="FontAttributes" Value="Bold"/>
+        </Style>
+    </ContentPage.Resources>
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0,1">
+                <GradientStop Color="Yellow"
+                              Offset="0.1" />
+                <GradientStop Color="Green"
+                              Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0"
+               Style="{x:StaticResource title}"
+               Text="INFORMATION" />
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Label Text="Date"
+                   Grid.Row="0"
+                   Style="{x:StaticResource title}"
+                   Grid.Column="0" />
+            <Label Text="{Binding PassWord.Date}"
+                   Grid.Row="0"
+                   Style="{x:StaticResource info}"
+                   Grid.Column="1" />
+            <Label Text="Company"
+                   Grid.Row="1"
+                   Style="{x:StaticResource title}"
+                   Grid.Column="0" />
+
+            <Label Text="{Binding PassWord.CompanyName}"
+                   Grid.Row="1"
+                   Style="{x:StaticResource info}"
+                   Grid.Column="1" />
+
+            <Label Text="Key"
+                   Grid.Row="2"
+                   Style="{x:StaticResource title}"
+                   Grid.Column="0" />
+            <Label Grid.Row="2"
+                   Grid.Column="2"
+                   Style="{x:StaticResource info}"
+                   Text="****************">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                                 Binding="{Binding Source={x:Reference button_visible},
+                    Path=IsPressed}"
+                                 Value="True">
+                        <Setter Property="Text"
+                                Value="{Binding PassWord.Password}" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+        </Grid>
+        <HorizontalStackLayout Grid.Row="2" HorizontalOptions="End" Spacing="5">
+            <Button Command="{Binding CopyCommand}"
+                    VerticalOptions="Center"
+                    x:Name="button_visible"
+                    Style="{x:StaticResource IsEye}"
+                    HorizontalOptions="Center">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialRegular"
+                                     Glyph="{x:Static m:MaterialRound.Visibility_off}" />
+                </Button.ImageSource>
+            </Button>
+            <Button 
+                    Command="{Binding CopyCommand}"
+                    VerticalOptions="Center"
+                Style="{x:StaticResource IsCopied}"
+                    HorizontalOptions="Center">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialRegular"
+                                     Glyph="{x:Static m:MaterialRound.Content_copy}"
+                                     />
+                </Button.ImageSource>
+                
+            </Button>
+            <Button Command="{Binding UpdateCommand}"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialRegular"
+                                     Glyph="{x:Static m:MaterialRound.Update}" />
+                </Button.ImageSource>
+
+            </Button>
+        </HorizontalStackLayout>
+    </Grid>
+    
+</ContentPage>
