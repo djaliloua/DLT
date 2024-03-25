@@ -40,7 +40,6 @@ namespace ManagPassWord.ViewModels.Debt
             {
                 await MessageDialogs.ShowToast($"{DebtDetails.Name} has been updated");
             }
-            
         }
         private async void On_Delete(object sender)
         {
@@ -55,12 +54,14 @@ namespace ManagPassWord.ViewModels.Debt
                     await model.Load();
                 }
             }
-                
         }
         private async void OnEdit(object sender)
         {
-            string title = (string)sender;
-            string result = await Shell.Current.DisplayPromptAsync(title, "Update");
+            string title;
+            var v = (string)sender;
+            string[] val = v.Split(";");
+            title = val[0];
+            string result = await Shell.Current.DisplayPromptAsync(title, "Update", initialValue: $"{val[1]}");
             if(result != null)
                 switch (title)
                 {

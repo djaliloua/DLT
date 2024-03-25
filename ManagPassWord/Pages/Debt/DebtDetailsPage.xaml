@@ -31,11 +31,13 @@
             <Label Text="Name">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="2"
-                                          Command="{Binding EditCommand}" CommandParameter="Name"/>
+                                          Command="{Binding EditCommand}" 
+                                          CommandParameter="{Binding Source={x:Reference name}, Path=Text, StringFormat='Name;{0}'}"/>
                 </Label.GestureRecognizers>
             </Label>
             <Label Text="{Binding DebtDetails.Name}"
                    Grid.Row="0"
+                   x:Name="name"
                    Grid.Column="1" />
 
             <Label Text="Amount"
@@ -44,11 +46,12 @@
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="2"
                                           Command="{Binding EditCommand}"
-                                          CommandParameter="Amount" />
+                                          CommandParameter="{Binding Source={x:Reference amount}, Path=Text, StringFormat='Amount;{0}'}" />
                 </Label.GestureRecognizers>
             </Label>
             <Label Text="{Binding DebtDetails.Amount}"
                    Grid.Row="1"
+                   x:Name="amount"
                    Grid.Column="1" />
 
             <Label Text="Payed"
