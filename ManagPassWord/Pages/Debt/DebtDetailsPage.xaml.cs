@@ -6,7 +6,5 @@ public partial class DebtDetailsPage : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = ViewModelServices.GetDebtDetailsViewModel();
-
-
     }
 }

@@ -12,7 +12,7 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Label Text="{Binding DebtDetails.DebtDate, StringFormat='{0:dd}/{0:mm}/{0:yyyy}'}"/>
+        <Label Text="{Binding DebtDetails.DebtDate, StringFormat='{0:dd}/{0:MM}/{0:yyyy}'}"/>
         <BoxView Grid.Row="1"
                  Color="{x:StaticResource Surface}" />
         <Grid Grid.Row="2">
@@ -31,11 +31,13 @@
             <Label Text="Name">
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="2"
-                                          Command="{Binding EditCommand}" CommandParameter="Name"/>
+                                          Command="{Binding EditCommand}" 
+                                          CommandParameter="{Binding Source={x:Reference name}, Path=Text, StringFormat='Name;{0}'}"/>
                 </Label.GestureRecognizers>
             </Label>
             <Label Text="{Binding DebtDetails.Name}"
                    Grid.Row="0"
+                   x:Name="name"
                    Grid.Column="1" />
 
             <Label Text="Amount"
@@ -44,11 +46,12 @@
                 <Label.GestureRecognizers>
                     <TapGestureRecognizer NumberOfTapsRequired="2"
                                           Command="{Binding EditCommand}"
-                                          CommandParameter="Amount" />
+                                          CommandParameter="{Binding Source={x:Reference amount}, Path=Text, StringFormat='Amount;{0}'}" />
                 </Label.GestureRecognizers>
             </Label>
             <Label Text="{Binding DebtDetails.Amount}"
                    Grid.Row="1"
+                   x:Name="amount"
                    Grid.Column="1" />
 
             <Label Text="Payed"
@@ -65,7 +68,7 @@
                    Grid.Column="0" />
             <Label Text="{Binding DebtDetails.PayementDate, 
                 Mode=TwoWay, 
-                StringFormat='{0:dd}/{0:mm}/{0:yyyy}'}"
+                StringFormat='{0:dd}/{0:MM}/{0:yyyy}'}"
                    Grid.Row="3"
                    Grid.Column="1" />
            
@@ -83,10 +86,12 @@
             <Button Text="Save"
                     Margin="10"
                     WidthRequest="100"
+                    Command="{Binding SaveCommand}"
                     VerticalOptions="Center" />
             <Button Text="Delete"
                     WidthRequest="100"
                     VerticalOptions="Center"
+                    Command="{Binding DeleteCommand}"
                     Margin="10" />
         </HorizontalStackLayout>
     </Grid>

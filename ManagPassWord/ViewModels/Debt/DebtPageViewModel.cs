@@ -39,8 +39,8 @@ namespace ManagPassWord.ViewModels.Debt
             _db = db;
             Debts ??= new ObservableCollection<DebtModel>();
             load();
-            AddCommand = new Command(on_add);
-            OpenCommand = new Command(open);
+            AddCommand = new Command(On_Add);
+            OpenCommand = new Command(On_Open);
             GoSearchCommand = new Command(On_GoSearch);
             SettingCommand = new Command(On_Setting);
             DebtDetailsViewModel.OnUiUpdate += DebtDetailsViewModel_OnUiUpdate;
@@ -65,7 +65,7 @@ namespace ManagPassWord.ViewModels.Debt
             }
         }
 
-        private async void open(object sender)
+        private async void On_Open(object sender)
         {
             if (CanOpen)
             {
@@ -79,7 +79,7 @@ namespace ManagPassWord.ViewModels.Debt
                 }
             }
         }
-        private async void on_add(object sender)
+        private async void On_Add(object sender)
         {
             if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Amount))
             {
