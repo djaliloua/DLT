@@ -18,7 +18,7 @@ namespace ManagPassWord.ViewModels.Password
         public DetailViewModel(IRepository<User> db)
         {
             _db = db;
-            EditCommand = new Command(edit);
+            EditCommand = new Command(On_Edit);
             DeleteCommand = new Command(delete);
         }
         private async void delete(object sender)
@@ -31,14 +31,12 @@ namespace ManagPassWord.ViewModels.Password
                     await _db.DeleteById(UserDetail);
                 }
                 await Shell.Current.GoToAsync("..");
-                //ServiceLocator.RunMethod<MainPageViewModel>("Load");
                 MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
                 await mainPageViewModel.Load();
             }
 
         }
-        //TODO: Add new method
-        private async void edit(object sender)
+        private async void On_Edit(object sender)
         {
             var navigationParameter = new Dictionary<string, object>
                         {

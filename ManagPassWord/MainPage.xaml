@@ -10,7 +10,8 @@
              x:Name="page"
              Title="Password Manager">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding GoSearchCommand}" CommandParameter="password">
+        <ToolbarItem Command="{Binding GoSearchCommand}"
+                     CommandParameter="password">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialRegular"
                                  Glyph="{x:Static m:MaterialRound.Search}" />
@@ -24,28 +25,19 @@
                      Order="Secondary" />
     </ContentPage.ToolbarItems>
     <ScrollView>
-        <Grid >
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid Margin="10">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
-                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
                 <Label Text="Password Manager" />
-                <!--<Button 
-                        HorizontalOptions="End"
-                        Grid.Column="1"
-                    Command="{Binding SettingCommand}"
-                        VerticalOptions="Start">
-                    <Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialRegular"
-                                         Glyph="{x:Static m:MaterialRound.Settings}" />
-                    </Button.ImageSource>
-                </Button>-->
+
             </Grid>
             <Grid Grid.Row="1"
                   Margin="10">
@@ -53,16 +45,7 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="auto" />
                 </Grid.ColumnDefinitions>
-                
-                <!--<Entry Placeholder="Search passords" VerticalOptions="Center"/>-->
-                <!--<SearchBar Placeholder="Search passords"
-                           x:Name="search">
-                    <SearchBar.Triggers>
-                        <EventTrigger Event="Focused">
-                            <triggersAction:OnFocusTriggerAction />
-                        </EventTrigger>
-                    </SearchBar.Triggers>
-                </SearchBar>-->
+
                 <Button FontAttributes="Bold"
                         HorizontalOptions="End"
                         Command="{Binding AddCommand}"
@@ -73,7 +56,7 @@
                     </Button.ImageSource>
                 </Button>
             </Grid>
-            
+
             <ListView Grid.Row="2"
                       x:Name="listview"
                       ItemsSource="{Binding Users}"
@@ -98,10 +81,9 @@
                                             <RowDefinition />
                                             <RowDefinition />
                                         </Grid.RowDefinitions>
-                                        <Label 
-                                            FontSize="Default"
+                                        <Label FontSize="Default"
                                                FontAttributes="Bold"
-                                               Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}"/>
+                                               Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}" />
                                         <Label FontSize="Default"
                                                FontAttributes="Bold"
                                                Text="{Binding Site, StringFormat=' {0}', FallbackValue='No Value'}"

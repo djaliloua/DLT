@@ -1,10 +1,5 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Password
@@ -52,30 +47,38 @@ namespace ManagPassWord.ViewModels.Password
         }
         private async void On_Save(object sender)
         {
-            if (!IsEditPage)
+            try
             {
-                if (!string.IsNullOrEmpty(Site) && !string.IsNullOrEmpty(Password))
+                if (!IsEditPage)
                 {
-                    await _db.SaveItemAsync(new(Site, UserName, Password, Note));
+                    if (!string.IsNullOrEmpty(Site) && !string.IsNullOrEmpty(Password))
+                    {
+                        await _db.SaveItemAsync(new(Site, UserName, Password, Note));
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Error", "Site or Password field is or are empty.", "OK");
+                        return;
+                    }
                 }
                 else
                 {
-                    await Shell.Current.DisplayAlert("Error", "Site or Password field is or are empty.", "OK");
-                    return;
+                    update();
+                    await _db.SaveItemAsync(_current);
                 }
+                ClearFields();
+                await Shell.Current.GoToAsync("..");
+                MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
+                await mainPageViewModel.Load();
             }
-            else
+            catch(Exception ex)
             {
-                update();
-                await _db.SaveItemAsync(_current);
+                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                return;
             }
-            clearFields();
-            await Shell.Current.GoToAsync("..");
-            //ServiceLocator.RunMethod<MainPageViewModel>("Load");
-            MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
-            await mainPageViewModel.Load();
+           
         }
-        private void clearFields()
+        public void ClearFields()
         {
             Note = string.Empty;
             UserName = string.Empty;
