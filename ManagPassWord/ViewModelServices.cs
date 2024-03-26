@@ -31,7 +31,7 @@ namespace ManagPassWord
             mauiAppBuilder.Services.AddSingleton<AboutPage>();
             // ViewModels
             mauiAppBuilder.Services.AddSingleton<MainPageViewModel>();
-            mauiAppBuilder.Services.AddSingleton<AddPasswordViewModel>();
+            mauiAppBuilder.Services.AddTransient<AddPasswordViewModel>();
             mauiAppBuilder.Services.AddTransient<SettingViewModel>();
             mauiAppBuilder.Services.AddTransient<SearchViewModel>();
             mauiAppBuilder.Services.AddSingleton<DetailViewModel>();

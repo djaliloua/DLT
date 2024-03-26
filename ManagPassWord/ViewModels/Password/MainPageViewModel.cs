@@ -26,16 +26,16 @@ namespace ManagPassWord.ViewModels.Password
         {
             repository = _db;
             load();
-            AddCommand = new Command(add);
-            OpenCommand = new Command(open);
-            SettingCommand = new Command(setting);
+            AddCommand = new Command(On_Add);
+            OpenCommand = new Command(On_Open);
+            SettingCommand = new Command(On_Setting);
             AboutCommand = new Command(On_About);
         }
         private async void On_About(object sender)
         {
             await Shell.Current.GoToAsync(nameof(AboutPage));
         }
-        private async void setting(object sender)
+        private async void On_Setting(object sender)
         {
             await Shell.Current.GoToAsync(nameof(SettingPage));
         }
@@ -55,7 +55,7 @@ namespace ManagPassWord.ViewModels.Password
             OnPropertyChanged(nameof(Users));
             return 0;
         }
-        private async void open(object sender)
+        private async void On_Open(object sender)
         {
             if (CanOpen)
             {
@@ -67,10 +67,16 @@ namespace ManagPassWord.ViewModels.Password
                 await Shell.Current.GoToAsync(nameof(DetailPage), navigationParameter);
             }
         }
-        private async void add(object sender)
+        private async void On_Add(object sender)
         {
             SelectedUser = null;
-            await Shell.Current.GoToAsync(nameof(AddPassworPage));
+            var navigationParameter = new Dictionary<string, object>
+                        {
+                            { "user", new User() },
+                            { "isedit", false }
+                        };
+            await Shell.Current.GoToAsync(nameof(AddPassworPage), navigationParameter);
+           
         }
     }
 }
