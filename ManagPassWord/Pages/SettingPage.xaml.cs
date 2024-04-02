@@ -1,3 +1,5 @@
+using MVVM;
+
 namespace ManagPassWord.Pages;
 
 public partial class SettingPage : ContentPage
@@ -7,4 +9,5 @@ public partial class SettingPage : ContentPage
         InitializeComponent();
         BindingContext = ViewModelServices.GetSettingViewModel();
     }
+   
 }

@@ -21,6 +21,7 @@
                      Command="{Binding SettingCommand}"
                      Order="Secondary" />
         <ToolbarItem Text="About"
+                     Command="{Binding AboutCommand}"
                      Order="Secondary" />
     </ContentPage.ToolbarItems>
     <ScrollView>
@@ -30,6 +31,7 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="30" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Label Text="Debt" />
@@ -104,11 +106,11 @@
                                                    VerticalOptions="Center"
                                                    VerticalTextAlignment="Center"
                                                    Text="{Binding DebtDate, 
-                                            StringFormat='{0:dd}/{0:mm}/{0:yyyy}'}" />
+                                            StringFormat='{0:dd}/{0:MM}/{0:yyyy}'}" />
                                             <Label Text="{Binding IsCompleted,Converter={StaticResource conv}}"
                                                    HorizontalOptions="End"
                                                    Grid.Column="1">
-                                                
+
                                             </Label>
                                         </Grid>
                                         <Label Text="{Binding Name}"
@@ -116,7 +118,7 @@
                                                VerticalOptions="Center"
                                                VerticalTextAlignment="Center"
                                                Grid.Row="1" />
-                                        <Label Text="{Binding Amount, StringFormat='{0:c}'}"
+                                        <Label Text="{Binding Amount, StringFormat='{0:C0}'}"
                                                HorizontalOptions="Start"
                                                VerticalOptions="Center"
                                                VerticalTextAlignment="Center"

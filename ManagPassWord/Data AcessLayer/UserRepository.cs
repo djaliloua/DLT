@@ -60,8 +60,9 @@ namespace ManagPassWord.Data_AcessLayer
                 }
                 return 1;
             }
-            catch
+            catch(Exception ex) 
             {
+                await Console.Out.WriteLineAsync(ex.Message);
                 return 0;
             }
         }

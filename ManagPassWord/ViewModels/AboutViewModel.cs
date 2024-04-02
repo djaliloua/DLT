@@ -1,4 +1,6 @@
-﻿namespace ManagPassWord.ViewModels
+﻿using MVVM;
+
+namespace ManagPassWord.ViewModels
 {
     public class AboutViewModel:BaseViewModel
     {

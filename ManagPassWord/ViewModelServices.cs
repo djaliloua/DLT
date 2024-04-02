@@ -1,10 +1,12 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using CommunityToolkit.Maui;
+using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
 using ManagPassWord.Pages.Debt;
 using ManagPassWord.ViewModels;
 using ManagPassWord.ViewModels.Debt;
 using ManagPassWord.ViewModels.Password;
+using ManagPassWord.Views;
 
 namespace ManagPassWord
 {
@@ -21,7 +23,7 @@ namespace ManagPassWord
 
         public static MauiAppBuilder RegisterViewModel(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddTransient<SettingPage>();
+            mauiAppBuilder.Services.AddSingleton<SettingPage>();
             mauiAppBuilder.Services.AddTransient<SearchPage>();
             mauiAppBuilder.Services.AddSingleton<AddPassworPage>();
             mauiAppBuilder.Services.AddSingleton<DetailPage>();
@@ -29,15 +31,19 @@ namespace ManagPassWord
             mauiAppBuilder.Services.AddSingleton<DebtPage>();
             mauiAppBuilder.Services.AddSingleton<DebtDetailsPage>();
             mauiAppBuilder.Services.AddSingleton<AboutPage>();
+            mauiAppBuilder.Services.AddSingleton<DebtSettingView>();
+            mauiAppBuilder.Services.AddSingleton<PasswordSettingView>();
             // ViewModels
             mauiAppBuilder.Services.AddSingleton<MainPageViewModel>();
             mauiAppBuilder.Services.AddTransient<AddPasswordViewModel>();
-            mauiAppBuilder.Services.AddTransient<SettingViewModel>();
+            mauiAppBuilder.Services.AddSingleton<SettingViewModel>();
             mauiAppBuilder.Services.AddTransient<SearchViewModel>();
             mauiAppBuilder.Services.AddSingleton<DetailViewModel>();
             mauiAppBuilder.Services.AddSingleton<DebtPageViewModel>();
             mauiAppBuilder.Services.AddSingleton<DebtDetailsViewModel>();
             mauiAppBuilder.Services.AddSingleton<AboutViewModel>();
+            mauiAppBuilder.Services.AddSingleton<DebtSettingViewModel>();
+            mauiAppBuilder.Services.AddSingleton<PasswordSettingViewModel>();
             //Repositories
             mauiAppBuilder.Services.AddSingleton<IRepository<User>, UserRepository>();
             mauiAppBuilder.Services.AddSingleton<IRepository<DebtModel>, DebtRepository>();

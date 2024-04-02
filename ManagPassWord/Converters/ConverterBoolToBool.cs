@@ -37,4 +37,23 @@ namespace ManagPassWord.Converters
             throw new NotImplementedException();
         }
     }
+    public class ConverterBoolToVisible : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool v = (bool)value;
+            
+            if (v == true)
+            {
+                return Visibility.Visible;
+            }
+            return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            // This method is not implemented in this example
+            throw new NotImplementedException();
+        }
+    }
 }

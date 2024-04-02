@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
+using MVVM;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Password
@@ -40,11 +41,22 @@ namespace ManagPassWord.ViewModels.Password
         }
         private bool CanOpen => _current != null;
         public ICommand SaveCommand { get; private set; }
+        public ICommand BackCommand { get; private set; }
         public AddPasswordViewModel(IRepository<User> db)
         {
             _db = db;
             SaveCommand = new Command(On_Save);
+            BackCommand = new Command(On_Back);
         }
+
+        private async void On_Back(object sender)
+        {
+            MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
+            Task<int> _ = mainPageViewModel.Load();
+            await Shell.Current.GoToAsync("..");
+            ClearFields();
+        }
+
         private async void On_Save(object sender)
         {
             try
@@ -66,8 +78,8 @@ namespace ManagPassWord.ViewModels.Password
                     update();
                     await _db.SaveItemAsync(_current);
                 }
-                ClearFields();
                 await Shell.Current.GoToAsync("..");
+                ClearFields();
                 MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
                 await mainPageViewModel.Load();
             }
