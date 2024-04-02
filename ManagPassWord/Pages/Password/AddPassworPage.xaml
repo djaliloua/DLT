@@ -42,6 +42,9 @@
             </Style.Triggers>
         </Style>
     </ContentPage.Resources>
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackCommand}"/>
+    </Shell.BackButtonBehavior>
     <Shell.TitleView>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -79,7 +82,7 @@
             </Button>
         </Grid>
     </Shell.TitleView>
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>

@@ -1,10 +1,5 @@
-﻿using ManagPassWord.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MVVM;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ManagPassWord
 {

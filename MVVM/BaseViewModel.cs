@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace ManagPassWord.ViewModels
+namespace MVVM
 {
     public class BaseViewModel : INotifyPropertyChanged
     {

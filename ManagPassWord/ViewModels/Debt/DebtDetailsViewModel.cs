@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
+using MVVM;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Debt

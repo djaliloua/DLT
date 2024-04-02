@@ -2,6 +2,8 @@
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
 using ManagPassWord.Pages.Debt;
+using ManagPassWord.ViewModels.Password;
+using MVVM;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -34,6 +36,7 @@ namespace ManagPassWord.ViewModels.Debt
         public ICommand OpenCommand { get; private set; }
         public ICommand GoSearchCommand { get; private set; }
         public ICommand SettingCommand { get; private set; }
+        public ICommand AboutCommand { get; private set; }
         public DebtPageViewModel(IRepository<DebtModel> db)
         {
             _db = db;
@@ -43,10 +46,19 @@ namespace ManagPassWord.ViewModels.Debt
             OpenCommand = new Command(On_Open);
             GoSearchCommand = new Command(On_GoSearch);
             SettingCommand = new Command(On_Setting);
+            AboutCommand = new Command(On_About);
             DebtDetailsViewModel.OnUiUpdate += DebtDetailsViewModel_OnUiUpdate;
+        }
+        private async void On_About(object sender)
+        {
+            await Shell.Current.GoToAsync(nameof(AboutPage));
         }
         private async void On_Setting(object sender)
         {
+            DebtSettingViewModel vm = ServiceLocator.GetService<DebtSettingViewModel>();
+            vm.IsDebtSettingVisible = true;
+            PasswordSettingViewModel vm_p = ServiceLocator.GetService<PasswordSettingViewModel>();
+            vm_p.IsPassWordSettingVisible = !vm.IsDebtSettingVisible;
             await Shell.Current.GoToAsync(nameof(SettingPage));
         }
         private async void On_GoSearch(object sender)

@@ -1,6 +1,7 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
+using MVVM;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -37,6 +38,8 @@ namespace ManagPassWord.ViewModels.Password
         }
         private async void On_Setting(object sender)
         {
+            //SettingPage settingPage = ServiceLocator.GetService<SettingPage>();
+            //settingPage.BindingContext = ViewModelServices.GetSettingViewModel();
             await Shell.Current.GoToAsync(nameof(SettingPage));
         }
         private async void load()
