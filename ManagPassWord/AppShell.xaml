@@ -8,13 +8,6 @@
        xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
        Shell.FlyoutBehavior="Disabled">
     <TabBar>
-        <ShellContent Title="Debt"
-                      ContentTemplate="{DataTemplate local:DebtPage}">
-            <ShellContent.Icon>
-                <FontImageSource FontFamily="MaterialRegular"
-                                 Glyph="{x:Static m:MaterialRound.Money}" />
-            </ShellContent.Icon>
-        </ShellContent>
         <ShellContent Title="Password Manager"
                       ContentTemplate="{DataTemplate local:MainPage}">
             <ShellContent.Icon>
@@ -22,25 +15,13 @@
                                  Glyph="{x:Static m:MaterialRound.Password}" />
             </ShellContent.Icon>
         </ShellContent>
+        <ShellContent Title="Debt"
+                      ContentTemplate="{DataTemplate local:DebtPage}">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Money}" />
+            </ShellContent.Icon>
+        </ShellContent>
     </TabBar>
-    <!--<TabBar>
-        <ShellContent Title="Home"
-                      ContentTemplate="{DataTemplate local:MainPage}"
-                      Route="MainPage">
-            <ShellContent.Icon>
-                <FontImageSource FontFamily="MaterialRegular"
-                                 Glyph="{x:Static m:MaterialRound.Home}" />
-            </ShellContent.Icon>
-        </ShellContent>
-        <ShellContent Title="Register"
-                      ContentTemplate="{DataTemplate local:StartPage}">
-            <ShellContent.Icon>
-                <FontImageSource FontFamily="MaterialRegular"
-                                 Glyph="{x:Static m:MaterialRound.App_registration}" />
-            </ShellContent.Icon>
-        </ShellContent>
-    </TabBar>-->
-
     
-
 </Shell>

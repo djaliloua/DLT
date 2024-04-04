@@ -7,7 +7,7 @@ public partial class SettingPage : ContentPage
     public SettingPage()
     {
         InitializeComponent();
-        BindingContext = ViewModelServices.GetSettingViewModel();
+        //BindingContext = ViewModelServices.GetSettingViewModel();
     }
    
 }

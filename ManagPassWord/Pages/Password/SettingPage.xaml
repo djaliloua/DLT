@@ -9,10 +9,7 @@
     <ContentPage.Resources>
         <converters:ConverterBoolToVisible x:Key="vis" />
     </ContentPage.Resources>
-    <Grid>
-        <local:DebtSettingView IsVisible="{Binding IsDebtSettingVisible, Converter={x:StaticResource vis}}">
-        </local:DebtSettingView>
-        <local:PasswordSettingView IsVisible="{Binding IsPassWordSettingVisible, Converter={x:StaticResource vis}}"
-                                    />
-    </Grid>
+    <VerticalStackLayout>
+        <local:PasswordSettingView/>
+    </VerticalStackLayout>
 </ContentPage>

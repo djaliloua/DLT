@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ManagPassWord.Pages.Debt.DebtFormPage"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             BackgroundColor="{DynamicResource Surface}"
+             Title="Debt Form">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <material:TextField Title="Name"
+                            Text="{Binding Debt.Name}"
+                            Grid.Row="0" />
+        <material:TextField Title="Amount"
+                            Text="{Binding Debt.Amount}"
+                            Grid.Row="01" />
+        <material:TextField Title="Description"
+                            Text="{Binding Debt.Description}"
+                            Grid.Row="2" />
+        <material:CheckBox Grid.Row="3"
+                           Text="IsCompleted"
+                           HorizontalOptions="End"
+                           IsChecked="{Binding Debt.IsCompleted}"/>
+        <HorizontalStackLayout Grid.Row="4" HorizontalOptions="End">
+            <Button Text="Save" Command="{Binding SaveCommand}" VerticalOptions="Center" WidthRequest="150"/>
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

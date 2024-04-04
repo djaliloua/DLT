@@ -39,6 +39,8 @@ namespace ManagPassWord.ViewModels.Debt
             }
             if(result != 0)
             {
+                DebtPageViewModel model = ViewModelServices.GetDebtPageViewModel();
+                await model.Load();
                 await MessageDialogs.ShowToast($"{DebtDetails.Name} has been updated");
             }
         }

@@ -17,16 +17,6 @@ namespace ManagPassWord.ViewModels.Password
             get => _fileName.Replace(basePath, "");
             set => UpdateObservable(ref _fileName, value);
         }
-        private bool _IsPassWordSettingVisible;
-        public bool IsPassWordSettingVisible
-        {
-            get => _IsPassWordSettingVisible;
-            set => UpdateObservable(ref _IsPassWordSettingVisible, value, () =>
-            {
-                DebtSettingViewModel vm = ServiceLocator.GetService<DebtSettingViewModel>();
-                vm.IsDebtSettingVisible = !value;
-            });
-        }
         bool isVirtual = DeviceInfo.Current.DeviceType switch
         {
             DeviceType.Physical => false,
@@ -40,7 +30,6 @@ namespace ManagPassWord.ViewModels.Password
             _db = db;
             temp = Path.Combine(basePath, "passwords.csv");
             load();
-            IsPassWordSettingVisible = true;
             OpenCommand = new Command(open);
             ExportCommand = new Command(export);
         }

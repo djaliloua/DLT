@@ -4,6 +4,7 @@ using Microsoft.Maui.LifecycleEvents;
 using Plugin.Fingerprint.Abstractions;
 using Plugin.Fingerprint;
 using CommunityToolkit.Maui;
+using ManagPassWord.Services;
 
 namespace ManagPassWord;
 public static class MauiProgram
@@ -18,6 +19,7 @@ public static class MauiProgram
             .UseUraniumUI()
             .UseMauiCommunityToolkit()
             .RegisterViewModel()
+            .RegisterUIPages()
             .UseUraniumUIMaterial()
             .UseMauiApp<App>()
             .ConfigureLifecycleEvents(events =>

@@ -1,12 +1,10 @@
-using ManagPassWord.ViewModels.Password;
-
 namespace ManagPassWord;
 
 public partial class MainPage : ContentPage
 {
-	public MainPage(MainPageViewModel viewmodel)
+	public MainPage()
 	{
 		InitializeComponent();
-		BindingContext = viewmodel;
+		BindingContext = ViewModelServices.GetMainPageViewModel();
     }
 }

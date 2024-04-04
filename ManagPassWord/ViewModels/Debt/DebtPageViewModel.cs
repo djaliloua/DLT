@@ -2,14 +2,13 @@
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
 using ManagPassWord.Pages.Debt;
-using ManagPassWord.ViewModels.Password;
 using MVVM;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Debt
 {
-    public class DebtPageViewModel : BaseViewModel
+    public class DebtPageViewModel : BaseViewModel, IQueryAttributable
     {
         private readonly IRepository<DebtModel> _db;
         public ObservableCollection<DebtModel> Debts { get; }
@@ -47,7 +46,6 @@ namespace ManagPassWord.ViewModels.Debt
             GoSearchCommand = new Command(On_GoSearch);
             SettingCommand = new Command(On_Setting);
             AboutCommand = new Command(On_About);
-            DebtDetailsViewModel.OnUiUpdate += DebtDetailsViewModel_OnUiUpdate;
         }
         private async void On_About(object sender)
         {
@@ -55,54 +53,30 @@ namespace ManagPassWord.ViewModels.Debt
         }
         private async void On_Setting(object sender)
         {
-            DebtSettingViewModel vm = ServiceLocator.GetService<DebtSettingViewModel>();
-            vm.IsDebtSettingVisible = true;
-            PasswordSettingViewModel vm_p = ServiceLocator.GetService<PasswordSettingViewModel>();
-            vm_p.IsPassWordSettingVisible = !vm.IsDebtSettingVisible;
-            await Shell.Current.GoToAsync(nameof(SettingPage));
+            await Shell.Current.GoToAsync(nameof(DebtSettingPage));
         }
         private async void On_GoSearch(object sender)
         {
             await Shell.Current.GoToAsync(nameof(SearchPage));
         }
-        private void DebtDetailsViewModel_OnUiUpdate(DebtModel obj)
-        {
-            for(int i=0; i < Debts.Count; i++)
-            {
-                if(obj != null && Debts[i].Id == obj.Id)
-                {
-                    Debts[i] = obj; 
-                    break;
-                }
-            }
-        }
-
         private async void On_Open(object sender)
         {
             if (CanOpen)
             {
-                if (CanOpen)
-                {
-                    Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "debt", SelectedDebt }
                         };
-                    await Shell.Current.GoToAsync(nameof(DebtDetailsPage), navigationParameter);
-                }
+                await Shell.Current.GoToAsync(nameof(DebtDetailsPage), navigationParameter);
             }
         }
         private async void On_Add(object sender)
         {
-            if (!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Amount))
-            {
-                await _db.SaveItemAsync(new(Name, Amount));
-                await Load();
-                resetValues();
-            }
-            else
-            {
-                await MessageDialogs.ShowToast("Name or Amount are empty.");
-            }
+            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "debt", new DebtModel() }
+                        };
+            await Shell.Current.GoToAsync(nameof(DebtFormPage), navigationParameter);
         }
         private void resetValues()
         {
@@ -122,6 +96,14 @@ namespace ManagPassWord.ViewModels.Debt
                 Debts.Add(item);
             }
             OnPropertyChanged(nameof(Debts));  
+        }
+
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if(query.Count > 0)
+            {
+
+            }
         }
     }
 }
