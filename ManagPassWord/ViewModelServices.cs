@@ -23,7 +23,7 @@ namespace ManagPassWord
 
         public static MauiAppBuilder RegisterViewModel(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<SettingPage>();
+            mauiAppBuilder.Services.AddTransient<SettingPage>();
             mauiAppBuilder.Services.AddTransient<SearchPage>();
             mauiAppBuilder.Services.AddSingleton<AddPassworPage>();
             mauiAppBuilder.Services.AddSingleton<DetailPage>();
@@ -33,6 +33,7 @@ namespace ManagPassWord
             mauiAppBuilder.Services.AddSingleton<AboutPage>();
             mauiAppBuilder.Services.AddSingleton<DebtSettingView>();
             mauiAppBuilder.Services.AddSingleton<PasswordSettingView>();
+            mauiAppBuilder.Services.AddSingleton<DebtSettingPage>();
             // ViewModels
             mauiAppBuilder.Services.AddSingleton<MainPageViewModel>();
             mauiAppBuilder.Services.AddTransient<AddPasswordViewModel>();

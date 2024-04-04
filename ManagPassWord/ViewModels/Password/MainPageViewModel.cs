@@ -38,8 +38,6 @@ namespace ManagPassWord.ViewModels.Password
         }
         private async void On_Setting(object sender)
         {
-            //SettingPage settingPage = ServiceLocator.GetService<SettingPage>();
-            //settingPage.BindingContext = ViewModelServices.GetSettingViewModel();
             await Shell.Current.GoToAsync(nameof(SettingPage));
         }
         private async void load()

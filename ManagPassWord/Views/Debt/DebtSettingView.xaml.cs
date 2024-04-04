@@ -7,6 +7,6 @@ public partial class DebtSettingView : ContentView
 	public DebtSettingView()
 	{
 		InitializeComponent();
-        BindingContext = ServiceLocator.GetService<DebtSettingViewModel>();
-    }
+		BindingContext = ServiceLocator.GetService<DebtSettingViewModel>();
+	}
 }

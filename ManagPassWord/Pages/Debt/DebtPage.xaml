@@ -5,18 +5,56 @@
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              x:Class="ManagPassWord.DebtPage"
              xmlns:converters="clr-namespace:ManagPassWord.Converters"
+             xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
              BackgroundColor="{DynamicResource Surface}"
              Title="Debts">
     <ContentPage.Resources>
         <converters:ConverterBoolToString x:Key="conv"/>
     </ContentPage.Resources>
+    <Shell.SearchHandler>
+        <controls:SettingSearchControl Placeholder="Enter search term"
+                                       ShowsResults="true"
+                                       DisplayMemberName="Name">
+            <controls:SettingSearchControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label HorizontalOptions="Start"
+                                   VerticalOptions="Center"
+                                   VerticalTextAlignment="Center"
+                                   Text="{Binding DebtDate, 
+                                            StringFormat='{0:dd}/{0:MM}/{0:yyyy}'}" />
+                            <Label Text="{Binding IsCompleted,Converter={StaticResource conv}}"
+                                   HorizontalOptions="End"
+                                   Grid.Column="1">
+
+                            </Label>
+                        </Grid>
+                        <Label Text="{Binding Name}"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               VerticalTextAlignment="Center"
+                               Grid.Row="1" />
+                        <Label Text="{Binding Amount, StringFormat='{0:C0}'}"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Center"
+                               VerticalTextAlignment="Center"
+                               Grid.Row="2" />
+                    </Grid>
+                </DataTemplate>
+            </controls:SettingSearchControl.ItemTemplate>
+        </controls:SettingSearchControl>
+    </Shell.SearchHandler>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding GoSearchCommand}" CommandParameter="debt">
-            <ToolbarItem.IconImageSource>
-                <FontImageSource FontFamily="MaterialRegular"
-                                 Glyph="{x:Static m:MaterialRound.Search}" />
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
         <ToolbarItem Text="Settings"
                      Command="{Binding SettingCommand}"
                      Order="Secondary" />

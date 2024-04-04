@@ -5,18 +5,37 @@
              xmlns:triggersAction="clr-namespace:ManagPassWord.Triggers"
              xmlns:local="clr-namespace:ManagPassWord.Views"
              xmlns:custom="clr-namespace:ManagPassWord.CustomClasses"
+             xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
              x:Class="ManagPassWord.MainPage"
              BackgroundColor="{DynamicResource Surface}"
              x:Name="page"
              Title="Password Manager">
+    <Shell.SearchHandler>
+        <controls:PasswordSearchHandler Placeholder="Enter search term"
+                                        ShowsResults="true"
+                                        DisplayMemberName="Name">
+            <controls:PasswordSearchHandler.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Label FontSize="Default"
+                               FontAttributes="Bold"
+                               Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}" />
+                        <Label FontSize="Default"
+                               FontAttributes="Bold"
+                               Text="{Binding Site, StringFormat=' {0}', FallbackValue='No Value'}"
+                               Grid.Row="1" />
+                    </Grid>
+                </DataTemplate>
+            </controls:PasswordSearchHandler.ItemTemplate>
+            
+        </controls:PasswordSearchHandler>
+    </Shell.SearchHandler>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Command="{Binding GoSearchCommand}"
-                     CommandParameter="password">
-            <ToolbarItem.IconImageSource>
-                <FontImageSource FontFamily="MaterialRegular"
-                                 Glyph="{x:Static m:MaterialRound.Search}" />
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
+        
         <ToolbarItem Text="Settings"
                      Command="{Binding SettingCommand}"
                      Order="Secondary" />
