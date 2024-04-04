@@ -18,7 +18,6 @@ namespace ManagPassWord.Data_AcessLayer
         public async Task<int> SaveItemAsync(DebtModel item)
         {
             await Init();
-            //
             if (item.Id != 0)
                 return await Database.UpdateAsync(item);
             else

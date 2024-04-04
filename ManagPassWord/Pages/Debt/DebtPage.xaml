@@ -68,51 +68,18 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="30" />
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="30" />
+                <RowDefinition  />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
             <Label Text="Debt" />
             <BoxView Color="{StaticResource Surface}"
                      Grid.Row="1" />
-            <Grid Grid.Row="2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="auto"/>
-                </Grid.ColumnDefinitions>
-                <material:TextField Title="Name"
-                                    x:Name="name"
-                                    Text="{Binding Name}" />
-                <material:TextField Title="Amount"
-                                    x:Name="amount"
-                                    Text="{Binding Amount}"
-                                    Grid.Column="1" />
-                <Button HorizontalOptions="End"
-                        Command="{Binding AddCommand}"
-                        Grid.Column="2">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference amount}, Path=Text.Length}" Value="0">
-                            <Setter Property="IsEnabled"
-                                    Value="True" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Button"
-                                     Binding="{Binding Source={x:Reference name}, Path=Text.Length}"
-                                     Value="0">
-                            <Setter Property="IsEnabled"
-                                    Value="False" />
-                        </DataTrigger>
-                    </Button.Triggers>
-                    <Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialRegular"
-                                         Glyph="{x:Static m:MaterialRound.Add}" />
-                    </Button.ImageSource>
-                </Button>
-            </Grid>
+            
             <BoxView Color="{StaticResource Surface}"
-                     Grid.Row="3" />
-            <ListView  Grid.Row="4"
-                       RowHeight="100"
+                     Grid.Row="2" />
+            <ListView  Grid.Row="3"
+                       RowHeight="150"
                        x:Name="listview"
                        SeparatorVisibility="Default"
                        VerticalScrollBarVisibility="Never"
@@ -147,8 +114,8 @@
                                             StringFormat='{0:dd}/{0:MM}/{0:yyyy}'}" />
                                             <Label Text="{Binding IsCompleted,Converter={StaticResource conv}}"
                                                    HorizontalOptions="End"
+                                                   VerticalOptions="Center"
                                                    Grid.Column="1">
-
                                             </Label>
                                         </Grid>
                                         <Label Text="{Binding Name}"
@@ -168,6 +135,20 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Grid Grid.Row="4"
+                  Margin="20"
+                  HorizontalOptions="End">
+
+                <Button HorizontalOptions="End"
+                        Command="{Binding AddCommand}"
+                        Grid.Column="2">
+
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialRegular"
+                                         Glyph="{x:Static m:MaterialRound.Add}" />
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
         </Grid>
     </ScrollView>
 </ContentPage>

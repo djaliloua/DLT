@@ -72,7 +72,7 @@ namespace ManagPassWord.Models
         }
         public DebtModel()
         {
-            
+            DebtDate = DateTime.Now;
         }
         // backing fields
         private bool isCompleted;
