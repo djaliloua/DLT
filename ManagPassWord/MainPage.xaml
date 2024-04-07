@@ -57,8 +57,6 @@
                 </Grid.ColumnDefinitions>
                 <Label Text="Password Manager" />
             </Grid>
-            
-
             <ListView Grid.Row="1"
                       x:Name="listview"
                       ItemsSource="{Binding Users}"
@@ -106,6 +104,7 @@
 
                 <Button FontAttributes="Bold"
                         HorizontalOptions="End"
+                        StyleClass="Elevation4"
                         Command="{Binding AddCommand}"
                         Grid.Column="1">
                     <Button.ImageSource>

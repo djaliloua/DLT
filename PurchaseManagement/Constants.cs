@@ -1,4 +1,4 @@
-﻿namespace ManagPassWord.Models
+﻿namespace PurchaseManagement
 {
     public class Constants
     {
@@ -11,12 +11,7 @@
             SQLite.SQLiteOpenFlags.Create |
             // enable multi-threaded database access
             SQLite.SQLiteOpenFlags.SharedCache;
-
-        public static string DatabasePath =>
-            Path.Combine(FileSystem.AppDataDirectory, DatabaseFilename);
-        public static string DatabasePathCompany =>
-            Path.Combine(FileSystem.AppDataDirectory, "company.db3");
-        public static string PasswordDataBasePath =>
-            Path.Combine(FileSystem.AppDataDirectory, "password.db3");
+        public static string DatabasePurchase =>
+            Path.Combine(FileSystem.AppDataDirectory, "Purchase.db3");
     }
 }
