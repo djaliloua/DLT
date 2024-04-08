@@ -1,6 +1,7 @@
 ﻿using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.Pages;
 using System.Collections.ObjectModel;
 
 namespace PurchaseManagement.MVVM.ViewModels
@@ -13,7 +14,17 @@ namespace PurchaseManagement.MVVM.ViewModels
         public Purchase_Items Selected_Purchase_Item
         {
             get => _selected_Purchase_Item;
-            set => UpdateObservable(ref _selected_Purchase_Item, value);
+            set => UpdateObservable(ref _selected_Purchase_Item, value, async () =>
+            {
+                if (value != null)
+                {
+                    Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "details", Selected_Purchase_Item }
+                        };
+                    await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), navigationParameter);
+                }
+            });
         }
         public PurchaseItemsViewModel(IRepository _db)
         {

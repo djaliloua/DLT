@@ -1,4 +1,5 @@
-﻿using MVVM;
+﻿using Mopups.Services;
+using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
@@ -9,6 +10,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 {
     public class MainViewModel:BaseViewModel
     {
+        //private readonly IPopupService popupService;
         public ObservableCollection<Purchases> Purchases { get; }
         
         private Purchases _selectedPurchase;
@@ -35,14 +37,16 @@ namespace PurchaseManagement.MVVM.ViewModels
             Purchases = new ObservableCollection<Purchases>();
             Load();
             AddCommand = new Command(On_Add);
+            //this.popupService = popupService;
         }
         private async void On_Add(object sender)
         {
-            string result = await Shell.Current.DisplayPromptAsync("Add", "Name", "OK");
-            if (!string.IsNullOrEmpty(result))
-            {
-                await _db.SavePurchaseAsync(new Models.Purchases(result));
-            }
+            await MopupService.Instance.PushAsync(new PurchaseItemForm());
+            //string result = await Shell.Current.DisplayPromptAsync("Add", "Name", "OK");
+            //if (!string.IsNullOrEmpty(result))
+            //{
+            //    await _db.SavePurchaseAsync(new Models.Purchases(result));
+            //}
         }
         private async void Load()
         {
