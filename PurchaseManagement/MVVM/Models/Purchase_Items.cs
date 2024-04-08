@@ -16,5 +16,16 @@ namespace PurchaseManagement.MVVM.Models
         
         [ManyToOne]
         public Purchases Purchase { get; set; }
+        public Purchase_Items(int p_id, string item_name, int item_price, int item_quantity)
+        {
+            Purchase_Id = p_id;
+            Item_Name = item_name;
+            Item_Price = item_price;
+            Item_Quantity = item_quantity;
+        }
+        public Purchase_Items()
+        {
+            
+        }
     }
 }

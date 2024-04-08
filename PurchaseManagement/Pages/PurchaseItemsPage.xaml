@@ -2,11 +2,22 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PurchaseManagement.Pages.PurchaseItemsPage"
+             xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
+             xmlns:models="clr-namespace:PurchaseManagement.MVVM.Models"
+             x:DataType="{x:Type vm:PurchaseItemsViewModel}"
              Title="Purchase Items">
     <VerticalStackLayout Margin="20">
         <ListView SelectedItem="{Binding Selected_Purchase_Item}"
                   ItemsSource="{Binding Purchase_Items}">
-
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type models:Purchase_Items}">
+                    <ViewCell>
+                        <SwipeView>
+                            <Label Text="{Binding Item_Name}" />
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
         </ListView>
     </VerticalStackLayout>
 </ContentPage>

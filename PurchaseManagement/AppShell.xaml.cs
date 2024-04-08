@@ -8,6 +8,8 @@ namespace PurchaseManagement
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(PurchaseItemsPage), typeof(PurchaseItemsPage));
+            Routing.RegisterRoute(nameof(PurchaseItemDetails), typeof(PurchaseItemDetails));
+            //Routing.RegisterRoute(nameof(PurchaseItemDetails), typeof(PurchaseItemDetails));
         }
     }
 }
