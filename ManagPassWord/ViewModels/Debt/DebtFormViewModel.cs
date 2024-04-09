@@ -23,9 +23,8 @@ namespace ManagPassWord.ViewModels.Debt
         }
         private async void On_Save(object sender)
         {
-            DebtPageViewModel vm = ViewModelServices.DebtPageViewModel;
             await _db.SaveItemAsync(Debt);
-            await vm.Load();
+            await ViewModelServices.DebtPageViewModel.Load();
             await Shell.Current.GoToAsync("..");
         }
 

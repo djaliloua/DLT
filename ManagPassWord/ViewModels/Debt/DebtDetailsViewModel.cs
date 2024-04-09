@@ -32,32 +32,23 @@ namespace ManagPassWord.ViewModels.Debt
         }
         private async void On_Save(object sender)
         {
-            DebtModel temp = new();
-            int result = 0;
             if(DebtDetails != null)
             {
-                result = await _db.SaveItemAsync(DebtDetails);
-                temp = DebtDetails.Clone(); 
-            }
-            if(result != 0)
-            {
-                DebtPageViewModel model = ViewModelServices.DebtPageViewModel;
-                await model.Load();
-                DebtDetails = temp;
-                await MessageDialogs.ShowToast($"{DebtDetails.Name} has been updated");
+                if (await _db.SaveItemAsync(DebtDetails) != 0)
+                {
+                    await MessageDialogs.ShowToast($"{DebtDetails.Name} has been updated");
+                }
             }
         }
         private async void On_Delete(object sender)
         {
-            bool answer = await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No");
-            if (answer)
+            if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
             {
                 if (DebtDetails.Id != 0)
                 {
                     await _db.DeleteById(DebtDetails);
                     await Shell.Current.GoToAsync("..");
-                    DebtPageViewModel model = ViewModelServices.DebtPageViewModel;
-                    await model.Load();
+                    await ViewModelServices.DebtPageViewModel.Load();
                 }
             }
         }

@@ -10,7 +10,6 @@ namespace PurchaseManagement.MVVM.ViewModels
 {
     public class MainViewModel:BaseViewModel
     {
-        //private readonly IPopupService popupService;
         public ObservableCollection<Purchases> Purchases { get; }
         
         private Purchases _selectedPurchase;
@@ -37,7 +36,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             Purchases = new ObservableCollection<Purchases>();
             Load();
             AddCommand = new Command(On_Add);
-            //this.popupService = popupService;
         }
         private async void On_Add(object sender)
         {

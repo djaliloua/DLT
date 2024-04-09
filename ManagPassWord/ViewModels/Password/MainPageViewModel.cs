@@ -9,9 +9,8 @@ namespace ManagPassWord.ViewModels.Password
 {
     public class MainPageViewModel : BaseViewModel
     {
-        //private readonly DatabaseContext _db;
         private readonly IRepository<User> repository;
-        public ObservableCollection<User> Users { get; private set; }
+        public ObservableCollection<User> Users { get; }
         private User _selectedUser;
         public User SelectedUser
         {
@@ -26,6 +25,7 @@ namespace ManagPassWord.ViewModels.Password
         public MainPageViewModel(IRepository<User> _db)
         {
             repository = _db;
+            Users = new ObservableCollection<User>();
             load();
             AddCommand = new Command(On_Add);
             OpenCommand = new Command(On_Open);
@@ -47,7 +47,6 @@ namespace ManagPassWord.ViewModels.Password
         public async Task<int> Load()
         {
             var repo = await repository.GetAll();
-            Users ??= new ObservableCollection<User>();
             Users.Clear();
             foreach (User item in repo)
             {

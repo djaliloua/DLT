@@ -51,8 +51,7 @@ namespace ManagPassWord.ViewModels.Password
 
         private async void On_Back(object sender)
         {
-            MainPageViewModel mainPageViewModel = ViewModelServices.MainPageViewModel;
-            Task<int> _ = mainPageViewModel.Load();
+            Task<int> _ = ViewModelServices.MainPageViewModel.Load();
             await Shell.Current.GoToAsync("..");
             ClearFields();
         }

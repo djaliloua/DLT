@@ -1,6 +1,4 @@
-﻿using PurchaseManagement.Services;
-
-namespace PurchaseManagement
+﻿namespace PurchaseManagement
 {
     public partial class MainPage : ContentPage
     {

@@ -65,7 +65,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                     PurchaseItem.Item_Price,
                     PurchaseItem.Item_Quantity));
             await RegisterViewModels.MainViewModel.LoadPurchasesAsync();
-
         }
         private async void On_Cancel(object sender)
         {
