@@ -24,16 +24,14 @@ namespace ManagPassWord.ViewModels.Password
         }
         private async void delete(object sender)
         {
-            bool answer = await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No");
-            if (answer)
+            if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
             {
                 if (UserDetail.Id != 0)
                 {
                     await _db.DeleteById(UserDetail);
                 }
                 await Shell.Current.GoToAsync("..");
-                MainPageViewModel mainPageViewModel = ViewModelServices.MainPageViewModel;
-                await mainPageViewModel.Load();
+                await ViewModelServices.MainPageViewModel.Load();
             }
 
         }

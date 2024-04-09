@@ -1,5 +1,4 @@
-﻿using ManagPassWord.ViewModels.Password;
-using MVVM;
+﻿using MVVM;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Debt

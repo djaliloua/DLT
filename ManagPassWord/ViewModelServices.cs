@@ -22,6 +22,8 @@ namespace ManagPassWord
         public static DetailViewModel GetDetailViewModel() => ServiceLocator.GetService<DetailViewModel>();
         public static DetailViewModel DetailViewModel => ServiceLocator.GetService<DetailViewModel>();
         public static SettingViewModel GetSettingViewModel() => ServiceLocator.GetService<SettingViewModel>();
+        public static DebtSettingViewModel DebtSettingViewModel => ServiceLocator.GetService<DebtSettingViewModel>();
+        public static PasswordSettingViewModel PasswordSettingViewModel => ServiceLocator.GetService<PasswordSettingViewModel>();
         public static DebtFormViewModel GetDebtFormViewModel() => ServiceLocator.GetService<DebtFormViewModel>();
 
         public static MauiAppBuilder RegisterViewModel(this MauiAppBuilder mauiAppBuilder)

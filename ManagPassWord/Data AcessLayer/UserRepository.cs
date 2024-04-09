@@ -8,7 +8,6 @@ namespace ManagPassWord.Data_AcessLayer
 {
     public class UserRepository : IRepository<User>
     {
-        SQLiteAsyncConnection Database;
         public static string folderName;
         public async Task<int> CountItemAsync()
         {

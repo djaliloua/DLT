@@ -46,7 +46,21 @@ namespace ManagPassWord.ViewModels.Debt
             GoSearchCommand = new Command(On_GoSearch);
             SettingCommand = new Command(On_Setting);
             AboutCommand = new Command(On_About);
+            DebtDetailsViewModel.OnUiUpdate += DebtDetailsViewModel_OnUiUpdate;
         }
+
+        private void DebtDetailsViewModel_OnUiUpdate(DebtModel obj)
+        {
+            for (int i = 0; i < Debts.Count; i++)
+            {
+                if (obj != null && Debts[i].Id == obj.Id)
+                {
+                    Debts[i] = obj;
+                    break;
+                }
+            }
+        }
+
         private async void On_About(object sender)
         {
             await Shell.Current.GoToAsync(nameof(AboutPage));
@@ -77,11 +91,6 @@ namespace ManagPassWord.ViewModels.Debt
                             { "debt", new DebtModel() }
                         };
             await Shell.Current.GoToAsync(nameof(DebtFormPage), navigationParameter);
-        }
-        private void resetValues()
-        {
-            Name = string.Empty;
-            Amount = string.Empty;
         }
         private async void load()
         {
