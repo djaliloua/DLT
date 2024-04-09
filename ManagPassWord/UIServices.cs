@@ -3,7 +3,7 @@ using ManagPassWord.Pages.Debt;
 using ManagPassWord.ViewModels.Debt;
 using ManagPassWord.Views;
 
-namespace ManagPassWord.Services
+namespace ManagPassWord
 {
     public static class UIServices
     {

@@ -7,11 +7,10 @@ public partial class AddPassworPage : ContentPage
 	public AddPassworPage()
 	{
 		InitializeComponent();
-		BindingContext = ViewModelServices.GetAddPassordViewModel();
 	}
     protected override bool OnBackButtonPressed()
     {
-        MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
+        MainPageViewModel mainPageViewModel = ViewModelServices.MainPageViewModel;
         Task<int> _ = mainPageViewModel.Load();
         AddPasswordViewModel addPasswordViewModel = (AddPasswordViewModel)BindingContext;
         addPasswordViewModel.ClearFields();

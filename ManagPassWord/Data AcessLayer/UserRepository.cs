@@ -6,13 +6,20 @@ using System.Globalization;
 
 namespace ManagPassWord.Data_AcessLayer
 {
-    public class UserRepository: IRepository<User>
+    public class UserRepository : IRepository<User>
     {
         SQLiteAsyncConnection Database;
         public static string folderName;
         public async Task<int> CountItemAsync()
         {
-            return await Database.Table<User>().CountAsync();
+            int res = 0;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<User>();
+                res = connection.Table<User>().Count();
+            }
+            return res;
         }
         public UserRepository()
         {
@@ -20,18 +27,29 @@ namespace ManagPassWord.Data_AcessLayer
         }
         public async Task<int> SaveItemAsync(User item)
         {
-            await Init();
-            //
-            if (item.Id != 0)
-                return await Database.UpdateAsync(item);
-            else
-                return await Database.InsertAsync(item);
+            int res = 0;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<User>();
+                if (item.Id != 0)
+                    res = connection.Update(item);
+                else
+                    res = connection.Insert(item);
+            }
+            return res;
         }
 
         public async Task<int> DeleteAll()
         {
-            await Init();
-            return await Database.DeleteAllAsync<User>();
+            int res = 0;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<User>();
+                res = connection.DeleteAll<User>();
+            }
+            return res;
         }
         async Task<string> pickFolder(CancellationToken cancellationToken)
         {
@@ -40,6 +58,7 @@ namespace ManagPassWord.Data_AcessLayer
         }
         public async Task<int> SaveToCsv()
         {
+            List<User> data = new List<User>();
             CancellationToken cancellationToken = CancellationToken.None;
             string folder;
             folder = await pickFolder(cancellationToken);
@@ -48,9 +67,12 @@ namespace ManagPassWord.Data_AcessLayer
             folderName = folder;
             try
             {
-                await Init();
                 string sqlcmd = "SELECT * FROM Passwords";
-                List<User> data = await Database.QueryAsync<User>(sqlcmd);
+                using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+                {
+                    connection.CreateTable<User>();
+                    data = connection.Query<User>(sqlcmd);
+                }
                 string filepath = Path.Combine(folderName, "passwords.txt");
                 using (var writer = new CsvWriter(new StreamWriter(filepath), CultureInfo.InvariantCulture))
                 {
@@ -60,7 +82,7 @@ namespace ManagPassWord.Data_AcessLayer
                 }
                 return 1;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 await Console.Out.WriteLineAsync(ex.Message);
                 return 0;
@@ -69,27 +91,31 @@ namespace ManagPassWord.Data_AcessLayer
 
         public async Task<int> DeleteById(User item)
         {
-            await Init();
-            return await Database.DeleteAsync(item);
+            int res = 0;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<User>();
+                res = connection.Delete<User>(item);
+            }
+            return res;
         }
 
         public async Task<IEnumerable<User>> GetAll()
         {
-            await Init();
-            return await Database.Table<User>().OrderByDescending(user => user.Id).ToListAsync();
+            List<User> res;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<User>();
+                res = connection.Table<User>().OrderByDescending(d => d.Id).ToList();
+            }
+            return res;
         }
 
         public User GetById(int id)
         {
             return new();
-        }
-        public async Task Init()
-        {
-            if (Database is not null)
-                return;
-
-            Database = new SQLiteAsyncConnection(Constants.PasswordDataBasePath, Constants.Flags);
-            var result = await Database.CreateTableAsync<User>();
         }
     }
 }

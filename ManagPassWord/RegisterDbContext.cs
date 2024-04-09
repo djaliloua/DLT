@@ -1,9 +1,9 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 
-namespace ManagPassWord.Services
+namespace ManagPassWord
 {
     public static class RegisterDbContext
     {
-       
+
     }
 }

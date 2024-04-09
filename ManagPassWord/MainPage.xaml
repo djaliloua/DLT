@@ -4,10 +4,12 @@
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:triggersAction="clr-namespace:ManagPassWord.Triggers"
              xmlns:local="clr-namespace:ManagPassWord.Views"
+             xmlns:locator="clr-namespace:ManagPassWord"
              xmlns:custom="clr-namespace:ManagPassWord.CustomClasses"
              xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
              x:Class="ManagPassWord.MainPage"
              BackgroundColor="{DynamicResource Surface}"
+             BindingContext="{x:Static locator:ViewModelServices.MainPageViewModel}"
              x:Name="page"
              Title="Password Manager">
     <Shell.SearchHandler>

@@ -8,6 +8,5 @@ public partial class PurchaseItemDetails : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = RegisterViewModels.GetPurchaseItemDetailsViewModel();
-
     }
 }

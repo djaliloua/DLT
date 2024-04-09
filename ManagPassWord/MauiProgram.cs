@@ -4,13 +4,10 @@ using Microsoft.Maui.LifecycleEvents;
 using Plugin.Fingerprint.Abstractions;
 using Plugin.Fingerprint;
 using CommunityToolkit.Maui;
-using ManagPassWord.Services;
 
 namespace ManagPassWord;
 public static class MauiProgram
 {
-
-
     // Register View mode
     public static MauiApp CreateMauiApp()
     {

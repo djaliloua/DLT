@@ -7,6 +7,5 @@ public partial class PurchaseItemsPage : ContentPage
 	public PurchaseItemsPage()
 	{
 		InitializeComponent();
-		BindingContext = RegisterViewModels.GetPurchaseItemsViewModel();
 	}
 }

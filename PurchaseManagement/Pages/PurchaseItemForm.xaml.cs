@@ -7,6 +7,6 @@ public partial class PurchaseItemForm
 	public PurchaseItemForm()
 	{
 		InitializeComponent();
-		BindingContext = RegisterViewModels.GetPurchaseFormViewModel();
+		//BindingContext = RegisterViewModels.GetPurchaseFormViewModel();
     }
 }
