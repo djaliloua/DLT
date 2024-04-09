@@ -9,6 +9,5 @@
         Task<int> DeleteById(T item);
         Task<int> SaveItemAsync(T obj);
         Task<int> SaveToCsv();
-        Task Init();
     }
 }

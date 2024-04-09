@@ -8,26 +8,44 @@ namespace ManagPassWord.Data_AcessLayer
 {
     public class DebtRepository : IRepository<DebtModel>
     {
-        SQLiteAsyncConnection Database;
         public static string folderName;
         public async Task<int> CountItemAsync()
         {
-            return await Database.Table<DebtModel>().CountAsync();
+            int res = 0;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<DebtModel>();
+                res = connection.Table<DebtModel>().Count();
+            }
+            return res;
         }
        
         public async Task<int> SaveItemAsync(DebtModel item)
         {
-            await Init();
-            if (item.Id != 0)
-                return await Database.UpdateAsync(item);
-            else
-                return await Database.InsertAsync(item);
+            int res = 0;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<DebtModel>();
+                if (item.Id != 0)
+                    res = connection.Update(item); 
+                else
+                    res = connection.Insert(item);
+            }
+            return res;
         }
 
         public async Task<int> DeleteAll()
         {
-            await Init();
-            return await Database.DeleteAllAsync<DebtModel>();
+            int res = 0;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<DebtModel>();
+                res = connection.DeleteAll<DebtModel>();
+            }
+            return res;
         }
         async Task<string> pickFolder(CancellationToken cancellationToken)
         {
@@ -36,6 +54,7 @@ namespace ManagPassWord.Data_AcessLayer
         }
         public async Task<int> SaveToCsv()
         {
+            List<DebtModel> data = new List<DebtModel>();
             CancellationToken cancellationToken = CancellationToken.None;
             string folder;
             folder = await pickFolder(cancellationToken);
@@ -44,9 +63,12 @@ namespace ManagPassWord.Data_AcessLayer
             folderName = folder;
             try
             {
-                await Init();
                 string sqlcmd = "SELECT * FROM Debts";
-                List<DebtModel> data = await Database.QueryAsync<DebtModel>(sqlcmd);
+                using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+                {
+                    connection.CreateTable<DebtModel>();
+                    data = connection.Query<DebtModel>(sqlcmd);
+                }
                 string filepath = Path.Combine(folderName, "debts.txt");
                 using (var writer = new CsvWriter(new StreamWriter(filepath), CultureInfo.InvariantCulture))
                 {
@@ -64,27 +86,30 @@ namespace ManagPassWord.Data_AcessLayer
 
         public async Task<int> DeleteById(DebtModel item)
         {
-            await Init();
-            return await Database.DeleteAsync(item);
+            int res = 0;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<DebtModel>();
+                res = connection.Delete<DebtModel>(item);
+            }
+            return res;
         }
 
         public async Task<IEnumerable<DebtModel>> GetAll()
         {
-            await Init();
-            return await Database.Table<DebtModel>().OrderByDescending(d => d.DebtDate).ToListAsync();
+            List<DebtModel> res;
+            await Task.Delay(100);
+            using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
+            {
+                connection.CreateTable<DebtModel>();
+                res = connection.Table<DebtModel>().OrderByDescending(d => d.DebtDate).ToList();
+            }
+            return res;
         }
-
         public DebtModel GetById(int id)
         {
             return new();
-        }
-        public async Task Init()
-        {
-            if (Database is not null)
-                return;
-
-            Database = new SQLiteAsyncConnection(Constants.PasswordDataBasePath, Constants.Flags);
-            var result = await Database.CreateTableAsync<DebtModel>();
         }
     }
 }

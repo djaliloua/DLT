@@ -9,13 +9,18 @@ namespace ManagPassWord
 {
     public static class ViewModelServices
     {
-        public static MainPageViewModel GetMainPageViewModel() => ServiceLocator.GetService<MainPageViewModel>();
-        public static DebtDetailsViewModel GetDebtDetailsViewModel() => ServiceLocator.GetService<DebtDetailsViewModel>();
+        //public static MainPageViewModel GetMainPageViewModel() => ServiceLocator.GetService<MainPageViewModel>();
+        public static MainPageViewModel MainPageViewModel => ServiceLocator.GetService<MainPageViewModel>();
+        //public static DebtDetailsViewModel GetDebtDetailsViewModel() => ServiceLocator.GetService<DebtDetailsViewModel>();
+        public static DebtDetailsViewModel DebtDetailsViewModel => ServiceLocator.GetService<DebtDetailsViewModel>();
         public static DebtPageViewModel GetDebtPageViewModel() => ServiceLocator.GetService<DebtPageViewModel>();
-        public static AddPasswordViewModel GetAddPassordViewModel() => ServiceLocator.GetService<AddPasswordViewModel>();
+        public static DebtPageViewModel DebtPageViewModel => ServiceLocator.GetService<DebtPageViewModel>();
+        //public static AddPasswordViewModel GetAddPassordViewModel() => ServiceLocator.GetService<AddPasswordViewModel>();
+        public static AddPasswordViewModel AddPasswordViewModel => ServiceLocator.GetService<AddPasswordViewModel>();
         public static SearchViewModel GetSearchViewModel() => ServiceLocator.GetService<SearchViewModel>();
         public static AboutViewModel GetAboutViewModel() => ServiceLocator.GetService<AboutViewModel>();
         public static DetailViewModel GetDetailViewModel() => ServiceLocator.GetService<DetailViewModel>();
+        public static DetailViewModel DetailViewModel => ServiceLocator.GetService<DetailViewModel>();
         public static SettingViewModel GetSettingViewModel() => ServiceLocator.GetService<SettingViewModel>();
         public static DebtFormViewModel GetDebtFormViewModel() => ServiceLocator.GetService<DebtFormViewModel>();
 
@@ -36,7 +41,7 @@ namespace ManagPassWord
 
             //Repositories
             mauiAppBuilder.Services.AddSingleton<IRepository<User>, UserRepository>();
-            mauiAppBuilder.Services.AddSingleton<IRepository<DebtModel>, DebtRepository>();
+            mauiAppBuilder.Services.AddTransient<IRepository<DebtModel>, DebtRepository>();
 
             return mauiAppBuilder;
         }

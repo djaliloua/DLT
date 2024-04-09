@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              x:Class="ManagPassWord.DetailPage"
+             xmlns:locator="clr-namespace:ManagPassWord"
+             BindingContext="{x:Static locator:ViewModelServices.DetailViewModel}"
              BackgroundColor="{DynamicResource Surface}"
              Title="Details"
              >

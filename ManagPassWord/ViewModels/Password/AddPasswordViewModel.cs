@@ -51,7 +51,7 @@ namespace ManagPassWord.ViewModels.Password
 
         private async void On_Back(object sender)
         {
-            MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
+            MainPageViewModel mainPageViewModel = ViewModelServices.MainPageViewModel;
             Task<int> _ = mainPageViewModel.Load();
             await Shell.Current.GoToAsync("..");
             ClearFields();
@@ -80,7 +80,7 @@ namespace ManagPassWord.ViewModels.Password
                 }
                 await Shell.Current.GoToAsync("..");
                 ClearFields();
-                MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
+                MainPageViewModel mainPageViewModel = ViewModelServices.MainPageViewModel;
                 await mainPageViewModel.Load();
             }
             catch(Exception ex)

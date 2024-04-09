@@ -7,7 +7,6 @@ namespace PurchaseManagement
         public MainPage()
         {
             InitializeComponent();
-            BindingContext = RegisterViewModels.GetMainViewModel();
         }
         
     }

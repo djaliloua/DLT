@@ -32,7 +32,7 @@ namespace ManagPassWord.ViewModels.Password
                     await _db.DeleteById(UserDetail);
                 }
                 await Shell.Current.GoToAsync("..");
-                MainPageViewModel mainPageViewModel = ViewModelServices.GetMainPageViewModel();
+                MainPageViewModel mainPageViewModel = ViewModelServices.MainPageViewModel;
                 await mainPageViewModel.Load();
             }
 

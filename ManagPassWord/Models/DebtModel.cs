@@ -80,6 +80,7 @@ namespace ManagPassWord.Models
         private string description = "";
         private string amount = "";
         protected virtual void OnOnUpdate(DebtModel model) => OnUiUpdate?.Invoke(model);
+        public DebtModel Clone() => MemberwiseClone() as DebtModel;
     }
    
 }

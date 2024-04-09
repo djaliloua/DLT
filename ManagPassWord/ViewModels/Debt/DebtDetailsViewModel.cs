@@ -32,15 +32,18 @@ namespace ManagPassWord.ViewModels.Debt
         }
         private async void On_Save(object sender)
         {
+            DebtModel temp = new();
             int result = 0;
             if(DebtDetails != null)
             {
                 result = await _db.SaveItemAsync(DebtDetails);
+                temp = DebtDetails.Clone(); 
             }
             if(result != 0)
             {
-                DebtPageViewModel model = ViewModelServices.GetDebtPageViewModel();
+                DebtPageViewModel model = ViewModelServices.DebtPageViewModel;
                 await model.Load();
+                DebtDetails = temp;
                 await MessageDialogs.ShowToast($"{DebtDetails.Name} has been updated");
             }
         }
@@ -53,7 +56,7 @@ namespace ManagPassWord.ViewModels.Debt
                 {
                     await _db.DeleteById(DebtDetails);
                     await Shell.Current.GoToAsync("..");
-                    DebtPageViewModel model = ViewModelServices.GetDebtPageViewModel();
+                    DebtPageViewModel model = ViewModelServices.DebtPageViewModel;
                     await model.Load();
                 }
             }

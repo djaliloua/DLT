@@ -5,9 +5,13 @@ namespace PurchaseManagement.Services
     public static class RegisterViewModels
     {
         public static MainViewModel GetMainViewModel() => ServiceLocator.GetService<MainViewModel>();
+        public static MainViewModel MainViewModel => ServiceLocator.GetService<MainViewModel>();
         public static PurchaseItemsViewModel GetPurchaseItemsViewModel() => ServiceLocator.GetService<PurchaseItemsViewModel>();
+        public static PurchaseItemsViewModel PurchaseItemsViewModel => ServiceLocator.GetService<PurchaseItemsViewModel>();
         public static PurchaseItemDetailsViewModel GetPurchaseItemDetailsViewModel() => ServiceLocator.GetService<PurchaseItemDetailsViewModel>();
-        public static PurchaseFormViewModel GetPurchaseFormViewModel() => ServiceLocator.GetService<PurchaseFormViewModel>();
+        public static PurchaseItemDetailsViewModel PurchaseItemDetailsViewModel => ServiceLocator.GetService<PurchaseItemDetailsViewModel>();
+        //public static PurchaseFormViewModel GetPurchaseFormViewModel() => ServiceLocator.GetService<PurchaseFormViewModel>();
+        public static PurchaseFormViewModel PurchaseFormViewModel => ServiceLocator.GetService<PurchaseFormViewModel>();
         //public static MainViewModel GetMainViewModel() => ServiceLocator.GetService<MainViewModel>();
         public static MauiAppBuilder RegisterViewModel(this MauiAppBuilder mauiAppBuilder)
         {
