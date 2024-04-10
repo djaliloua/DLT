@@ -12,6 +12,11 @@ namespace PurchaseManagement.MVVM.Models
         public string Purchase_Date { get; set; }
         [OneToMany(nameof(Purchase_Id))]
         public IList<Purchase_Items> Purchase_Items { get; set; }
+
+        [ForeignKey(typeof(PurchaseStatistics))]
+        public int Purchase_Stats_Id { get; set; }
+        [OneToOne]
+        public PurchaseStatistics PurchaseStatistics { get; set; }
         public Purchases(string title)
         {
             Title = title;
@@ -21,5 +26,6 @@ namespace PurchaseManagement.MVVM.Models
         {
             
         }
+        public Purchases Clone() => MemberwiseClone() as Purchases;
     }
 }

@@ -31,10 +31,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             this._db = _db;
             Purchase_Items = new ObservableCollection<Purchase_Items>();
         }
-        public async Task LoadPurchaseItemsAsync(int purchaseId)
+        private async Task LoadPurchaseItemsAsync(int purchaseId)
         {
             Purchase_Items.Clear();
-            var purchase_items = await _db.GetAllPurchaseItemById(purchaseId);
+            var purchase_items = await Task.Run(async() => await _db.GetAllPurchaseItemById(purchaseId));
             foreach (var item in purchase_items)
             {
                 Purchase_Items.Add(item);

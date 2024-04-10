@@ -91,7 +91,7 @@ namespace ManagPassWord.Data_AcessLayer
             using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
             {
                 connection.CreateTable<DebtModel>();
-                res = connection.Delete<DebtModel>(item);
+                res = connection.Delete(item);
             }
             return res;
         }

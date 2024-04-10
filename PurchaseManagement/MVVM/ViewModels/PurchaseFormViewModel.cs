@@ -48,22 +48,33 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Save(object sender)
         {
             IEnumerable<Purchases> purchases = await db.GetPurchasesByDate();
-          
+            Purchases purchase = new Purchases("test");
+            PurchaseStatistics purchaseStatistics;
             if (purchases.Count() == 1)
             {
                 await db.SavePurchaseItemAsync(new(purchases.ElementAt(0).Purchase_Id,
                     PurchaseItem.Item_Name,
                     PurchaseItem.Item_Price,
                     PurchaseItem.Item_Quantity));
-                return;
+                purchaseStatistics = await db.GetPurchaseStatistics(purchases.ElementAt(0).Purchase_Id);
+                purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.ElementAt(0).Purchase_Id);
+                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "price");
+                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "quantity");
+                await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
+                //return;
             }
-
-            Purchases purchase = new Purchases("test");
-            await db.SavePurchaseAsync(purchase);
-            await db.SavePurchaseItemAsync(new(purchase.Purchase_Id,
-                    PurchaseItem.Item_Name,
-                    PurchaseItem.Item_Price,
-                    PurchaseItem.Item_Quantity));
+            else
+            {
+                await db.SavePurchaseAsync(purchase);
+                await db.SavePurchaseItemAsync(new(purchase.Purchase_Id,
+                        PurchaseItem.Item_Name,
+                        PurchaseItem.Item_Price,
+                        PurchaseItem.Item_Quantity));
+                purchaseStatistics = new(purchase.Purchase_Id, 1,
+                        PurchaseItem.Item_Price,
+                        PurchaseItem.Item_Quantity);
+                await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
+            }
             await RegisterViewModels.MainViewModel.LoadPurchasesAsync();
         }
         private async void On_Cancel(object sender)

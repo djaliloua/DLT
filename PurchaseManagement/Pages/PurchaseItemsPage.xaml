@@ -11,7 +11,7 @@
         <ListView SelectedItem="{Binding Selected_Purchase_Item}"
                   ItemsSource="{Binding Purchase_Items}">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="{x:Type models:Purchase_Items}">
+                <DataTemplate>
                     <ViewCell>
                         <SwipeView>
                             <Label Text="{Binding Item_Name}" />
