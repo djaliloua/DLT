@@ -16,26 +16,30 @@ namespace PurchaseManagement.MVVM.ViewModels
         public Purchases SelectedPurchase
         {
             get => _selectedPurchase;
-            set => UpdateObservable(ref _selectedPurchase, value, async () =>
-            {
-                if(value != null)
-                {
-                    Dictionary<string, object> navigationParameter = new Dictionary<string, object>
-                        {
-                            { "purchase", SelectedPurchase }
-                        };
-                    await Shell.Current.GoToAsync(nameof(PurchaseItemsPage), navigationParameter);
-                }
-            });
+            set => UpdateObservable(ref _selectedPurchase, value);
         }
+        bool CanOpen => SelectedPurchase != null;
         private readonly IRepository _db;
         public ICommand AddCommand { get; private set; }
+        public ICommand DoubleClickCommand { get; private set; }
         public MainViewModel(IRepository db)
         {
             _db = db;
             Purchases = new ObservableCollection<Purchases>();
             Load();
             AddCommand = new Command(On_Add);
+            DoubleClickCommand = new Command(On_DoubleClick);
+        }
+        private async void On_DoubleClick(object sender)
+        {
+            if(CanOpen)
+            {
+                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "purchase", SelectedPurchase }
+                        };
+                await Shell.Current.GoToAsync(nameof(PurchaseItemsPage), navigationParameter);
+            }
         }
         private async void On_Add(object sender)
         {
@@ -56,9 +60,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         public async Task LoadPurchasesAsync()
         {
             Purchases.Clear();
-            IEnumerable<Purchases> _purchases = await _db.GetAllPurchases();
+            IEnumerable<Purchases> _purchases = await Task.Run(_db.GetAllPurchases);
             foreach (Purchases purchase in _purchases)
             {
+                purchase.PurchaseStatistics = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
                 Purchases.Add(purchase);
             }
         }

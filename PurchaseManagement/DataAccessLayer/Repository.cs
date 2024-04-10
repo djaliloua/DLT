@@ -1,49 +1,44 @@
 ﻿using PurchaseManagement.MVVM.Models;
 using SQLite;
+using System.Security.Cryptography.X509Certificates;
 
 namespace PurchaseManagement.DataAccessLayer
 {
-    class SqliteAsyncConnection : SQLiteAsyncConnection, IDisposable
+    class Result
     {
-        public SqliteAsyncConnection(string databasepath, SQLiteOpenFlags flag):base(databasepath, flag)
-        {
-            
-        }
-        public void Dispose()
-        {
-            
-        }
+        public int Value { get; set; }
     }
     public class Repository : IRepository
     {
-        SQLiteAsyncConnection Database;
         public static string folderName;
         public async Task<IEnumerable<Purchases>> GetAllPurchases()
         {
             List<Purchases> purchases = null;
-            using(SqliteAsyncConnection connection = new SqliteAsyncConnection(Constants.DatabasePurchase, Constants.Flags))
+            await Task.Delay(1);
+            using(SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                await connection.CreateTableAsync<Purchases>();
-                purchases = await connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Id).ToListAsync();
+                connection.CreateTable<Purchases>();
+                connection.CreateTable<PurchaseStatistics>();
+                purchases = connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Id).ToList();
             }
             return purchases;
         }
         public async Task<IEnumerable<Purchase_Items>> GetAllPurchaseItemById(int purchaseId)
         {
             List<Purchase_Items> purchase_items = null;
-            await Task.Delay(100);
+            await Task.Delay(1);
             string sql = $"SELECT PI.*\r\nFROM purchases P\r\nINNER JOIN\r\npurchase_items PI ON P.purchase_id = PI.purchase_id\r\n WHERE P.purchase_id = {purchaseId}\r\n order by PI.Item_Id desc\r\n;\r\n";
-            using (SqliteAsyncConnection connection = new SqliteAsyncConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                await connection.CreateTableAsync<Purchase_Items>();
-                purchase_items = await connection.QueryAsync<Purchase_Items>(sql);
+                connection.CreateTable<Purchase_Items>();
+                purchase_items = connection.Query<Purchase_Items>(sql).ToList();
             }
             return purchase_items;
         }
         public async Task<int> SavePurchaseAsync(Purchases purchase)
         {
             int res = 0;
-            await Task.Delay(100);
+            await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchases>();
@@ -58,7 +53,7 @@ namespace PurchaseManagement.DataAccessLayer
         {
             string sql = $"select *\r\nfrom purchases p\r\nwhere p.Purchase_Date = '{DateTime.Now.ToString("yyy-MM-dd")}'";
             List<Purchases> purchases = null;
-            await Task.Delay(100);
+            await Task.Delay(1);
             using(var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchases>();
@@ -80,16 +75,56 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return res;
         }
-        public async Task Init()
+        public async Task<int> SavePurchaseStatisticsItemAsyn(PurchaseStatistics purchaseStatistics)
         {
-            if (Database is not null)
-                return;
-
-            Database = new SQLiteAsyncConnection(Constants.DatabasePurchase, Constants.Flags);
-            await Database.CreateTableAsync<Purchase_Items>();
-            await Database.CreateTableAsync<Purchases>();
-            
+            int res = 0;
+            await Task.Delay(1);
+            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                connection.CreateTable<PurchaseStatistics>();
+                if (purchaseStatistics.Id != 0)
+                    res = connection.Update(purchaseStatistics);
+                else
+                    res = connection.Insert(purchaseStatistics);
+            }
+            return res;
         }
-        
+        public async Task<int> GetTotalValue(Purchases purchases, string colname)
+        {
+            int res = 0;
+            string sql;
+            List<Result> results = new List<Result>();
+            if(colname == "price")
+                sql = $"select sum(pi.Item_price) Value\r\nfrom purchases p\r\ninner join purchase_items pi on pi.Purchase_Id=p.Purchase_Id\r\nwhere pi.Purchase_Id={purchases.Purchase_Id};";
+            else
+                sql = $"select sum(pi.Item_Quantity) Value\r\nfrom purchases p\r\ninner join purchase_items pi on pi.Purchase_Id=p.Purchase_Id\r\nwhere pi.Purchase_Id={purchases.Purchase_Id};";
+            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                results = connection.Query<Result>(sql).ToList();
+                if(results.Count == 1)
+                {
+                    res = results.ElementAt(0).Value;
+                }
+            }
+            await Task.Delay(1);
+            return res;
+        }
+        public async Task<PurchaseStatistics> GetPurchaseStatistics(int id)
+        {
+            await Task.Delay(1);
+            PurchaseStatistics p;
+            string sql = $"select ps.*\r\nfrom purchases p\r\ninner join PurchaseStatistics ps on p.Purchase_Id = ps.Purchase_Id\r\nwhere ps.Purchase_Id = {id};";
+            using(SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                p = connection.Query<PurchaseStatistics>(sql).ElementAt(0);
+            }
+            return p;
+        }
+        public async Task<int> CountPurchaseItems(int purchase_id)
+        {
+            List<Purchase_Items> items = (List<Purchase_Items>)await GetAllPurchaseItemById(purchase_id);
+            return items.Count();
+        }
+
     }
 }
