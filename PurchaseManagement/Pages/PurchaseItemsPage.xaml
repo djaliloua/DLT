@@ -11,10 +11,12 @@
              BindingContext="{x:Static service:RegisterViewModels.PurchaseItemsViewModel}"
              Title="Purchase Items"
              >
-    <ScrollView Margin="25">
+    <Grid>
         <ListView SelectedItem="{Binding Selected_Purchase_Item}"
                   HasUnevenRows="True"
-                  ItemsSource="{Binding Purchase_Items}">
+                  x:Name="listview"
+                  CachingStrategy="RecycleElementAndDataTemplate"
+                  ItemsSource="{Binding Purchase_Items, Mode=TwoWay}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -31,7 +33,7 @@
                                                           NumberOfTapsRequired="2" />
                                 </Frame.GestureRecognizers>
                                 <views:PurchaseItemDataTemplateView>
-                                    
+
                                 </views:PurchaseItemDataTemplateView>
                             </Frame>
                         </SwipeView>
@@ -39,5 +41,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </ScrollView>
+    </Grid>
 </ContentPage>
