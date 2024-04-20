@@ -89,7 +89,7 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return res;
         }
-        public async Task<int> GetTotalValue(Purchases purchases, string colname)
+        public async Task<string> GetTotalValue(Purchases purchases, string colname)
         {
             int res = 0;
             string sql;
@@ -107,7 +107,7 @@ namespace PurchaseManagement.DataAccessLayer
                 }
             }
             await Task.Delay(1);
-            return res;
+            return res.ToString();
         }
         public async Task<PurchaseStatistics> GetPurchaseStatistics(int id)
         {
@@ -120,10 +120,10 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return p;
         }
-        public async Task<int> CountPurchaseItems(int purchase_id)
+        public async Task<string> CountPurchaseItems(int purchase_id)
         {
             List<Purchase_Items> items = (List<Purchase_Items>)await GetAllPurchaseItemById(purchase_id);
-            return items.Count();
+            return items.Count().ToString();
         }
 
     }

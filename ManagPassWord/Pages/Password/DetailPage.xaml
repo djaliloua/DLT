@@ -5,7 +5,6 @@
              x:Class="ManagPassWord.DetailPage"
              xmlns:locator="clr-namespace:ManagPassWord"
              BindingContext="{x:Static locator:ViewModelServices.DetailViewModel}"
-             BackgroundColor="{DynamicResource Surface}"
              Title="Details"
              >
     <ContentPage.Resources>

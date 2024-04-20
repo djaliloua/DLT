@@ -8,7 +8,6 @@
              xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
              xmlns:locator="clr-namespace:ManagPassWord"
              BindingContext="{x:Static locator:ViewModelServices.DebtPageViewModel}"
-             BackgroundColor="{DynamicResource Surface}"
              Title="Debts">
     <ContentPage.Resources>
         <converters:ConverterBoolToString x:Key="conv"/>

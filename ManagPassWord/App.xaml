@@ -16,6 +16,7 @@
                 <!--<material:StyleResource BasedOn="{x:Reference appStyles}" />-->
                 
             </ResourceDictionary.MergedDictionaries>
+            
         </ResourceDictionary>
     </Application.Resources>
 </Application>

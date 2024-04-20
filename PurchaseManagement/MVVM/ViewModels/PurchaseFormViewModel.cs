@@ -15,13 +15,14 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => item_name;
             set => UpdateObservable(ref item_name, value);
         }
-        private int item_price;
-        public int Item_Price
+        private string item_price;
+        public string Item_Price
         {
             get => item_price;
             set => UpdateObservable(ref item_price, value);
-        }private int item_quantity;
-        public int Item_Quantity
+        }
+        private string item_quantity;
+        public string Item_Quantity
         {
             get => item_quantity;   
             set => UpdateObservable(ref item_quantity, value);  
@@ -50,7 +51,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             IEnumerable<Purchases> purchases = await db.GetPurchasesByDate();
             Purchases purchase = new Purchases("test");
             PurchaseStatistics purchaseStatistics;
-            if (purchases.Count() == 1)
+            if (purchases.Count() >= 1)
             {
                 await db.SavePurchaseItemAsync(new(purchases.ElementAt(0).Purchase_Id,
                     PurchaseItem.Item_Name,
@@ -61,7 +62,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "price");
                 purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "quantity");
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
-                //return;
+               
             }
             else
             {
@@ -70,7 +71,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                         PurchaseItem.Item_Name,
                         PurchaseItem.Item_Price,
                         PurchaseItem.Item_Quantity));
-                purchaseStatistics = new(purchase.Purchase_Id, 1,
+                purchaseStatistics = new(purchase.Purchase_Id, "1",
                         PurchaseItem.Item_Price,
                         PurchaseItem.Item_Quantity);
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);

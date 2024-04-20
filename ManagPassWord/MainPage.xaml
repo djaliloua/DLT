@@ -8,7 +8,6 @@
              xmlns:custom="clr-namespace:ManagPassWord.CustomClasses"
              xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
              x:Class="ManagPassWord.MainPage"
-             BackgroundColor="{DynamicResource Surface}"
              BindingContext="{x:Static locator:ViewModelServices.MainPageViewModel}"
              x:Name="page"
              Title="Password Manager">

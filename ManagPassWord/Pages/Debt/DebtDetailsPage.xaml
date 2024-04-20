@@ -5,7 +5,6 @@
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:locator="clr-namespace:ManagPassWord"
              BindingContext="{x:Static locator:ViewModelServices.DebtDetailsViewModel}"
-             BackgroundColor="{DynamicResource Surface}"
              Title="Details">
     <Grid Margin="15">
         <Grid.RowDefinitions>

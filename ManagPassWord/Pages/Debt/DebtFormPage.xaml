@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ManagPassWord.Pages.Debt.DebtFormPage"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
-             BackgroundColor="{DynamicResource Surface}"
              Title="Debt Form">
     <Grid Margin="20">
         <Grid.RowDefinitions>

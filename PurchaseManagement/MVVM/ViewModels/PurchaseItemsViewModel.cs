@@ -3,6 +3,7 @@ using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -14,22 +15,26 @@ namespace PurchaseManagement.MVVM.ViewModels
         public Purchase_Items Selected_Purchase_Item
         {
             get => _selected_Purchase_Item;
-            set => UpdateObservable(ref _selected_Purchase_Item, value, async () =>
-            {
-                if (value != null)
-                {
-                    Dictionary<string, object> navigationParameter = new Dictionary<string, object>
-                        {
-                            { "details", Selected_Purchase_Item }
-                        };
-                    await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), navigationParameter);
-                }
-            });
+            set => UpdateObservable(ref _selected_Purchase_Item, value);
         }
+        bool CanOpen => Selected_Purchase_Item != null;
+        public ICommand DoubleClickCommand { get; private set; }
         public PurchaseItemsViewModel(IRepository _db)
         {
             this._db = _db;
             Purchase_Items = new ObservableCollection<Purchase_Items>();
+            DoubleClickCommand = new Command(On_DoubleClick);
+        }
+        private async void On_DoubleClick(object parameter)
+        {
+            if (CanOpen)
+            {
+                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "details", Selected_Purchase_Item }
+                        };
+                await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), navigationParameter);
+            }
         }
         private async Task LoadPurchaseItemsAsync(int purchaseId)
         {

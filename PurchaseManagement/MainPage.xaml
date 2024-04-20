@@ -5,6 +5,7 @@
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
              xmlns:models="clr-namespace:PurchaseManagement.MVVM.Models"
+             xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              xmlns:service="clr-namespace:PurchaseManagement.Services"
              x:Name="main"
              BindingContext="{x:Static service:RegisterViewModels.MainViewModel}">
@@ -37,6 +38,7 @@
                                     <Label Text="{Binding Purchase_Date}" />
                                     <Label Text="{Binding PurchaseStatistics.PurchaseCount}" />
                                 </VerticalStackLayout>
+                                
                             </SwipeView>
                         </ViewCell>
                     </DataTemplate>
