@@ -1,10 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <?xaml-comp compile="true" ?>
-<ResourceDictionary 
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Color x:Key="Surface">#FFEBEEFF</Color>
 
-    <Color x:Key="Primary">#512BD4</Color>
+    <!--High-emphasis fills, texts, and icons against surface-->
+    <Color x:Key="Primary">#FF91A1EF</Color>
+    <!--Text and icons against primary-->
+    <Color x:Key="OnPrimary">#FFFFFF</Color>
+    <!--Standout fill color against surface, for key components like FAB-->
+    <Color x:Key="PrimarycContainer">#FF0323B4</Color>
+    <!--Text and icons against primary container-->
+    <Color x:Key="OnPrimarycContainer">#FF636E9F</Color>
+    <!--<Color x:Key="Primary">#512BD4</Color>-->
     <Color x:Key="Secondary">#DFD8F7</Color>
     <Color x:Key="Tertiary">#2B0B98</Color>
     <Color x:Key="White">White</Color>
