@@ -26,14 +26,9 @@ namespace PurchaseManagement.MVVM.ViewModels
             this._db = _db;
             Purchase_Items = new ObservableCollection<Purchase_Items>();
             DoubleClickCommand = new Command(On_DoubleClick);
-            Purchase_Items.CollectionChanged += Purchase_Items_CollectionChanged;
-        }
-
-        private void Purchase_Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
             
         }
-
+      
         private async void On_DoubleClick(object parameter)
         {
             if (CanOpen)
@@ -47,7 +42,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         public async Task LoadPurchaseItemsAsync(int purchaseId)
         {
-            object lockobject = new object();
             Purchase_Items.Clear();
             var purchase_items = await Task.Run(async() => await _db.GetAllPurchaseItemById(purchaseId));
             for(int i = 0; i <  purchase_items.Count; i++)
