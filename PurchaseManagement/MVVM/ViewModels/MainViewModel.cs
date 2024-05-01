@@ -57,6 +57,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await LoadPurchasesAsync();
             }
         }
+        
         public async Task LoadPurchasesAsync()
         {
             Purchases.Clear();

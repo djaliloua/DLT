@@ -49,12 +49,20 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Add(object parameter)
         {
             string tempVal = (string)parameter;
-            if(!string.IsNullOrEmpty(tempVal))
+            if (!IsAlreadyIn())
             {
-                Account account = new Account(double.Parse(Money));
-                await accountRepository.SaveOrUpdateAsync(account);
-                await Load();
+                if (!string.IsNullOrEmpty(tempVal))
+                {
+                    Account account = new Account(double.Parse(Money));
+                    await accountRepository.SaveOrUpdateAsync(account);
+                    await Load();
+                }
             }
+            else
+            {
+                await Shell.Current.DisplayAlert("Message", "Item already present", "Cancel");
+            }
+            
         }
         private async Task Load()
         {
@@ -65,5 +73,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Accounts.Add(data[i]);
             }
         }
+        private bool IsAlreadyIn() => Accounts.FirstOrDefault(account => account.DateTime.ToString("M").Contains(DateTime.Now.ToString("M"))) != null;
+
     }
 }

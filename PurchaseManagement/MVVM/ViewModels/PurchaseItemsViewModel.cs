@@ -3,6 +3,7 @@ using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels
@@ -35,16 +36,16 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         public async Task NavigateToBuilding25()
         {
-            var location = new Location(47.645160, -122.1306032);
-            var options = new MapLaunchOptions { Name = "Microsoft Building 25" };
-
+            Location location = await GetCurrentLocation();
+            //var options = new MapLaunchOptions { Name = "Microsoft Building 25" };
             try
             {
-                await Map.Default.OpenAsync(location, options);
+                await Map.Default.OpenAsync(location);
             }
             catch (Exception ex)
             {
                 // No map application available to open
+                Debug.WriteLine(ex.Message);
             }
         }
         private async void On_DoubleClick(object parameter)
@@ -66,6 +67,25 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 Purchase_Items.Add(purchase_items[i]);
             }
+        }
+        private async Task<Location> GetCurrentLocation()
+        {
+            try
+            {
+                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
+
+                CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
+
+                Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
+                return location;
+            }
+
+            catch (Exception ex)
+            {
+                Trace.Write(ex.Message);
+                return null;
+            }
+            
         }
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
