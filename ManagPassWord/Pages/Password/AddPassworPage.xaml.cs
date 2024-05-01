@@ -1,3 +1,4 @@
+using ManagPassWord.ServiceLocators;
 using ManagPassWord.ViewModels.Password;
 
 namespace ManagPassWord;
@@ -10,7 +11,7 @@ public partial class AddPassworPage : ContentPage
 	}
     protected override bool OnBackButtonPressed()
     {
-        MainPageViewModel mainPageViewModel = ViewModelServices.MainPageViewModel;
+        MainPageViewModel mainPageViewModel = ViewModelLocator.MainPageViewModel;
         Task<int> _ = mainPageViewModel.Load();
         AddPasswordViewModel addPasswordViewModel = (AddPasswordViewModel)BindingContext;
         addPasswordViewModel.ClearFields();

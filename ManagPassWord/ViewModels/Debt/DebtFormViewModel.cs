@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
+using ManagPassWord.ServiceLocators;
 using MVVM;
 using System.Windows.Input;
 
@@ -24,7 +25,7 @@ namespace ManagPassWord.ViewModels.Debt
         private async void On_Save(object sender)
         {
             await _db.SaveItemAsync(Debt);
-            await ViewModelServices.DebtPageViewModel.Load();
+            await ViewModelLocator.DebtPageViewModel.Load();
             await Shell.Current.GoToAsync("..");
         }
 

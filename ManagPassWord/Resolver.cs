@@ -1,6 +1,9 @@
-﻿namespace PurchaseManagement
+﻿using MVVM;
+using System.Reflection;
+
+namespace ManagPassWord
 {
-    public static class ServiceLocator
+    public static class Resolver
     {
         public static T GetService<T>() => Application.Current.Handler.MauiContext.Services.GetRequiredService<T>();
     }

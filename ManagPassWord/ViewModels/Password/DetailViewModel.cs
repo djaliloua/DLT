@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
+using ManagPassWord.ServiceLocators;
 using MVVM;
 using System.Windows.Input;
 
@@ -31,7 +32,7 @@ namespace ManagPassWord.ViewModels.Password
                     await _db.DeleteById(UserDetail);
                 }
                 await Shell.Current.GoToAsync("..");
-                await ViewModelServices.MainPageViewModel.Load();
+                await ViewModelLocator.MainPageViewModel.Load();
             }
 
         }

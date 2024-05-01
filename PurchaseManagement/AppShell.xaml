@@ -4,8 +4,12 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:PurchaseManagement"
-    Shell.FlyoutBehavior="Disabled">
-
+       xmlns:pages="clr-namespace:PurchaseManagement.Pages"
+       Shell.FlyoutBehavior="Disabled">
+    
+    <ShellContent Title="Home"
+                  ContentTemplate="{DataTemplate pages:AccountPage}"
+                  Route="MainPage" />
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"

@@ -4,8 +4,8 @@
              x:Class="ManagPassWord.AddPassworPage"
              xmlns:converters="clr-namespace:ManagPassWord.Converters"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
-             xmlns:locator="clr-namespace:ManagPassWord"
-             BindingContext="{x:Static locator:ViewModelServices.AddPasswordViewModel}"
+             xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
+             BindingContext="{x:Static locator:ViewModelLocator.AddPasswordViewModel}"
             >
     <ContentPage.Resources>
         <converters:ConverterBoolToBool x:Key="boolTobool"/>

@@ -8,7 +8,7 @@
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              x:Name="main"
              NavigationPage.BackButtonTitle="Back"
-             BindingContext="{x:Static service:RegisterViewModels.PurchaseItemsViewModel}"
+             BindingContext="{x:Static service:ViewModelLocator.PurchaseItemsViewModel}"
              Title="Purchase Items"
              >
     <Grid>
