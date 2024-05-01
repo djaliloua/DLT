@@ -2,12 +2,13 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PurchaseManagement.Pages.AccountPage"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:local="clr-namespace:PurchaseManagement.Services"
              BindingContext="{x:Static local:ViewModelLocator.AccountViewModel}"
              Title="Account">
     <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition />
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
@@ -16,18 +17,23 @@
                 <ColumnDefinition />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Entry Text="{Binding Money}"
-                   WidthRequest="150"
-                   x:Name="entry"
-                   HorizontalTextAlignment="Center"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center" />
-            <Button Grid.Column="1"
+            
+            <material:TextField Title="Name"
+                                x:Name="entry"
+                                VerticalOptions="Center"
+                                Text="{Binding Money}"
+                                 />
+            <Button FontAttributes="Bold"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
                     Command="{Binding AddCommand}"
                     CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"
-                    Text="Add"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"/>
+                    Grid.Column="1">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialRegular"
+                                     Glyph="{x:Static m:MaterialRound.Add}" />
+                </Button.ImageSource>
+            </Button>
         </Grid>
         <ListView ItemsSource="{Binding Accounts}"
                   x:Name="listview"
@@ -37,22 +43,33 @@
                 <DataTemplate>
                     <ViewCell>
                         <SwipeView>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Label Text="{Binding DateTime, StringFormat='{0:yyyy-MM-dd}'}"
-                                       VerticalOptions="Center" />
-                                <Label VerticalOptions="Center"
-                                       Text="{Binding Money, StringFormat='{0} cfa'}"
-                                       Grid.Column="1" />
-                                <Button Text="Delete"
-                                        Command="{Binding DeleteCommand}"
-                                        Grid.Column="2"
-                                        BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}" />
-                            </Grid>
+                            <Frame CornerRadius="10" HeightRequest="100">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding DateTime, StringFormat='{0:yyyy-MM-dd}'}"
+                                           Padding="10,0,0,0"
+                                           VerticalOptions="Center" />
+                                    <Label VerticalOptions="Center"
+                                           Text="{Binding Money, StringFormat='{0} cfa'}"
+                                           Grid.Column="1" />
+
+                                    <Button FontAttributes="Bold"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            Command="{Binding DeleteCommand}"
+                                            BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
+                                            Grid.Column="2">
+                                        <Button.ImageSource>
+                                            <FontImageSource FontFamily="MaterialRegular"
+                                                             Glyph="{x:Static m:MaterialRound.Delete}" />
+                                        </Button.ImageSource>
+                                    </Button>
+                                </Grid>
+                            </Frame>
                         </SwipeView>
                     </ViewCell>
                 </DataTemplate>

@@ -15,17 +15,20 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <!--<ColumnDefinition />-->
-                            </Grid.ColumnDefinitions>
-                            <Label Text="{Binding Day}" VerticalOptions="Center" Padding="10,0,0,0"/>
-                            <Label Text="{Binding AvgMoney, StringFormat='{0:F2} cfa'}"
-                                   VerticalOptions="Center"
-                                   Grid.Column="1" />
-                        </Grid>
+                        <Frame CornerRadius="10" HeightRequest="100">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding Day}"
+                                       VerticalOptions="Center"
+                                       Padding="10,0,0,0" />
+                                <Label Text="{Binding AvgMoney, StringFormat='{0:F2} cfa'}"
+                                       VerticalOptions="Center"
+                                       Grid.Column="1" />
+                            </Grid>
+                        </Frame>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
