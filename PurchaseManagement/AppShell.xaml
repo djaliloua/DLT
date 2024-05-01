@@ -20,7 +20,7 @@
                       Route="AccountPage">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="MaterialRegular"
-                                 Glyph="{x:Static m:MaterialRound.Home}" />
+                                 Glyph="{x:Static m:MaterialRound.Manage_accounts}" />
             </ShellContent.Icon>
             <ShellContent.FlyoutIcon>
                 <FontImageSource FontFamily="MaterialRegular"
