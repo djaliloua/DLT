@@ -10,16 +10,20 @@ namespace PurchaseManagement.ExtensionMethods
         {
             mauiAppBuilder.Services.AddSingleton<MainPage>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetails>();
-            //mauiAppBuilder.Services.AddSingleton<>();
+            mauiAppBuilder.Services.AddScoped<AccountAnalyticPage>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder DbContextExtension(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<IRepository, Repository>();
+            mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder ViewModelsExtension(this MauiAppBuilder mauiAppBuilder)
         {
+            //AccountAnalyticViewModel
+            mauiAppBuilder.Services.AddScoped<AccountAnalyticViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountViewModel>();
             mauiAppBuilder.Services.AddSingleton<MainViewModel>();//PurchaseItemsViewModel
             mauiAppBuilder.Services.AddSingleton<PurchaseItemsViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();

@@ -1,8 +1,5 @@
-﻿using CommunityToolkit.Maui.Core.Extensions;
-using PurchaseManagement.MVVM.Models;
+﻿using PurchaseManagement.MVVM.Models;
 using SQLite;
-using System.Collections.ObjectModel;
-using System.Security.Cryptography.X509Certificates;
 
 namespace PurchaseManagement.DataAccessLayer
 {

@@ -21,14 +21,32 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         bool CanOpen => Selected_Purchase_Item != null;
         public ICommand DoubleClickCommand { get; private set; }
+        public ICommand OpenCommand { get; private set; }
         public PurchaseItemsViewModel(IRepository _db)
         {
             this._db = _db;
             Purchase_Items = new ObservableCollection<Purchase_Items>();
             DoubleClickCommand = new Command(On_DoubleClick);
-            
+            OpenCommand = new Command(On_Open);
         }
-      
+         private async void On_Open(object parameter)
+        {
+            await NavigateToBuilding25();
+        }
+        public async Task NavigateToBuilding25()
+        {
+            var location = new Location(47.645160, -122.1306032);
+            var options = new MapLaunchOptions { Name = "Microsoft Building 25" };
+
+            try
+            {
+                await Map.Default.OpenAsync(location, options);
+            }
+            catch (Exception ex)
+            {
+                // No map application available to open
+            }
+        }
         private async void On_DoubleClick(object parameter)
         {
             if (CanOpen)

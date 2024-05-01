@@ -32,9 +32,26 @@
                                                           Command="{Binding DoubleClickCommand}"
                                                           NumberOfTapsRequired="2" />
                                 </Frame.GestureRecognizers>
-                                <views:PurchaseItemDataTemplateView>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{Binding Item_Name}" />
+                                    <HorizontalStackLayout Grid.Row="1"
+                                                           Spacing="25"
+                                                           HorizontalOptions="Start">
+                                        <Button Text="Edit"
+                                                Command="{Binding OpenCommand}"
+                                                BindingContext="{Binding Path=BindingContext, Source={x:Reference main}}"
+                                                WidthRequest="100" />
+                                        <Button Text="Delete"
+                                                WidthRequest="100" />
+                                    </HorizontalStackLayout>
+                                </Grid>
+                                <!--<views:PurchaseItemDataTemplateView>
 
-                                </views:PurchaseItemDataTemplateView>
+                                </views:PurchaseItemDataTemplateView>-->
                             </Frame>
                         </SwipeView>
                     </ViewCell>

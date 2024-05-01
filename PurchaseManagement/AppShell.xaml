@@ -6,13 +6,17 @@
     xmlns:local="clr-namespace:PurchaseManagement"
        xmlns:pages="clr-namespace:PurchaseManagement.Pages"
        Shell.FlyoutBehavior="Disabled">
+    <TabBar>
+        <ShellContent Title="Account"
+                      ContentTemplate="{DataTemplate pages:AccountPage}"
+                      Route="AccountPage" />
+        <ShellContent Title="Analytics"
+                      ContentTemplate="{DataTemplate pages:AccountAnalyticPage}"
+                      Route="AccountAnalyticPage" />
+        <ShellContent Title="Market"
+                      ContentTemplate="{DataTemplate local:MainPage}"
+                      Route="MainPage" />
+    </TabBar>
     
-    <ShellContent Title="Home"
-                  ContentTemplate="{DataTemplate pages:AccountPage}"
-                  Route="MainPage" />
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
 
 </Shell>
