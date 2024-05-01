@@ -1,22 +1,66 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="PurchaseManagement.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:PurchaseManagement"
+<Shell x:Class="PurchaseManagement.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:PurchaseManagement"
+       xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
        xmlns:pages="clr-namespace:PurchaseManagement.Pages"
-       Shell.FlyoutBehavior="Disabled">
-    <TabBar>
+       FlyoutHeaderBehavior="Fixed"
+       Shell.FlyoutBehavior="Flyout"
+       >
+    <FlyoutItem FlyoutDisplayOptions="AsSingleItem"
+                Title="Home">
+        <FlyoutItem.FlyoutIcon>
+            <FontImageSource FontFamily="MaterialRegular"
+                             Color="Blue"
+                             Glyph="{x:Static m:MaterialRound.Home}" />
+        </FlyoutItem.FlyoutIcon>
         <ShellContent Title="Account"
                       ContentTemplate="{DataTemplate pages:AccountPage}"
-                      Route="AccountPage" />
+                      Route="AccountPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Home}" />
+            </ShellContent.Icon>
+            <ShellContent.FlyoutIcon>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="Red"
+                                 Glyph="{x:Static m:MaterialRound.Home}">
+
+                </FontImageSource>
+
+            </ShellContent.FlyoutIcon>
+        </ShellContent>
         <ShellContent Title="Analytics"
                       ContentTemplate="{DataTemplate pages:AccountAnalyticPage}"
-                      Route="AccountAnalyticPage" />
+                      Route="AccountAnalyticPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Analytics}" />
+            </ShellContent.Icon>
+            <ShellContent.FlyoutIcon>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="Red"
+                                 Glyph="{x:Static m:MaterialRound.Analytics}">
+
+                </FontImageSource>
+
+            </ShellContent.FlyoutIcon>
+        </ShellContent>
+    </FlyoutItem>
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems"
+                Title="Market">
         <ShellContent Title="Market"
                       ContentTemplate="{DataTemplate local:MainPage}"
-                      Route="MainPage" />
-    </TabBar>
+                      Route="MainPage">
+            <ShellContent.Icon>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="Blue"
+                                 Glyph="{x:Static m:MaterialRound.Account_balance_wallet}" />
+            </ShellContent.Icon>
+        </ShellContent>
+    </FlyoutItem>
     
+
 
 </Shell>
