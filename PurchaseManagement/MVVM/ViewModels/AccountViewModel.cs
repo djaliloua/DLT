@@ -22,6 +22,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _selectedAccount;
             set => UpdateObservable(ref _selectedAccount, value);
         }
+        private DateTime _selectedDate;
+        public DateTime SelectedDate
+        {
+            get => _selectedDate;
+            set => UpdateObservable(ref _selectedDate, value);
+        }
         
         private bool CanProceed => SelectedAccount != null;
         public ICommand AddCommand { get; private set; }
@@ -30,6 +36,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             accountRepository = _accountRepository;
             Accounts = new ObservableCollection<Account>();
+            SelectedDate = DateTime.Now;
             _ = Load();
             AddCommand = new Command(On_Add);
             DeleteCommand = new Command(On_Delete);
@@ -53,7 +60,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if (!string.IsNullOrEmpty(tempVal))
                 {
-                    Account account = new Account(double.Parse(Money.ToString()));
+                    Account account = new Account(SelectedDate, double.Parse(Money.ToString()));
                     await accountRepository.SaveOrUpdateAsync(account);
                     Money = 0;
                     await Load();
@@ -74,7 +81,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Accounts.Add(data[i]);
             }
         }
-        private bool IsAlreadyIn() => Accounts.FirstOrDefault(account => account.DateTime.ToString("M").Contains(DateTime.Now.ToString("M"))) != null;
+        private bool IsAlreadyIn() => Accounts.FirstOrDefault(account => account.DateTime.ToString("M").Contains(SelectedDate.ToString("M"))) != null;
 
     }
 }

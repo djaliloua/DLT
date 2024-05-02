@@ -15,6 +15,12 @@ namespace PurchaseManagement.MVVM.Models
             DateTime = DateTime.Now;
             Day = DateTime.Now.ToString("dddd");
         }
+        public Account(DateTime _date, double _money)
+        {
+            Money = _money;
+            DateTime = _date;
+            Day = _date.ToString("dddd");
+        }
         public Account()
         {
             

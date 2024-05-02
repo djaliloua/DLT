@@ -19,21 +19,24 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            
+            <material:DatePickerField Date="{Binding SelectedDate}"/>
+
             <material:TextField Title="Name"
                                 x:Name="entry"
+                                Grid.Column="1"
                                 VerticalOptions="Center"
                                 Text="{Binding Money}"
                                 Keyboard="Numeric"
                                 CornerRadius="10"
                                  />
             <Button FontAttributes="Bold"
-                    HorizontalOptions="Center"
+                    HorizontalOptions="CenterAndExpand"
                     VerticalOptions="Center"
                     Command="{Binding AddCommand}"
                     CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"
-                    Grid.Column="1">
+                    Grid.Column="2">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="MaterialRegular"
                                      Glyph="{x:Static m:MaterialRound.Add}" />
@@ -44,6 +47,7 @@
                   Margin="0,20,0,0"
                   x:Name="listview"
                   RowHeight="150"
+                  VerticalScrollBarVisibility="Never"
                   HasUnevenRows="True"
                   VerticalOptions="Start"
                   Grid.Row="1"
