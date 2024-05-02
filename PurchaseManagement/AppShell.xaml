@@ -5,9 +5,13 @@
        xmlns:local="clr-namespace:PurchaseManagement"
        xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
        xmlns:pages="clr-namespace:PurchaseManagement.Pages"
+       xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
        FlyoutHeaderBehavior="Fixed"
        Shell.FlyoutBehavior="Flyout"
        >
+    <Shell.FlyoutHeader>
+        <views:ControlView />
+    </Shell.FlyoutHeader>
     <FlyoutItem FlyoutDisplayOptions="AsSingleItem"
                 Title="Home">
         <FlyoutItem.FlyoutIcon>

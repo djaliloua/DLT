@@ -64,6 +64,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="MVVM\Views\ControlView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="MVVM\Views\PurchaseDataTemplateView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
