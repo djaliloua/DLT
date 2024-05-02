@@ -27,6 +27,7 @@
             </Grid.RowDefinitions>
             <ListView ItemsSource="{Binding Purchases}"
                       RowHeight="150"
+                      VerticalScrollBarVisibility="Never"
                       SelectedItem="{Binding SelectedPurchase}">
                 <ListView.ItemTemplate>
                     <DataTemplate>

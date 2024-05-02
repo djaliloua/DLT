@@ -16,6 +16,7 @@
         <ListView SelectedItem="{Binding Selected_Purchase_Item}"
                   HasUnevenRows="True"
                   x:Name="listview"
+                  VerticalScrollBarVisibility="Never"
                   CachingStrategy="RecycleElementAndDataTemplate"
                   ItemsSource="{Binding Purchase_Items}">
             <ListView.ItemTemplate>

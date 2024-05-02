@@ -13,6 +13,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <ListView ItemsSource="{Binding Statistics}"
+                  VerticalScrollBarVisibility="Never"
                   Margin="0,20,0,0"
                   x:Name="listview"
                   RowHeight="150"
