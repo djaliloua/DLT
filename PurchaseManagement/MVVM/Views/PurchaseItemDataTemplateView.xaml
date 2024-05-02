@@ -13,6 +13,7 @@
         <HorizontalStackLayout Grid.Row="1" Spacing="25"
                                HorizontalOptions="Start">
             <Button Text="Edit"
+                    Command="{Binding OpenCommand}"
                     WidthRequest="100" />
             <Button Text="Delete"
                     WidthRequest="100" />

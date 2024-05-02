@@ -10,11 +10,11 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         private readonly IAccountRepository accountRepository;
         public ObservableCollection<Account> Accounts { get; }
-        private string _money = "800500";
-        public string Money
+        private long _money;
+        public long Money
         {
             get => _money;
-            set => UpdateObservable(ref  _money, value);
+            set => UpdateObservable(ref _money, value);
         }
         private Account _selectedAccount;
         public Account SelectedAccount
@@ -53,8 +53,9 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if (!string.IsNullOrEmpty(tempVal))
                 {
-                    Account account = new Account(double.Parse(Money));
+                    Account account = new Account(double.Parse(Money.ToString()));
                     await accountRepository.SaveOrUpdateAsync(account);
+                    Money = 0;
                     await Load();
                 }
             }

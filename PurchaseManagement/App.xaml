@@ -11,10 +11,10 @@
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <!--<Color x:Key="Surface">#FFEBEEFF</Color>-->
-            <!--<Style TargetType="ContentPage">
+            <Style TargetType="ContentPage">
                 <Setter Property="BackgroundColor"
                         Value="{x:StaticResource Surface}" />
-            </Style>-->
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

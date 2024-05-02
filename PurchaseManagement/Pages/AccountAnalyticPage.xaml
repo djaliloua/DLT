@@ -5,13 +5,20 @@
              xmlns:local="clr-namespace:PurchaseManagement.Services"
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              BindingContext="{x:Static local:ViewModelLocator.AccountAnalyticViewModel}"
-             Title="Analytics">
-    <Grid Margin="15">
+             BackgroundColor="{StaticResource Surface}"
+             >
+    <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition />
+            <RowDefinition Height="Auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ListView ItemsSource="{Binding Statistics}">
+        <ListView ItemsSource="{Binding Statistics}"
+                  Margin="0,20,0,0"
+                  x:Name="listview"
+                  RowHeight="150"
+                  HasUnevenRows="True"
+                  VerticalOptions="Start"
+                  Grid.Row="1">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

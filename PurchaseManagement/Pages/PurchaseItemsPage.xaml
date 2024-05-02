@@ -9,6 +9,7 @@
              x:Name="main"
              NavigationPage.BackButtonTitle="Back"
              BindingContext="{x:Static service:ViewModelLocator.PurchaseItemsViewModel}"
+             BackgroundColor="{StaticResource Surface}"
              Title="Purchase Items"
              >
     <Grid>
@@ -16,42 +17,24 @@
                   HasUnevenRows="True"
                   x:Name="listview"
                   CachingStrategy="RecycleElementAndDataTemplate"
-                  ItemsSource="{Binding Purchase_Items, Mode=TwoWay}">
+                  ItemsSource="{Binding Purchase_Items}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <SwipeView>
                             <Frame CornerRadius="10"
                                    HasShadow="True"
-                                   BorderColor="red"
                                    Padding="15"
-                                   BackgroundColor="LightBlue"
                                    ZIndex="20">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer BindingContext="{Binding Path=BindingContext, Source={x:Reference main}}"
                                                           Command="{Binding DoubleClickCommand}"
                                                           NumberOfTapsRequired="2" />
                                 </Frame.GestureRecognizers>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition />
-                                        <RowDefinition Height="auto" />
-                                    </Grid.RowDefinitions>
-                                    <Label Text="{Binding Item_Name}" />
-                                    <HorizontalStackLayout Grid.Row="1"
-                                                           Spacing="25"
-                                                           HorizontalOptions="Start">
-                                        <Button Text="Edit"
-                                                Command="{Binding OpenCommand}"
-                                                BindingContext="{Binding Path=BindingContext, Source={x:Reference main}}"
-                                                WidthRequest="100" />
-                                        <Button Text="Delete"
-                                                WidthRequest="100" />
-                                    </HorizontalStackLayout>
-                                </Grid>
-                                <!--<views:PurchaseItemDataTemplateView>
+                                
+                                <views:PurchaseItemDataTemplateView BindingContext="{Binding Path=BindingContext, Source={x:Reference main}}">
 
-                                </views:PurchaseItemDataTemplateView>-->
+                                </views:PurchaseItemDataTemplateView>
                             </Frame>
                         </SwipeView>
                     </ViewCell>

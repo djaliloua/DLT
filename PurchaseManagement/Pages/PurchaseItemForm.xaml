@@ -10,6 +10,7 @@
                  xmlns:service="clr-namespace:PurchaseManagement.Services"
                  BindingContext="{x:Static service:ViewModelLocator.PurchaseFormViewModel}"
                  CloseWhenBackgroundIsClicked="false"
+                 BackgroundColor="{StaticResource Surface}"
                  >
     <!--<mopup:PopupPage.Animation>
         <mopanim:ScaleAnimation DurationIn="700"
