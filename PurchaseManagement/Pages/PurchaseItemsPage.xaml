@@ -33,7 +33,7 @@
                                                           NumberOfTapsRequired="2" />
                                 </Frame.GestureRecognizers>
                                 
-                                <views:PurchaseItemDataTemplateView BindingContext="{Binding Path=BindingContext, Source={x:Reference main}}">
+                                <views:PurchaseItemDataTemplateView>
 
                                 </views:PurchaseItemDataTemplateView>
                             </Frame>

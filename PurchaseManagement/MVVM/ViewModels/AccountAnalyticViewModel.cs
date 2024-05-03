@@ -18,6 +18,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _maxSaleValue;
             set => UpdateObservable(ref _maxSaleValue, value);
         }
+        private MaxMin _minSaleValue;
+        public MaxMin MinSaleValue
+        {
+            get => _minSaleValue;
+            set => UpdateObservable(ref _minSaleValue, value);
+        }
         public ObservableCollection<Statistics> Statistics { get;}
         public ISeries[] Series { get; set; }
             = new ISeries[]
@@ -34,6 +40,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             Statistics = new ObservableCollection<Statistics>();
             _ = Load();
             GetMax();
+            GetMin();
         }
 
         public LabelVisual Title { get; set; } =
@@ -55,7 +62,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
             MaxSaleValue = max;
         }
-        private async Task<MaxMin> GetMin()
+        private async void GetMin()
         {
             MaxMin min = new();
             IList<MaxMin> val = await accountRepository.GetMinAsync();
@@ -63,7 +70,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 min = val[0];
             }
-            return min;
+            MinSaleValue = min;
         }
 
         public async Task Load()

@@ -45,8 +45,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if (CanProceed)
             {
-                await accountRepository.DeleteAsync(SelectedAccount);
-                await Load();
+                if(await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
+                {
+                    await accountRepository.DeleteAsync(SelectedAccount);
+                    await Load();
+                }
+                
             }
             else
             {
