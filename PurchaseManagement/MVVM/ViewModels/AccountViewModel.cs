@@ -72,7 +72,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             }
             
         }
-        private async Task Load()
+        public async Task Load()
         {
             Accounts.Clear();
             var data = await accountRepository.GetAllAsync();

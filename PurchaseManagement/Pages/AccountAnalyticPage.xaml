@@ -12,6 +12,19 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition />
         </Grid.RowDefinitions>
+        <Frame CornerRadius="10"
+               VerticalOptions="Center">
+            <VerticalStackLayout Spacing="5" >
+                <Label Text="So far, my best day was" />
+                <HorizontalStackLayout Spacing="10"
+                                       Padding="0,0,0,0"
+                                       VerticalOptions="Start" 
+                                       Margin="0,20,0,0">
+                    <Label Text="{Binding MaxSaleValue.DateTime, StringFormat='{0:yyyy-MM-dd}'}" />
+                    <Label Text="{Binding MaxSaleValue.Value}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Frame>
         <ListView ItemsSource="{Binding Statistics}"
                   VerticalScrollBarVisibility="Never"
                   Margin="0,20,0,0"
