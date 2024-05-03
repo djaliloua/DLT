@@ -11,7 +11,7 @@ namespace ManagPassWord.CustomClasses
         protected override async void OnQueryChanged(string oldValue, string newValue)
         {
             base.OnQueryChanged(oldValue, newValue);
-            Debts = ServiceLocator.GetService<DebtPageViewModel>().Debts;
+            Debts = Resolver.GetService<DebtPageViewModel>().Debts;
             await Task.Delay(1000);
             if (string.IsNullOrWhiteSpace(newValue))
             {

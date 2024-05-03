@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PurchaseManagement.Pages.AccountPage"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:local="clr-namespace:PurchaseManagement.Services"
+             BackgroundColor="{StaticResource Surface}"
+             BindingContext="{x:Static local:ViewModelLocator.AccountViewModel}"
+             Title="Account">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0"
+              VerticalOptions="Start"
+              >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <material:DatePickerField Date="{Binding SelectedDate}"/>
+
+            <material:TextField Title="Name"
+                                x:Name="entry"
+                                Grid.Column="1"
+                                VerticalOptions="Center"
+                                Text="{Binding Money}"
+                                Keyboard="Numeric"
+                                CornerRadius="10"
+                                 />
+            <Button FontAttributes="Bold"
+                    HorizontalOptions="CenterAndExpand"
+                    VerticalOptions="Center"
+                    Command="{Binding AddCommand}"
+                    CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"
+                    Grid.Column="2">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialRegular"
+                                     Glyph="{x:Static m:MaterialRound.Add}" />
+                </Button.ImageSource>
+            </Button>
+        </Grid>
+        <ListView ItemsSource="{Binding Accounts}"
+                  Margin="0,20,0,0"
+                  x:Name="listview"
+                  RowHeight="150"
+                  VerticalScrollBarVisibility="Never"
+                  HasUnevenRows="True"
+                  VerticalOptions="Start"
+                  Grid.Row="1"
+                  SelectedItem="{Binding SelectedAccount}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <SwipeView>
+                            <Frame CornerRadius="10">
+                                <Grid Padding="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding DateTime, StringFormat='{0:yyyy-MM-dd}'}"
+                                           Padding="10,0,0,0"
+                                           VerticalOptions="Center" />
+                                    <Label VerticalOptions="Center"
+                                           Text="{Binding Money, StringFormat='{0} cfa'}"
+                                           Grid.Column="1" />
+
+                                    <Button FontAttributes="Bold"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="Center"
+                                            Command="{Binding DeleteCommand}"
+                                            BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
+                                            Grid.Column="2">
+                                        <Button.ImageSource>
+                                            <FontImageSource FontFamily="MaterialRegular"
+                                                             Glyph="{x:Static m:MaterialRound.Delete}" />
+                                        </Button.ImageSource>
+                                    </Button>
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </ListView>
+    </Grid>
+</ContentPage>

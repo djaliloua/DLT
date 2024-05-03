@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ManagPassWord.Pages.AboutPage"
+             xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
+             BindingContext="{x:Static locator:ViewModelLocator.AboutViewModel}"
              Title="About">
     <VerticalStackLayout>
         <Label Text="{Binding Version}"

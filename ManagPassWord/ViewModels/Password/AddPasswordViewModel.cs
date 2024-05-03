@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
+using ManagPassWord.ServiceLocators;
 using MVVM;
 using System.Windows.Input;
 
@@ -51,7 +52,7 @@ namespace ManagPassWord.ViewModels.Password
 
         private async void On_Back(object sender)
         {
-            Task<int> _ = ViewModelServices.MainPageViewModel.Load();
+            Task<int> _ = ViewModelLocator.MainPageViewModel.Load();
             await Shell.Current.GoToAsync("..");
             ClearFields();
         }
@@ -79,7 +80,7 @@ namespace ManagPassWord.ViewModels.Password
                 }
                 await Shell.Current.GoToAsync("..");
                 ClearFields();
-                MainPageViewModel mainPageViewModel = ViewModelServices.MainPageViewModel;
+                MainPageViewModel mainPageViewModel = ViewModelLocator.MainPageViewModel;
                 await mainPageViewModel.Load();
             }
             catch(Exception ex)

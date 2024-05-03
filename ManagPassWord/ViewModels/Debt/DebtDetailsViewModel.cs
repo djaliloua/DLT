@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
+using ManagPassWord.ServiceLocators;
 using MVVM;
 using System.Windows.Input;
 
@@ -48,7 +49,7 @@ namespace ManagPassWord.ViewModels.Debt
                 {
                     await _db.DeleteById(DebtDetails);
                     await Shell.Current.GoToAsync("..");
-                    await ViewModelServices.DebtPageViewModel.Load();
+                    await ViewModelLocator.DebtPageViewModel.Load();
                 }
             }
         }

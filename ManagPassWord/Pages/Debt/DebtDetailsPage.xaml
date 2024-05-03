@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ManagPassWord.Pages.Debt.DebtDetailsPage"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
-             xmlns:locator="clr-namespace:ManagPassWord"
-             BindingContext="{x:Static locator:ViewModelServices.DebtDetailsViewModel}"
+             xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
+             BindingContext="{x:Static locator:ViewModelLocator.DebtDetailsViewModel}"
              Title="Details">
     <Grid Margin="15">
         <Grid.RowDefinitions>

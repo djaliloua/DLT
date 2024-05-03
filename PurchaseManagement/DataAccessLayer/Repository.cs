@@ -1,6 +1,5 @@
 ﻿using PurchaseManagement.MVVM.Models;
 using SQLite;
-using System.Security.Cryptography.X509Certificates;
 
 namespace PurchaseManagement.DataAccessLayer
 {
@@ -23,7 +22,7 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return purchases;
         }
-        public async Task<IEnumerable<Purchase_Items>> GetAllPurchaseItemById(int purchaseId)
+        public async Task<IList<Purchase_Items>> GetAllPurchaseItemById(int purchaseId)
         {
             List<Purchase_Items> purchase_items = null;
             await Task.Delay(1);
@@ -31,7 +30,7 @@ namespace PurchaseManagement.DataAccessLayer
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase_Items>();
-                purchase_items = connection.Query<Purchase_Items>(sql).ToList();
+                purchase_items = connection.Query<Purchase_Items>(sql);
             }
             return purchase_items;
         }
@@ -57,7 +56,7 @@ namespace PurchaseManagement.DataAccessLayer
             using(var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchases>();
-                purchases = connection.Query<Purchases>(sql).ToList();
+                purchases = connection.Query<Purchases>(sql);
             }
             return purchases;
         }
@@ -122,7 +121,7 @@ namespace PurchaseManagement.DataAccessLayer
         }
         public async Task<string> CountPurchaseItems(int purchase_id)
         {
-            List<Purchase_Items> items = (List<Purchase_Items>)await GetAllPurchaseItemById(purchase_id);
+            IList<Purchase_Items> items = await GetAllPurchaseItemById(purchase_id);
             return items.Count().ToString();
         }
 

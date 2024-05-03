@@ -5,6 +5,6 @@ public partial class DebtFormPage : ContentPage
 	public DebtFormPage()
 	{
 		InitializeComponent();
-		BindingContext = ViewModelServices.GetDebtFormViewModel();
+		//BindingContext = ViewModelServices.GetDebtFormViewModel();
 	}
 }

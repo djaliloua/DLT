@@ -6,8 +6,8 @@
              x:Class="ManagPassWord.DebtPage"
              xmlns:converters="clr-namespace:ManagPassWord.Converters"
              xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
-             xmlns:locator="clr-namespace:ManagPassWord"
-             BindingContext="{x:Static locator:ViewModelServices.DebtPageViewModel}"
+             xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
+             BindingContext="{x:Static locator:ViewModelLocator.DebtPageViewModel}"
              Title="Debts">
     <ContentPage.Resources>
         <converters:ConverterBoolToString x:Key="conv"/>

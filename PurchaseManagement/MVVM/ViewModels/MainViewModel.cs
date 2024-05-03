@@ -26,7 +26,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             _db = db;
             Purchases = new ObservableCollection<Purchases>();
-            Load();
+            _ = Load();
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
         }
@@ -50,13 +50,14 @@ namespace PurchaseManagement.MVVM.ViewModels
             //    await _db.SavePurchaseAsync(new Models.Purchases(result));
             //}
         }
-        private async void Load()
+        public async Task Load()
         {
             if (_db != null)
             {
                 await LoadPurchasesAsync();
             }
         }
+        
         public async Task LoadPurchasesAsync()
         {
             Purchases.Clear();

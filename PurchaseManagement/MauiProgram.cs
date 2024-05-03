@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
 using Mopups.Hosting;
-using PurchaseManagement.Services;
+using PurchaseManagement.ExtensionMethods;
 using UraniumUI;
 
 namespace PurchaseManagement
@@ -12,9 +12,9 @@ namespace PurchaseManagement
         {
             var builder = MauiApp.CreateBuilder();
             builder
-                .RegisterUIPages()
-                .RegisterDbContextService()
-                .RegisterViewModel()
+                .PagesExtensions()
+                .DbContextExtension()
+                .ViewModelsExtension()
                 .ConfigureMopups()
                 .UseMauiCommunityToolkit()
                 .UseMauiApp<App>()

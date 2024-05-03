@@ -76,7 +76,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                         PurchaseItem.Item_Quantity);
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
             }
-            await RegisterViewModels.MainViewModel.LoadPurchasesAsync();
+            await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
         }
         private async void On_Cancel(object sender)
         {

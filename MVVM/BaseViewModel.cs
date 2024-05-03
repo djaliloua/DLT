@@ -5,9 +5,8 @@ namespace MVVM
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
-        public System.ComponentModel.BackgroundWorker backgroundWorker;
-        //internal INotifyPropertyChanged _main;
-
+        //public abstract Task Load();
+        
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {

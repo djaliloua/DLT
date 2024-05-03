@@ -8,12 +8,16 @@
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              x:Name="main"
              NavigationPage.BackButtonTitle="Back"
-             BindingContext="{x:Static service:RegisterViewModels.PurchaseItemsViewModel}"
+             BindingContext="{x:Static service:ViewModelLocator.PurchaseItemsViewModel}"
+             BackgroundColor="{StaticResource Surface}"
              Title="Purchase Items"
              >
-    <ScrollView Margin="25">
+    <Grid>
         <ListView SelectedItem="{Binding Selected_Purchase_Item}"
                   HasUnevenRows="True"
+                  x:Name="listview"
+                  VerticalScrollBarVisibility="Never"
+                  CachingStrategy="RecycleElementAndDataTemplate"
                   ItemsSource="{Binding Purchase_Items}">
             <ListView.ItemTemplate>
                 <DataTemplate>
@@ -21,17 +25,16 @@
                         <SwipeView>
                             <Frame CornerRadius="10"
                                    HasShadow="True"
-                                   BorderColor="red"
                                    Padding="15"
-                                   BackgroundColor="LightBlue"
                                    ZIndex="20">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer BindingContext="{Binding Path=BindingContext, Source={x:Reference main}}"
                                                           Command="{Binding DoubleClickCommand}"
                                                           NumberOfTapsRequired="2" />
                                 </Frame.GestureRecognizers>
-                                <views:PurchaseItemDataTemplateView>
-                                    
+                                
+                                <views:PurchaseItemDataTemplateView BindingContext="{Binding Path=BindingContext, Source={x:Reference main}}">
+
                                 </views:PurchaseItemDataTemplateView>
                             </Frame>
                         </SwipeView>
@@ -39,5 +42,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </ScrollView>
+    </Grid>
 </ContentPage>

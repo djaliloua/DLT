@@ -8,7 +8,9 @@
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              xmlns:service="clr-namespace:PurchaseManagement.Services"
              x:Name="main"
-             BindingContext="{x:Static service:RegisterViewModels.MainViewModel}">
+             BindingContext="{x:Static service:ViewModelLocator.MainViewModel}"
+             BackgroundColor="{StaticResource Surface}"
+             >
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Settings"
                      Order="Secondary" />
@@ -24,21 +26,24 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <ListView ItemsSource="{Binding Purchases}"
+                      RowHeight="150"
+                      VerticalScrollBarVisibility="Never"
                       SelectedItem="{Binding SelectedPurchase}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <SwipeView>
-                                <VerticalStackLayout>
-                                    <VerticalStackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer NumberOfTapsRequired="2"
-                                                              BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
-                                                              Command="{Binding DoubleClickCommand}" />
-                                    </VerticalStackLayout.GestureRecognizers>
-                                    <Label Text="{Binding Purchase_Date}" />
-                                    <Label Text="{Binding PurchaseStatistics.PurchaseCount}" />
-                                </VerticalStackLayout>
-                                
+                                <Frame CornerRadius="10">
+                                    <VerticalStackLayout>
+                                        <VerticalStackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                                  BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                                                  Command="{Binding DoubleClickCommand}" />
+                                        </VerticalStackLayout.GestureRecognizers>
+                                        <Label Text="{Binding Purchase_Date}" />
+                                        <Label Text="{Binding PurchaseStatistics.PurchaseCount}" />
+                                    </VerticalStackLayout>
+                                </Frame>
                             </SwipeView>
                         </ViewCell>
                     </DataTemplate>
