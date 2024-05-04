@@ -4,7 +4,7 @@
              x:Class="PurchaseManagement.MVVM.Views.ControlView">
     <Grid BackgroundColor="Black">
         <Image Aspect="AspectFill"
-               Source="tof.jpg"
+               Source="pass.jpg"
                Opacity="0.6" />
         <Label Text="Chaki Market"
                TextColor="White"

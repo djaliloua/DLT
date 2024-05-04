@@ -3,30 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PurchaseManagement.MainPage"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
              xmlns:models="clr-namespace:PurchaseManagement.MVVM.Models"
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              xmlns:service="clr-namespace:PurchaseManagement.Services"
              x:Name="main"
              BindingContext="{x:Static service:ViewModelLocator.MainViewModel}"
-             BackgroundColor="{StaticResource Surface}"
-             >
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Settings"
-                     Order="Secondary" />
-        <ToolbarItem Text="About"
-                     Order="Secondary" />
-    </ContentPage.ToolbarItems>
-
-    <ScrollView Margin="20">
-        <Grid>
+             BackgroundColor="{StaticResource Surface}">
+    <ScrollView Margin="20" 
+                VerticalScrollBarVisibility="Never">
+        <Grid RowSpacing="20">
             <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
                 <RowDefinition />
-                <RowDefinition Height="20"/>
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
+            <material:DatePickerField Date="{Binding SelectedDate}"
+                                      Title="Date" />
             <ListView ItemsSource="{Binding Purchases}"
                       RowHeight="150"
+                      Grid.Row="1"
                       VerticalScrollBarVisibility="Never"
                       SelectedItem="{Binding SelectedPurchase}">
                 <ListView.ItemTemplate>
@@ -49,7 +46,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <BoxView Grid.Row="1" />
+            
             <Button FontAttributes="Bold"
                     HorizontalOptions="End"
                     StyleClass="Elevation4"

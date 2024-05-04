@@ -1,5 +1,4 @@
-﻿using Mopups.Services;
-using MVVM;
+﻿using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
@@ -18,6 +17,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _selectedPurchase;
             set => UpdateObservable(ref _selectedPurchase, value);
         }
+        private DateTime _selectedDate;
+        public DateTime SelectedDate
+        {
+            get => _selectedDate;
+            set => UpdateObservable(ref _selectedDate, value);
+        }
         bool CanOpen => SelectedPurchase != null;
         private readonly IRepository _db;
         public ICommand AddCommand { get; private set; }
@@ -25,6 +30,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public MainViewModel(IRepository db)
         {
             _db = db;
+            SelectedDate = DateTime.Now;
             Purchases = new ObservableCollection<Purchases>();
             _ = Load();
             AddCommand = new Command(On_Add);
@@ -43,12 +49,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Add(object sender)
         {
-            await MopupService.Instance.PushAsync(new PurchaseItemForm());
-            //string result = await Shell.Current.DisplayPromptAsync("Add", "Name", "OK");
-            //if (!string.IsNullOrEmpty(result))
-            //{
-            //    await _db.SavePurchaseAsync(new Models.Purchases(result));
-            //}
+            await Shell.Current.GoToAsync(nameof(MarketFormPage));
         }
         public async Task Load()
         {

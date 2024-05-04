@@ -17,10 +17,10 @@ namespace PurchaseManagement.MVVM.Models
         public int Purchase_Stats_Id { get; set; }
         [OneToOne]
         public PurchaseStatistics PurchaseStatistics { get; set; }
-        public Purchases(string title)
+        public Purchases(string title, DateTime dt)
         {
             Title = title;
-            Purchase_Date = DateTime.Now.ToString("yyy-MM-dd");
+            Purchase_Date = dt.ToString("yyyy-MM-dd");
         }
         public Purchases()
         {

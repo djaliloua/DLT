@@ -4,10 +4,15 @@
              x:Class="PurchaseManagement.Pages.AccountPage"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:local="clr-namespace:PurchaseManagement.Services"
              BackgroundColor="{StaticResource Surface}"
              BindingContext="{x:Static local:ViewModelLocator.AccountViewModel}"
              Title="Account">
+    <ContentPage.Behaviors>
+        <toolkit:StatusBarBehavior StatusBarColor="Fuchsia"
+                                   StatusBarStyle="LightContent" />
+    </ContentPage.Behaviors>
     <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -15,13 +20,16 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0"
               VerticalOptions="Start"
+              ColumnSpacing="10"
               >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <material:DatePickerField Date="{Binding SelectedDate}"/>
+            <material:DatePickerField Date="{Binding SelectedDate}"
+                                     
+                                      Title="Date" />
 
             <material:TextField Title="Name"
                                 x:Name="entry"
@@ -48,7 +56,6 @@
                   x:Name="listview"
                   RowHeight="150"
                   VerticalScrollBarVisibility="Never"
-                  HasUnevenRows="True"
                   VerticalOptions="Start"
                   Grid.Row="1"
                   SelectedItem="{Binding SelectedAccount}">
@@ -67,7 +74,7 @@
                                            Padding="10,0,0,0"
                                            VerticalOptions="Center" />
                                     <Label VerticalOptions="Center"
-                                           Text="{Binding Money, StringFormat='{0} cfa'}"
+                                           Text="{Binding Money, StringFormat='{0} CFA'}"
                                            Grid.Column="1" />
 
                                     <Button FontAttributes="Bold"

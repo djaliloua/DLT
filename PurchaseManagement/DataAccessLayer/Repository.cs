@@ -1,5 +1,6 @@
 ﻿using PurchaseManagement.MVVM.Models;
 using SQLite;
+using System.Linq;
 
 namespace PurchaseManagement.DataAccessLayer
 {
@@ -18,7 +19,7 @@ namespace PurchaseManagement.DataAccessLayer
             {
                 connection.CreateTable<Purchases>();
                 connection.CreateTable<PurchaseStatistics>();
-                purchases = connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Id).ToList();
+                purchases = connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Date).ToList();
             }
             return purchases;
         }
@@ -48,9 +49,9 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return res;
         }
-        public async Task<IEnumerable<Purchases>> GetPurchasesByDate()
+        public async Task<IEnumerable<Purchases>> GetPurchasesByDate(DateTime dt)
         {
-            string sql = $"select *\r\nfrom purchases p\r\nwhere p.Purchase_Date = '{DateTime.Now.ToString("yyy-MM-dd")}'";
+            string sql = $"select *\r\nfrom purchases p\r\nwhere p.Purchase_Date = '{dt:yyyy-MM-dd}'";
             List<Purchases> purchases = null;
             await Task.Delay(1);
             using(var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
@@ -123,6 +124,16 @@ namespace PurchaseManagement.DataAccessLayer
         {
             IList<Purchase_Items> items = await GetAllPurchaseItemById(purchase_id);
             return items.Count().ToString();
+        }
+        public async Task<int> DeletePurchaseItemAsync(Purchase_Items purchase)
+        {
+            int res = 0;
+            await Task.Delay(1);
+            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                res = connection.Delete(purchase);
+            }
+            return res;
         }
 
     }

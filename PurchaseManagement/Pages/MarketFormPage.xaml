@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PurchaseManagement.Pages.MarketFormPage"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:service="clr-namespace:PurchaseManagement.Services"
+             BindingContext="{x:Static service:ViewModelLocator.PurchaseFormViewModel}"
+             BackgroundColor="{StaticResource Surface}"
+             Title="Form">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackCommand}" />
+    </Shell.BackButtonBehavior>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <VerticalStackLayout Spacing="10">
+            <material:TextField Title="Name"
+                                Keyboard="Numeric"
+                                Text="{Binding PurchaseItem.Item_Name}" />
+            <material:TextField Title="Price"
+                                Keyboard="Numeric"
+                                Text="{Binding PurchaseItem.Item_Price}" />
+            <material:TextField Title="Quantity"
+                                Keyboard="Numeric"
+                                Text="{Binding PurchaseItem.Item_Quantity}" />
+        </VerticalStackLayout>
+        <HorizontalStackLayout Spacing="10"
+                               Grid.Row="1"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End">
+            <Button FontAttributes="Bold"
+                    HorizontalOptions="End"
+                    Text="Save"
+                    Command="{Binding SaveCommand}"
+                    Margin="10">
+                
+            </Button>
+            <!--<Button FontAttributes="Bold"
+                HorizontalOptions="End"
+                Command="{Binding CancelCommand}"
+                Margin="10">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Cancel}" />
+            </Button.ImageSource>
+        </Button>-->
+        </HorizontalStackLayout>
+    </Grid>
+</ContentPage>

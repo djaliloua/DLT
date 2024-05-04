@@ -7,52 +7,14 @@
              BindingContext="{x:Static local:ViewModelLocator.AccountAnalyticViewModel}"
              BackgroundColor="{StaticResource Surface}"
              >
-    <Grid Margin="20">
+    <Grid Margin="20" RowSpacing="30">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Frame CornerRadius="10"
-               VerticalOptions="Center">
-            <VerticalStackLayout Spacing="5" >
-                <Label Text="So far, my best day was" />
-                <HorizontalStackLayout Spacing="10"
-                                       Padding="0,0,0,0"
-                                       VerticalOptions="Start" 
-                                       Margin="0,20,0,0">
-                    <Label Text="{Binding MaxSaleValue.DateTime, StringFormat='{0:yyyy-MM-dd}'}" />
-                    <Label Text="{Binding MaxSaleValue.Value}" />
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
-        </Frame>
-        <ListView ItemsSource="{Binding Statistics}"
-                  VerticalScrollBarVisibility="Never"
-                  Margin="0,20,0,0"
-                  x:Name="listview"
-                  RowHeight="150"
-                  HasUnevenRows="True"
-                  VerticalOptions="Start"
-                  Grid.Row="1">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <Frame CornerRadius="10" HeightRequest="100">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Label Text="{Binding Day}"
-                                       VerticalOptions="Center"
-                                       Padding="10,0,0,0" />
-                                <Label Text="{Binding AvgMoney, StringFormat='{0:F2} cfa'}"
-                                       VerticalOptions="Center"
-                                       Grid.Column="1" />
-                            </Grid>
-                        </Frame>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <lvc:CartesianChart Series="{Binding LineSeries}"
+                            Grid.Row="0"
+                            Title="{Binding Title}" />
+        <lvc:CartesianChart Series="{Binding BarSeries}" Grid.Row="1"></lvc:CartesianChart>
     </Grid>
 </ContentPage>

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Mopups.Hosting;
 using PurchaseManagement.ExtensionMethods;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 using UraniumUI;
 
 namespace PurchaseManagement
@@ -19,6 +20,7 @@ namespace PurchaseManagement
                 .UseMauiCommunityToolkit()
                 .UseMauiApp<App>()
                 .UseUraniumUI()
+                .UseSkiaSharp(true)
                 .UseUraniumUIMaterial()
                 .ConfigureFonts(fonts =>
                 {

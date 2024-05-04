@@ -4,7 +4,7 @@
              x:Class="PurchaseManagement.MVVM.Views.PurchaseItemDataTemplateView"
              HeightRequest="250"
              >
-    <Grid>
+    <Grid >
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="auto" />
@@ -13,9 +13,12 @@
         <HorizontalStackLayout Grid.Row="1" Spacing="25"
                                HorizontalOptions="Start">
             <Button Text="Edit"
+                    BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}, Mode=FindAncestor}, Path=BindingContext}"
                     Command="{Binding OpenCommand}"
                     WidthRequest="100" />
             <Button Text="Delete"
+                    BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}, Mode=FindAncestor}, Path=BindingContext}"
+                    Command="{Binding DeleteCommand}"
                     WidthRequest="100" />
         </HorizontalStackLayout>
     </Grid>

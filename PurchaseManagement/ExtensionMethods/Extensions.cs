@@ -22,12 +22,14 @@ namespace PurchaseManagement.ExtensionMethods
         public static MauiAppBuilder ViewModelsExtension(this MauiAppBuilder mauiAppBuilder)
         {
             //AccountAnalyticViewModel
-            mauiAppBuilder.Services.AddScoped<AccountAnalyticViewModel>();
+            mauiAppBuilder.Services.AddScoped<AboutViewModel>();
+            mauiAppBuilder.Services.AddScoped<SettingsViewModel>();
+            mauiAppBuilder.Services.AddSingleton<AccountAnalyticViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountViewModel>();
             mauiAppBuilder.Services.AddSingleton<MainViewModel>();//PurchaseItemsViewModel
             mauiAppBuilder.Services.AddSingleton<PurchaseItemsViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
-            mauiAppBuilder.Services.AddSingleton<PurchaseFormViewModel>();
+            mauiAppBuilder.Services.AddScoped<MarketFormViewModel>();
             //mauiAppBuilder.Services.AddSingleton<MainViewModel>();
             return mauiAppBuilder;
         }
