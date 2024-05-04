@@ -5,6 +5,8 @@ namespace PurchaseManagement.Services
     public class ViewModelLocator
     {
         //AccountAnalyticViewModel
+        public static AboutViewModel AboutViewModel => GetService<AboutViewModel>();
+        public static SettingsViewModel SettingsViewModel => GetService<SettingsViewModel>();
         public static AccountAnalyticViewModel AccountAnalyticViewModel => GetService<AccountAnalyticViewModel>();
         public static T GetService<T>() => Application.Current.Handler.MauiContext.Services.GetRequiredService<T>();
         public static MainViewModel GetMainViewModel() => GetService<MainViewModel>();

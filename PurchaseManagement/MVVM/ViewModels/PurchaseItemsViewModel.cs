@@ -2,6 +2,7 @@
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
+using PurchaseManagement.Services;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -23,12 +24,27 @@ namespace PurchaseManagement.MVVM.ViewModels
         bool CanOpen => Selected_Purchase_Item != null;
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
         public PurchaseItemsViewModel(IRepository _db)
         {
             this._db = _db;
             Purchase_Items = new ObservableCollection<Purchase_Items>();
             DoubleClickCommand = new Command(On_DoubleClick);
             OpenCommand = new Command(On_Open);
+            DeleteCommand = new Command(On_Delete);
+        }
+        private async void On_Delete(object parameter)
+        {
+            if(CanOpen)
+            {
+                await _db.DeletePurchaseItemAsync(Selected_Purchase_Item);
+                await LoadPurchaseItemsAsync(Purchases.Purchase_Id);
+                Purchases.PurchaseStatistics.PurchaseCount = await _db.CountPurchaseItems(Purchases.Purchase_Id); ;
+                Purchases.PurchaseStatistics.TotalPrice = await _db.GetTotalValue(Purchases, "price");
+                Purchases.PurchaseStatistics.TotalQuantity = await _db.GetTotalValue(Purchases, "quantity");
+                await _db.SavePurchaseStatisticsItemAsyn(Purchases.PurchaseStatistics);
+                await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
+            }
         }
          private async void On_Open(object parameter)
         {

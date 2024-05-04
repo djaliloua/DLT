@@ -11,14 +11,15 @@
              BindingContext="{x:Static service:ViewModelLocator.MainViewModel}"
              BackgroundColor="{StaticResource Surface}"
              >
-    <ContentPage.ToolbarItems>
+    <!--<ContentPage.ToolbarItems>
         <ToolbarItem Text="Settings"
                      Order="Secondary" />
         <ToolbarItem Text="About"
                      Order="Secondary" />
-    </ContentPage.ToolbarItems>
+    </ContentPage.ToolbarItems>-->
 
-    <ScrollView Margin="20">
+    <ScrollView Margin="20" 
+                VerticalScrollBarVisibility="Never">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition />
@@ -49,7 +50,8 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <BoxView Grid.Row="1" />
+            <BoxView Grid.Row="1"
+                     BackgroundColor="{StaticResource Surface}" />
             <Button FontAttributes="Bold"
                     HorizontalOptions="End"
                     StyleClass="Elevation4"

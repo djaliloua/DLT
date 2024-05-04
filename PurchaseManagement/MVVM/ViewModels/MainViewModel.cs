@@ -1,5 +1,4 @@
-﻿using Mopups.Services;
-using MVVM;
+﻿using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
@@ -43,7 +42,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Add(object sender)
         {
-            await MopupService.Instance.PushAsync(new PurchaseItemForm());
+            //await MopupService.Instance.PushAsync(new PurchaseItemForm());
+            await Shell.Current.GoToAsync(nameof(MarketFormPage));
             //string result = await Shell.Current.DisplayPromptAsync("Add", "Name", "OK");
             //if (!string.IsNullOrEmpty(result))
             //{

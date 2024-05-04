@@ -17,6 +17,8 @@
                     Command="{Binding OpenCommand}"
                     WidthRequest="100" />
             <Button Text="Delete"
+                    BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}, Mode=FindAncestor}, Path=BindingContext}"
+                    Command="{Binding DeleteCommand}"
                     WidthRequest="100" />
         </HorizontalStackLayout>
     </Grid>

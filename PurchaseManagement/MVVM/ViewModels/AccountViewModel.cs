@@ -1,4 +1,6 @@
-﻿using MVVM;
+﻿using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using System.Collections.ObjectModel;
@@ -10,6 +12,18 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         private readonly IAccountRepository accountRepository;
         public ObservableCollection<Account> Accounts { get; }
+        private MaxMin _maxSaleValue;
+        public MaxMin MaxSaleValue
+        {
+            get => _maxSaleValue;
+            set => UpdateObservable(ref _maxSaleValue, value);
+        }
+        private MaxMin _minSaleValue;
+        public MaxMin MinSaleValue
+        {
+            get => _minSaleValue;
+            set => UpdateObservable(ref _minSaleValue, value);
+        }
         private long _money;
         public long Money
         {
@@ -38,6 +52,11 @@ namespace PurchaseManagement.MVVM.ViewModels
             Accounts = new ObservableCollection<Account>();
             SelectedDate = DateTime.Now;
             _ = Load();
+            _ = GetMax()
+                .ContinueWith(t => 
+                MakeSnackBarAsync($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA")
+                );
+           
             AddCommand = new Command(On_Add);
             DeleteCommand = new Command(On_Delete);
         }
@@ -57,6 +76,27 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
             }
         }
+        private async Task GetMax()
+        {
+            MaxMin max = new();
+            IList<MaxMin> val = await accountRepository.GetMaxAsync();
+            if (val.Count == 1)
+            {
+                max = val[0];
+            }
+
+            MaxSaleValue = max;
+        }
+        private async void GetMin()
+        {
+            MaxMin min = new();
+            IList<MaxMin> val = await accountRepository.GetMinAsync();
+            if (val.Count == 1)
+            {
+                min = val[0];
+            }
+            MinSaleValue = min;
+        }
         private async void On_Add(object parameter)
         {
             string tempVal = (string)parameter;
@@ -75,6 +115,23 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await Shell.Current.DisplayAlert("Message", "Item already present", "Cancel");
             }
             
+        }
+        private async Task MakeSnackBarAsync(string msg)
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            var snackbarOptions = new SnackbarOptions
+            {
+                BackgroundColor = Colors.LightBlue,
+                TextColor = Colors.Black,
+                ActionButtonTextColor = Colors.Yellow,
+                CornerRadius = new CornerRadius(10),
+                CharacterSpacing = 0.5
+            };
+            string text = msg;
+            TimeSpan duration = TimeSpan.FromSeconds(5);
+            var snackbar = Snackbar.Make(text, duration:duration, visualOptions: snackbarOptions);
+            await snackbar.Show(cancellationTokenSource.Token);
         }
         public async Task Load()
         {

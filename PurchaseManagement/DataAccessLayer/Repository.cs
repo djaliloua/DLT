@@ -124,6 +124,16 @@ namespace PurchaseManagement.DataAccessLayer
             IList<Purchase_Items> items = await GetAllPurchaseItemById(purchase_id);
             return items.Count().ToString();
         }
+        public async Task<int> DeletePurchaseItemAsync(Purchase_Items purchase)
+        {
+            int res = 0;
+            await Task.Delay(1);
+            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                res = connection.Delete(purchase);
+            }
+            return res;
+        }
 
     }
 }

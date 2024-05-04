@@ -14,5 +14,6 @@ namespace PurchaseManagement.DataAccessLayer
         Task<string> GetTotalValue(Purchases purchases, string colname);
         Task<PurchaseStatistics> GetPurchaseStatistics(int id);
         Task<string> CountPurchaseItems(int purchase_id);
+        Task<int> DeletePurchaseItemAsync(Purchase_Items purchase);
     }
 }

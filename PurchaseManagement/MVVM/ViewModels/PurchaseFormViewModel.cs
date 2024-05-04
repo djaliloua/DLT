@@ -1,5 +1,6 @@
-﻿using Mopups.Services;
+﻿using CommunityToolkit.Maui.Core;
 using MVVM;
+using CommunityToolkit.Maui.Alerts;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Services;
@@ -37,6 +38,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _purchaseItem;
             set => UpdateObservable(ref _purchaseItem, value);
         }
+        private static int count = 0;
         public ICommand CancelCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public PurchaseFormViewModel(IRepository _db)
@@ -45,6 +47,17 @@ namespace PurchaseManagement.MVVM.ViewModels
             CancelCommand = new Command(On_Cancel);
             SaveCommand = new Command(On_Save);
             db = _db;
+        }
+        private async Task MakeToast(int count)
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            string text = $"{count} ";
+            ToastDuration duration = ToastDuration.Short;
+            double fontSize = 14;
+            var toast = Toast.Make(text, duration, fontSize);
+
+            await toast.Show(cancellationTokenSource.Token);
         }
         private async void On_Save(object sender)
         {
@@ -77,10 +90,12 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
             }
             await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
+            count++;
+            await MakeToast(count);
         }
         private async void On_Cancel(object sender)
         {
-            await MopupService.Instance.PopAsync();
+            await Shell.Current.GoToAsync("..");
         }
     }
 }
