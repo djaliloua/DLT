@@ -6,7 +6,7 @@
              BindingContext="{x:Static vm:ViewModelLocator.SettingsViewModel}"
              BackgroundColor="{StaticResource Surface}"
              Title="Settings">
-    <VerticalStackLayout>
+    <VerticalStackLayout Margin="15">
         <Label 
             Text="Welcome to .NET MAUI!"
             VerticalOptions="Center" 

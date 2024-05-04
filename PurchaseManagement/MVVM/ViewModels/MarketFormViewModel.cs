@@ -29,7 +29,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             set => UpdateObservable(ref item_quantity, value);  
         }
     }
-    public class PurchaseFormViewModel:BaseViewModel
+    public class MarketFormViewModel:BaseViewModel
     {
         private readonly IRepository db;
         private Purchase_ItemsProxy _purchaseItem;
@@ -41,12 +41,19 @@ namespace PurchaseManagement.MVVM.ViewModels
         private static int count = 0;
         public ICommand CancelCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
-        public PurchaseFormViewModel(IRepository _db)
+        public ICommand BackCommand { get; private set; }
+        public MarketFormViewModel(IRepository _db)
         {
             PurchaseItem = new();
             CancelCommand = new Command(On_Cancel);
             SaveCommand = new Command(On_Save);
+            BackCommand = new Command(On_Back);
             db = _db;
+        }
+        private async void On_Back(object parameter)
+        {
+            count = 0;
+            await Shell.Current.GoToAsync("..");
         }
         private async Task MakeToast(int count)
         {
@@ -61,8 +68,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Save(object sender)
         {
-            IEnumerable<Purchases> purchases = await db.GetPurchasesByDate();
-            Purchases purchase = new Purchases("test");
+            IEnumerable<Purchases> purchases = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            Purchases purchase = new Purchases("test", ViewModelLocator.MainViewModel.SelectedDate);
             PurchaseStatistics purchaseStatistics;
             if (purchases.Count() >= 1)
             {

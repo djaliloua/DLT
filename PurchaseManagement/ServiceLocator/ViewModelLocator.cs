@@ -16,7 +16,7 @@ namespace PurchaseManagement.Services
         public static PurchaseItemsViewModel PurchaseItemsViewModel => GetService<PurchaseItemsViewModel>();
         public static PurchaseItemDetailsViewModel GetPurchaseItemDetailsViewModel() => GetService<PurchaseItemDetailsViewModel>();
         public static PurchaseItemDetailsViewModel PurchaseItemDetailsViewModel => GetService<PurchaseItemDetailsViewModel>();
-        public static PurchaseFormViewModel PurchaseFormViewModel => GetService<PurchaseFormViewModel>();
+        public static MarketFormViewModel PurchaseFormViewModel => GetService<MarketFormViewModel>();
     }
     
 }

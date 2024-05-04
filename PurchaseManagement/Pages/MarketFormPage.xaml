@@ -7,49 +7,46 @@
              xmlns:service="clr-namespace:PurchaseManagement.Services"
              BindingContext="{x:Static service:ViewModelLocator.PurchaseFormViewModel}"
              BackgroundColor="{StaticResource Surface}"
-             Title="MaketFormPage">
-    <ScrollView HorizontalOptions="Center"
-                VerticalOptions="Start" Margin="20">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition />
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <VerticalStackLayout Spacing="10">
-                <material:TextField Title="Name"
-                                    Keyboard="Numeric"
-                                    Text="{Binding PurchaseItem.Item_Name}" />
-                <material:TextField Title="Price"
-                                    Keyboard="Numeric"
-                                    Text="{Binding PurchaseItem.Item_Price}" />
-                <material:TextField Title="Quantity"
-                                    Keyboard="Numeric"
-                                    Text="{Binding PurchaseItem.Item_Quantity}" />
-            </VerticalStackLayout>
-            <HorizontalStackLayout Spacing="10"
-                                   Grid.Row="1"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="End">
-                <Button FontAttributes="Bold"
-                        HorizontalOptions="End"
-                        Text="Save"
-                        Command="{Binding SaveCommand}"
-                        Margin="10">
-                    <!--<Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialRegular"
-                                         Glyph="{x:Static m:MaterialRound.Save}" />
-                    </Button.ImageSource>-->
-                </Button>
-                <!--<Button FontAttributes="Bold"
-                        HorizontalOptions="End"
-                        Command="{Binding CancelCommand}"
-                        Margin="10">
-                    <Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialRegular"
-                                         Glyph="{x:Static m:MaterialRound.Cancel}" />
-                    </Button.ImageSource>
-                </Button>-->
-            </HorizontalStackLayout>
-        </Grid>
-    </ScrollView>
+             Title="Form">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackCommand}" />
+    </Shell.BackButtonBehavior>
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <VerticalStackLayout Spacing="10">
+            <material:TextField Title="Name"
+                                Keyboard="Numeric"
+                                Text="{Binding PurchaseItem.Item_Name}" />
+            <material:TextField Title="Price"
+                                Keyboard="Numeric"
+                                Text="{Binding PurchaseItem.Item_Price}" />
+            <material:TextField Title="Quantity"
+                                Keyboard="Numeric"
+                                Text="{Binding PurchaseItem.Item_Quantity}" />
+        </VerticalStackLayout>
+        <HorizontalStackLayout Spacing="10"
+                               Grid.Row="1"
+                               VerticalOptions="Center"
+                               HorizontalOptions="End">
+            <Button FontAttributes="Bold"
+                    HorizontalOptions="End"
+                    Text="Save"
+                    Command="{Binding SaveCommand}"
+                    Margin="10">
+                
+            </Button>
+            <!--<Button FontAttributes="Bold"
+                HorizontalOptions="End"
+                Command="{Binding CancelCommand}"
+                Margin="10">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Cancel}" />
+            </Button.ImageSource>
+        </Button>-->
+        </HorizontalStackLayout>
+    </Grid>
 </ContentPage>

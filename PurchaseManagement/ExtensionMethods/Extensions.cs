@@ -29,7 +29,7 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddSingleton<MainViewModel>();//PurchaseItemsViewModel
             mauiAppBuilder.Services.AddSingleton<PurchaseItemsViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
-            mauiAppBuilder.Services.AddScoped<PurchaseFormViewModel>();
+            mauiAppBuilder.Services.AddScoped<MarketFormViewModel>();
             //mauiAppBuilder.Services.AddSingleton<MainViewModel>();
             return mauiAppBuilder;
         }

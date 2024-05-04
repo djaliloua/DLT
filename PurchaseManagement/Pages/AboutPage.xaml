@@ -6,10 +6,9 @@
              BindingContext="{x:Static vm:ViewModelLocator.AboutViewModel}"
              BackgroundColor="{StaticResource Surface}"
              Title="About">
-    <VerticalStackLayout>
-        <Label 
-            Text="{Binding DevName, StringFormat='My name is {0}'}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <Grid Margin="15">
+        <Label Text="{Binding DevName, StringFormat='My name is {0}'}"
+               VerticalOptions="Center"
+               HorizontalOptions="Center" />
+    </Grid>
 </ContentPage>
