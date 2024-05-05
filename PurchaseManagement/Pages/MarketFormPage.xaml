@@ -26,28 +26,37 @@
                                 Keyboard="Numeric"
                                 Text="{Binding PurchaseItem.Item_Quantity}" />
             <material:TextField Title="Note"
-                                Text="{Binding PurchaseItem.Item_Description}"/>
+                                Text="{Binding PurchaseItem.Item_Description}" />
         </VerticalStackLayout>
-        <HorizontalStackLayout Spacing="10"
-                               Grid.Row="1"
-                               VerticalOptions="Center"
-                               HorizontalOptions="End">
+        <Grid Grid.Row="1"
+              VerticalOptions="Center"
+              HorizontalOptions="End">
             <Button FontAttributes="Bold"
                     HorizontalOptions="End"
+                    x:Name="btn"
+                    IsVisible="{Binding IsSave}"
                     Text="Save"
                     Command="{Binding SaveCommand}"
                     Margin="10">
-                
             </Button>
-            <!--<Button FontAttributes="Bold"
-                HorizontalOptions="End"
-                Command="{Binding CancelCommand}"
-                Margin="10">
-            <Button.ImageSource>
-                <FontImageSource FontFamily="MaterialRegular"
-                                 Glyph="{x:Static m:MaterialRound.Cancel}" />
-            </Button.ImageSource>
-        </Button>-->
-        </HorizontalStackLayout>
+            <Button FontAttributes="Bold"
+                    HorizontalOptions="End"
+                    Text="Update"
+                    Command="{Binding UpdateCommand}"
+                    Margin="10">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding Source={Reference btn}, Path=IsVisible}" Value="true">
+                        <Setter Property="IsVisible"
+                                Value="false" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={Reference btn}, Path=IsVisible}"
+                                 Value="false">
+                        <Setter Property="IsVisible"
+                                Value="true" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
+        </Grid>
     </Grid>
 </ContentPage>

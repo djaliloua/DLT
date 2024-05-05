@@ -49,7 +49,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Add(object sender)
         {
-            await Shell.Current.GoToAsync(nameof(MarketFormPage));
+            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "IsSave", true }
+                        };
+            await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }
         public async Task Load()
         {

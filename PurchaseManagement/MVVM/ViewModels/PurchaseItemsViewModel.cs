@@ -26,6 +26,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ICommand OpenCommand { get; private set; }
         public ICommand OpenMapCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
+        public ICommand EditCommand { get; private set; }
         public PurchaseItemsViewModel(IRepository _db)
         {
             this._db = _db;
@@ -34,6 +35,18 @@ namespace PurchaseManagement.MVVM.ViewModels
             OpenCommand = new Command(On_Open);
             DeleteCommand = new Command(On_Delete);
             OpenMapCommand = new Command(On_OpenMap);
+            EditCommand = new Command(On_Edit);
+        }
+        private async void On_Edit(object parameter)
+        {
+            var mapper = MapperConfig.InitializeAutomapper();
+            Purchase_ItemsProxy proxy = mapper.Map<Purchase_ItemsProxy>(Selected_Purchase_Item);
+            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "IsSave", false },
+                            {"Purchase_ItemsProxy", proxy }
+                        };
+            await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }
         private async void On_OpenMap(object parameter)
         {
@@ -120,6 +133,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             if(query.Count > 0)
             {
                 Purchases = query["purchase"] as Purchases;
+                
             }
         }
     }

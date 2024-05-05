@@ -13,6 +13,12 @@
              BackgroundColor="{StaticResource Surface}"
              Title="Purchase Items"
              >
+    <ContentPage.Resources>
+        <!--<Style TargetType="{x:Type SwipeItem}">
+            <Setter Property="BackgroundColor"
+                    Value="#FFEBEEFF" />
+        </Style>-->
+    </ContentPage.Resources>
     <Grid Margin="20">
         <ListView SelectedItem="{Binding Selected_Purchase_Item}"
                   HasUnevenRows="True"
@@ -23,19 +29,29 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <SwipeView>
-                            <SwipeView.LeftItems>
+                        <SwipeView >
+                            <SwipeView.LeftItems >
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                           BackgroundColor="{StaticResource Surface}"
+                                           Command="{Binding EditCommand}">
+                                    <SwipeItem.IconImageSource>
+                                        <FontImageSource FontFamily="MaterialRegular"
+                                                         Color="AliceBlue"
+                                                         Glyph="{x:Static m:MaterialRound.Edit}" />
+                                    </SwipeItem.IconImageSource>
+                                </SwipeItem>
+                                <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                           BackgroundColor="{StaticResource Surface}"
                                            Command="{Binding DeleteCommand}">
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialRegular"
                                                          Glyph="{x:Static m:MaterialRound.Delete}" />
                                     </SwipeItem.IconImageSource>
-                                    
                                 </SwipeItem>
                             </SwipeView.LeftItems>
                             <SwipeView.RightItems>
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                           BackgroundColor="{StaticResource Surface}"
                                            Command="{Binding OpenMapCommand}">
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialRegular"
