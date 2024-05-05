@@ -1,5 +1,5 @@
 using PurchaseManagement.MVVM.Models;
-using PurchaseManagement.Services;
+using PurchaseManagement.ServiceLocator;
 using System.Diagnostics;
 
 namespace PurchaseManagement.Pages;

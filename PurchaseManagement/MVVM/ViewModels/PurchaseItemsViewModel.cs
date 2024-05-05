@@ -2,7 +2,7 @@
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
-using PurchaseManagement.Services;
+using PurchaseManagement.ServiceLocator;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -24,6 +24,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         bool CanOpen => Selected_Purchase_Item != null;
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
+        public ICommand OpenMapCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public PurchaseItemsViewModel(IRepository _db)
         {
@@ -32,23 +33,33 @@ namespace PurchaseManagement.MVVM.ViewModels
             DoubleClickCommand = new Command(On_DoubleClick);
             OpenCommand = new Command(On_Open);
             DeleteCommand = new Command(On_Delete);
+            OpenMapCommand = new Command(On_OpenMap);
+        }
+        private async void On_OpenMap(object parameter)
+        {
+            await NavigateToBuilding25();
         }
         private async void On_Delete(object parameter)
         {
             if(CanOpen)
             {
-                await _db.DeletePurchaseItemAsync(Selected_Purchase_Item);
-                await LoadPurchaseItemsAsync(Purchases.Purchase_Id);
-                Purchases.PurchaseStatistics.PurchaseCount = await _db.CountPurchaseItems(Purchases.Purchase_Id); ;
-                Purchases.PurchaseStatistics.TotalPrice = await _db.GetTotalValue(Purchases, "price");
-                Purchases.PurchaseStatistics.TotalQuantity = await _db.GetTotalValue(Purchases, "quantity");
-                await _db.SavePurchaseStatisticsItemAsyn(Purchases.PurchaseStatistics);
-                await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
+                if(await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
+                {
+                    await _db.DeletePurchaseItemAsync(Selected_Purchase_Item);
+                    await LoadPurchaseItemsAsync(Purchases.Purchase_Id);
+                    Purchases.PurchaseStatistics.PurchaseCount = await _db.CountPurchaseItems(Purchases.Purchase_Id); ;
+                    Purchases.PurchaseStatistics.TotalPrice = await _db.GetTotalValue(Purchases, "price");
+                    Purchases.PurchaseStatistics.TotalQuantity = await _db.GetTotalValue(Purchases, "quantity");
+                    await _db.SavePurchaseStatisticsItemAsyn(Purchases.PurchaseStatistics);
+                    await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
+                }
             }
+            else
+                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
         }
          private async void On_Open(object parameter)
         {
-            await NavigateToBuilding25();
+            await Task.Delay(1);
         }
         public async Task NavigateToBuilding25()
         {
@@ -81,6 +92,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             var purchase_items = await Task.Run(async() => await _db.GetAllPurchaseItemById(purchaseId));
             for(int i = 0; i <  purchase_items.Count; i++)
             {
+                purchase_items[i].Purchase = Purchases;
                 Purchase_Items.Add(purchase_items[i]);
             }
         }
@@ -108,7 +120,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             if(query.Count > 0)
             {
                 Purchases = query["purchase"] as Purchases;
-                
             }
         }
     }

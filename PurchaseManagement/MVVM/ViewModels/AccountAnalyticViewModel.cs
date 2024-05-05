@@ -6,7 +6,7 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using MVVM;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.Services;
+using PurchaseManagement.ServiceLocator;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 

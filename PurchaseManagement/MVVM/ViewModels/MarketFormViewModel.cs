@@ -3,7 +3,7 @@ using MVVM;
 using CommunityToolkit.Maui.Alerts;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
-using PurchaseManagement.Services;
+using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels
@@ -27,6 +27,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             get => item_quantity;   
             set => UpdateObservable(ref item_quantity, value);  
+        }
+        private string _item_desc;
+        public string Item_Description
+        {
+            get => _item_desc;
+            set => UpdateObservable(ref _item_desc, value);
         }
     }
     public class MarketFormViewModel:BaseViewModel
@@ -76,7 +82,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await db.SavePurchaseItemAsync(new(purchases.ElementAt(0).Purchase_Id,
                     PurchaseItem.Item_Name,
                     PurchaseItem.Item_Price,
-                    PurchaseItem.Item_Quantity));
+                    PurchaseItem.Item_Quantity, PurchaseItem.Item_Description));
                 purchaseStatistics = await db.GetPurchaseStatistics(purchases.ElementAt(0).Purchase_Id);
                 purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.ElementAt(0).Purchase_Id);
                 purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "price");
@@ -90,7 +96,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await db.SavePurchaseItemAsync(new(purchase.Purchase_Id,
                         PurchaseItem.Item_Name,
                         PurchaseItem.Item_Price,
-                        PurchaseItem.Item_Quantity));
+                        PurchaseItem.Item_Quantity, PurchaseItem.Item_Description));
                 purchaseStatistics = new(purchase.Purchase_Id, "1",
                         PurchaseItem.Item_Price,
                         PurchaseItem.Item_Quantity);

@@ -1,6 +1,6 @@
 ﻿using PurchaseManagement.MVVM.ViewModels;
 
-namespace PurchaseManagement.Services
+namespace PurchaseManagement.ServiceLocator
 {
     public class ViewModelLocator
     {

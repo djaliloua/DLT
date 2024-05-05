@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
              xmlns:models="clr-namespace:PurchaseManagement.MVVM.Models"
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
-             xmlns:service="clr-namespace:PurchaseManagement.Services"
+             xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              x:Name="main"
              BindingContext="{x:Static service:ViewModelLocator.MainViewModel}"
              BackgroundColor="{StaticResource Surface}">
@@ -30,7 +30,8 @@
                     <DataTemplate>
                         <ViewCell>
                             <SwipeView>
-                                <Frame CornerRadius="10">
+                                <Frame CornerRadius="10"
+                                       BackgroundColor="{StaticResource Surface}">
                                     <VerticalStackLayout>
                                         <VerticalStackLayout.GestureRecognizers>
                                             <TapGestureRecognizer NumberOfTapsRequired="2"

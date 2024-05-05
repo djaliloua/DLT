@@ -4,13 +4,205 @@
              x:Class="PurchaseManagement.MVVM.Views.PurchaseItemDataTemplateView"
              HeightRequest="250"
              >
-    <Grid >
+    <ContentView.Resources>
+        <Style TargetType="Border"
+               x:Key="bder">
+            <Setter Property="Background"
+                    Value="blue" />
+            <Style.Triggers>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="A">
+                    <Setter Property="Background"
+                            Value="lightgreen" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="B">
+                    <Setter Property="Background"
+                            Value="red" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="C">
+                    <Setter Property="Background"
+                            Value="violet" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="D">
+                    <Setter Property="Background"
+                            Value="orange" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="E">
+                    <Setter Property="Background"
+                            Value="azure" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="E">
+                    <Setter Property="Background"
+                            Value="lightblue" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="F">
+                    <Setter Property="Background"
+                            Value="indigo" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="G">
+                    <Setter Property="Background"
+                            Value="darkgreen" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="H">
+                    <Setter Property="Background"
+                            Value="limegreen" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="I">
+                    <Setter Property="Background"
+                            Value="salmon" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="J">
+                    <Setter Property="Background"
+                            Value="tan" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="K">
+                    <Setter Property="Background"
+                            Value="SeaGreen" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="L">
+                    <Setter Property="Background"
+                            Value="gold" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="M">
+                    <Setter Property="Background"
+                            Value="hotpink" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="N">
+                    <Setter Property="Background"
+                            Value="SeaGreen" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="O">
+                    <Setter Property="Background"
+                            Value="paleturquoise" />
+                </DataTrigger>
+
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="P">
+                    <Setter Property="Background"
+                            Value="moccasin" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="Q">
+                    <Setter Property="Background"
+                            Value="olive" />
+                </DataTrigger>
+
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="R">
+                    <Setter Property="Background"
+                            Value="orchid" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="S">
+                    <Setter Property="Background"
+                            Value="green" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="T">
+                    <Setter Property="Background"
+                            Value="LawnGreen" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="W">
+                    <Setter Property="Background"
+                            Value="LightBlue" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="Z">
+                    <Setter Property="Background"
+                            Value="YellowGreen" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </ContentView.Resources>
+    <Grid RowSpacing="10">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <Label Text="{Binding Item_Name}" />
-        <HorizontalStackLayout Grid.Row="1" Spacing="25"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid RowSpacing="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <HorizontalStackLayout Spacing="25"
+                                       >
+                    <Border StrokeShape="Ellipse"
+                            WidthRequest="50"
+                            HeightRequest="50"
+                            VerticalOptions="Start"
+                            Style="{StaticResource bder}"
+                            HorizontalOptions="Start">
+                        <Label Text="{Binding Item_Name[0]}"
+                               x:Name="txt"
+                               TextColor="White"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center" />
+                    </Border>
+                    <VerticalStackLayout Spacing="4"
+                                         Margin="0,5,0,0">
+                        <Label Text="{Binding Purchase.Purchase_Date}"
+                               VerticalOptions="Start"
+                               Margin="0,0,0,0"
+                               HorizontalOptions="End" />
+
+                        <Label Text="{Binding Item_Name}"
+                               VerticalOptions="Start"
+                                />
+                    </VerticalStackLayout>
+                    
+                </HorizontalStackLayout>
+                <Label Text="{Binding Item_Description}" Grid.Row="1"/>
+            </Grid>
+            
+            <Switch Grid.Column="1" VerticalOptions="Start"/>
+        </Grid>
+        
+        
+        <!--<HorizontalStackLayout Grid.Row="1" Spacing="25"
                                HorizontalOptions="Start">
             <Button Text="Edit"
                     BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}, Mode=FindAncestor}, Path=BindingContext}"
@@ -20,6 +212,6 @@
                     BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}, Mode=FindAncestor}, Path=BindingContext}"
                     Command="{Binding DeleteCommand}"
                     WidthRequest="100" />
-        </HorizontalStackLayout>
+        </HorizontalStackLayout>-->
     </Grid>
 </ContentView>
