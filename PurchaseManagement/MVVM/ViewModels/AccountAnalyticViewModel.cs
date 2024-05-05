@@ -54,6 +54,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public AccountAnalyticViewModel(IAccountRepository _accountRepository)
         {
+            Show = true;
             accountRepository = _accountRepository;
             Statistics = new ObservableCollection<Statistics>();
             _ = Load();
@@ -87,7 +88,8 @@ namespace PurchaseManagement.MVVM.ViewModels
                 }
             };
             
-            BarSeries = new ISeries[] { col};
+            BarSeries = new ISeries[] { col };
+            Show = false;
         }
 
 

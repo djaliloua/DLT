@@ -30,23 +30,30 @@ namespace PurchaseManagement.MVVM.ViewModels
         public PurchaseItemsViewModel(IRepository _db)
         {
             this._db = _db;
+            //Show = true;
             Purchase_Items = new ObservableCollection<Purchase_Items>();
             DoubleClickCommand = new Command(On_DoubleClick);
             OpenCommand = new Command(On_Open);
             DeleteCommand = new Command(On_Delete);
             OpenMapCommand = new Command(On_OpenMap);
             EditCommand = new Command(On_Edit);
+            
         }
         private async void On_Edit(object parameter)
         {
-            var mapper = MapperConfig.InitializeAutomapper();
-            Purchase_ItemsProxy proxy = mapper.Map<Purchase_ItemsProxy>(Selected_Purchase_Item);
-            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+            if (CanOpen)
+            {
+                var mapper = MapperConfig.InitializeAutomapper();
+                Purchase_ItemsProxy proxy = mapper.Map<Purchase_ItemsProxy>(Selected_Purchase_Item);
+                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", false },
                             {"Purchase_ItemsProxy", proxy }
                         };
-            await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
+                await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
+            }
+            else
+                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
         }
         private async void On_OpenMap(object parameter)
         {
@@ -101,6 +108,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         public async Task LoadPurchaseItemsAsync(int purchaseId)
         {
+            
             Purchase_Items.Clear();
             var purchase_items = await Task.Run(async() => await _db.GetAllPurchaseItemById(purchaseId));
             for(int i = 0; i <  purchase_items.Count; i++)
@@ -108,6 +116,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 purchase_items[i].Purchase = Purchases;
                 Purchase_Items.Add(purchase_items[i]);
             }
+            Show = false;
         }
         private async Task<Location> GetCurrentLocation()
         {
@@ -132,8 +141,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if(query.Count > 0)
             {
+                Show = true;
                 Purchases = query["purchase"] as Purchases;
-                
+                //if (Purchases is Purchases p)
+                //    _ = LoadPurchaseItemsAsync(p.Purchase_Id);
             }
         }
     }

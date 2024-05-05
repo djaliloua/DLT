@@ -29,12 +29,14 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ICommand DoubleClickCommand { get; private set; }
         public MainViewModel(IRepository db)
         {
+            Show = true;
             _db = db;
             SelectedDate = DateTime.Now;
             Purchases = new ObservableCollection<Purchases>();
             _ = Load();
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
+            Show = false;
         }
         private async void On_DoubleClick(object sender)
         {

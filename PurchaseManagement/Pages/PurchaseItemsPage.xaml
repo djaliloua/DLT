@@ -20,9 +20,23 @@
         </Style>-->
     </ContentPage.Resources>
     <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <ActivityIndicator IsRunning="{Binding Show}"
+                           Color="Blue"
+                           Grid.Row="0"
+                           IsVisible="{Binding Show}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HeightRequest="80"
+                           WidthRequest="80"
+                           x:Name="activity"
+                           ZIndex="10" />
         <ListView SelectedItem="{Binding Selected_Purchase_Item}"
                   HasUnevenRows="True"
                   x:Name="listview"
+                  Grid.Row="0"
                   VerticalScrollBarVisibility="Never"
                   CachingStrategy="RecycleElementAndDataTemplate"
                   ItemsSource="{Binding Purchase_Items}">

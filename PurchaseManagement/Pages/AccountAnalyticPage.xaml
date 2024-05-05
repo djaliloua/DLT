@@ -12,6 +12,16 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
+        <ActivityIndicator IsRunning="{Binding Show}"
+                           Color="Blue"
+                           Grid.Row="0"
+                           IsVisible="{Binding Show}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HeightRequest="80"
+                           WidthRequest="80"
+                           x:Name="activity"
+                           ZIndex="10" />
         <lvc:CartesianChart Series="{Binding LineSeries}"
                             Grid.Row="0"
                             Title="{Binding Title}" />

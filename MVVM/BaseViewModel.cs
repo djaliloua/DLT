@@ -6,6 +6,12 @@ namespace MVVM
     public class BaseViewModel : INotifyPropertyChanged
     {
         //public abstract Task Load();
+        private bool show;
+        public bool Show
+        {
+            get => show; 
+            set => UpdateObservable(ref show, value);
+        }
         
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string propertyName = "")

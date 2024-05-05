@@ -21,6 +21,16 @@
             </Grid.RowDefinitions>
             <material:DatePickerField Date="{Binding SelectedDate}"
                                       Title="Date" />
+            <ActivityIndicator IsRunning="{Binding Show}"
+                               Color="Blue"
+                               Grid.Row="1"
+                               IsVisible="{Binding Show}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               HeightRequest="80"
+                               WidthRequest="80"
+                               x:Name="activity"
+                               ZIndex="10" />
             <ListView ItemsSource="{Binding Purchases}"
                       RowHeight="150"
                       Grid.Row="1"
