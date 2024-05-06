@@ -11,6 +11,35 @@ namespace PurchaseManagement.DataAccessLayer
     public class Repository : IRepository
     {
         public static string folderName;
+        public async Task<MarketLocation> GetMarketLocationAsync(int purchase_id, int purchase_item_id)
+        {
+            MarketLocation location = null;
+            await Task.Delay(1);
+            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                connection.CreateTable<Purchases>();
+                connection.CreateTable<PurchaseStatistics>();
+                connection.CreateTable<MarketLocation>();
+                connection.EnableWriteAheadLogging();
+                location = connection.Table<MarketLocation>().FirstOrDefault(loc => loc.Purchase_Id==purchase_id && loc.Purchase_Item_Id==purchase_item_id);
+            }
+            return location;
+        }
+        public async Task<int> SaveAndUpdateLocationAsync(MarketLocation location)
+        {
+            int res = 0;
+            await Task.Delay(1);
+            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                connection.CreateTable<MarketLocation>();
+                connection.EnableWriteAheadLogging();
+                if (location.Location_Id != 0)
+                    res = connection.Update(location);
+                else
+                    res = connection.Insert(location);
+            }
+            return res;
+        }
         public async Task<IEnumerable<Purchases>> GetAllPurchases()
         {
             List<Purchases> purchases = null;

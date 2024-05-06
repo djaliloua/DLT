@@ -13,6 +13,8 @@ namespace PurchaseManagement
                 //Configuring Employee and EmployeeDTO
                 cfg.CreateMap<Purchase_Items,Purchase_ItemsProxy>();
                 cfg.CreateMap<Purchase_ItemsProxy, Purchase_Items>();
+                cfg.CreateMap<Location, MarketLocation>();
+                cfg.CreateMap<MarketLocation, Location>();
                 //Any Other Mapping Configuration ....
             });
 

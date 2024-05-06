@@ -5,6 +5,8 @@ namespace PurchaseManagement.DataAccessLayer
 {
     public interface IRepository
     {
+        Task<MarketLocation> GetMarketLocationAsync(int purchase_id, int purchase_item_id);
+        Task<int> SaveAndUpdateLocationAsync(MarketLocation location);
         Task<IEnumerable<Purchases>> GetAllPurchases();
         Task<IList<Purchase_Items>> GetAllPurchaseItemById(int purchase_id);
         Task<int> SavePurchaseAsync(Purchases purchase);

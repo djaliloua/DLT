@@ -1,4 +1,5 @@
-﻿using MVVM;
+﻿using AutoMapper;
+using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
@@ -27,6 +28,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _isLocAvailable;
             set => UpdateObservable(ref _isLocAvailable, value);
         }
+        private Mapper mapper;
         bool CanOpen => Selected_Purchase_Item != null;
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
@@ -37,6 +39,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public PurchaseItemsViewModel(IRepository _db)
         {
             this._db = _db;
+            mapper = MapperConfig.InitializeAutomapper();
             Purchase_Items = new ObservableCollection<Purchase_Items>();
             DoubleClickCommand = new Command(On_DoubleClick);
             OpenCommand = new Command(On_Open);
@@ -51,16 +54,19 @@ namespace PurchaseManagement.MVVM.ViewModels
             if (CanOpen)
             {
                 Location location = await GetCurrentLocation();
+                
                 IEnumerable<Purchases> purchases = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
                 if (purchases.Count() >= 1)
                 {
-                    Selected_Purchase_Item.SetLocation(location);
-                    Selected_Purchase_Item.IsLocation = true;
+                    var loc = mapper.Map<MarketLocation>(location);
+                    loc.Purchase_Id = Selected_Purchase_Item.Purchase_Id;
+                    loc.Purchase_Item_Id = Selected_Purchase_Item.Item_Id;
+                    await _db.SaveAndUpdateLocationAsync(loc);
                     await _db.SavePurchaseItemAsync(Selected_Purchase_Item);
                 }
                 await LoadPurchaseItemsAsync(Selected_Purchase_Item.Purchase_Id);
-                //await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
-                
+
+
             }
             else
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
@@ -84,10 +90,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_OpenMap(object parameter)
         {
-            if(CanOpen)
+            if (CanOpen)
             {
-                if(Selected_Purchase_Item.Longitude != 0)
-                    await NavigateToBuilding25(Selected_Purchase_Item.Location);
+                if (Selected_Purchase_Item.Location != null)
+                    await NavigateToBuilding25(mapper.Map<Location>(Selected_Purchase_Item.Location));
                 else
                     await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
             }
@@ -146,6 +152,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             for(int i = 0; i <  purchase_items.Count; i++)
             {
                 purchase_items[i].Purchase = Purchases;
+                purchase_items[i].Location = await _db.GetMarketLocationAsync(purchaseId, purchase_items[i].Item_Id);
                 Purchase_Items.Add(purchase_items[i]);
             }
             HideProgressBar();
