@@ -16,7 +16,7 @@ namespace PurchaseManagement.ServiceLocator
         public static PurchaseItemsViewModel PurchaseItemsViewModel => GetService<PurchaseItemsViewModel>();
         public static PurchaseItemDetailsViewModel GetPurchaseItemDetailsViewModel() => GetService<PurchaseItemDetailsViewModel>();
         public static PurchaseItemDetailsViewModel PurchaseItemDetailsViewModel => GetService<PurchaseItemDetailsViewModel>();
-        public static MarketFormViewModel PurchaseFormViewModel => GetService<MarketFormViewModel>();
+        public static MarketFormViewModel MarketFormViewModel => GetService<MarketFormViewModel>();
     }
     
 }

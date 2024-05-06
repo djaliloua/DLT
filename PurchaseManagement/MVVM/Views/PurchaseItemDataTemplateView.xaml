@@ -197,8 +197,11 @@
                 </HorizontalStackLayout>
                 <Label Text="{Binding Item_Description}" Grid.Row="1" Padding="5,0,0,0"/>
             </Grid>
-            
-            <Switch Grid.Column="1" VerticalOptions="Start"/>
+
+            <Switch Grid.Column="1"
+                    VerticalOptions="Start"
+                    IsToggled="{Binding IsLocation}"
+                     />
         </Grid>
         
         

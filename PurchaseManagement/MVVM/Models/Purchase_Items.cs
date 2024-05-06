@@ -14,6 +14,8 @@ namespace PurchaseManagement.MVVM.Models
         public string Item_Price { get; set; }
         public string Item_Quantity { get; set;}
         public string Item_Description { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }  
         
         [ManyToOne]
         public Purchases Purchase { get; set; }
@@ -25,6 +27,13 @@ namespace PurchaseManagement.MVVM.Models
             Item_Quantity = item_quantity;
             Item_Description = item_desc;
         }
+        public void SetLocation(Location location)
+        {
+            Longitude = location.Longitude;
+            Latitude = location.Latitude;
+        }
+        public bool IsLocation { get; set; }
+        public Location Location => new Location(Longitude, Latitude);
         public Purchase_Items()
         {
             

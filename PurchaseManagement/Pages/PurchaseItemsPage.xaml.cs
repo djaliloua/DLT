@@ -29,15 +29,6 @@ public partial class PurchaseItemsPage : ContentPage
         if (ViewModelLocator.PurchaseItemsViewModel.Purchases is Purchases p)
         {
             await ViewModelLocator.PurchaseItemsViewModel.LoadPurchaseItemsAsync(p.Purchase_Id);
-            //if (ViewModelLocator.PurchaseItemDetailsViewModel.PurchaseDetails is Purchase_Items purch)
-            //{
-            //    await Task.Delay(10);
-            //    Dispatcher.Dispatch(() =>
-            //    {
-            //        listview.ScrollTo(ViewModelLocator.PurchaseItemsViewModel.Purchase_Items.FirstOrDefault(item => item.Item_Id == purch.Item_Id),
-            //            ScrollToPosition.MakeVisible, false);
-            //    });
-            //}
         }
     }
 }

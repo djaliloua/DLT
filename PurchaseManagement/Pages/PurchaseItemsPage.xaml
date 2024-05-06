@@ -72,6 +72,11 @@
                                                          Glyph="{x:Static m:MaterialRound.Map}" />
                                     </SwipeItem.IconImageSource>
                                 </SwipeItem>
+                                <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                           BackgroundColor="{StaticResource Surface}"
+                                           Command="{Binding GetMapCommand}"
+                                           Text="Map"
+                                           />
                             </SwipeView.RightItems>
                             <Frame CornerRadius="10"
                                    HasShadow="True"

@@ -21,23 +21,50 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _selected_Purchase_Item;
             set => UpdateObservable(ref _selected_Purchase_Item, value);
         }
+        private bool _isLocAvailable;
+        public bool IsLocAvailable
+        {
+            get => _isLocAvailable;
+            set => UpdateObservable(ref _isLocAvailable, value);
+        }
         bool CanOpen => Selected_Purchase_Item != null;
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand OpenMapCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public ICommand EditCommand { get; private set; }
+        public ICommand GetMapCommand { get; private set; }
         public PurchaseItemsViewModel(IRepository _db)
         {
             this._db = _db;
-            //Show = true;
             Purchase_Items = new ObservableCollection<Purchase_Items>();
             DoubleClickCommand = new Command(On_DoubleClick);
             OpenCommand = new Command(On_Open);
             DeleteCommand = new Command(On_Delete);
             OpenMapCommand = new Command(On_OpenMap);
             EditCommand = new Command(On_Edit);
-            
+            GetMapCommand = new Command(On_GetMap);
+        }
+        private async void On_GetMap(object parameter)
+        {
+            ShowProgressBar();
+            if (CanOpen)
+            {
+                Location location = await GetCurrentLocation();
+                IEnumerable<Purchases> purchases = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                if (purchases.Count() >= 1)
+                {
+                    Selected_Purchase_Item.SetLocation(location);
+                    Selected_Purchase_Item.IsLocation = true;
+                    await _db.SavePurchaseItemAsync(Selected_Purchase_Item);
+                }
+                await LoadPurchaseItemsAsync(Selected_Purchase_Item.Purchase_Id);
+                //await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
+                
+            }
+            else
+                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
+            HideProgressBar();
         }
         private async void On_Edit(object parameter)
         {
@@ -57,7 +84,15 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_OpenMap(object parameter)
         {
-            await NavigateToBuilding25();
+            if(CanOpen)
+            {
+                if(Selected_Purchase_Item.Longitude != 0)
+                    await NavigateToBuilding25(Selected_Purchase_Item.Location);
+                else
+                    await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
+            }
+            else
+                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
         }
         private async void On_Delete(object parameter)
         {
@@ -81,17 +116,14 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             await Task.Delay(1);
         }
-        public async Task NavigateToBuilding25()
+        private async Task NavigateToBuilding25(Location location)
         {
-            Location location = await GetCurrentLocation();
-            //var options = new MapLaunchOptions { Name = "Microsoft Building 25" };
             try
             {
                 await Map.Default.OpenAsync(location);
             }
             catch (Exception ex)
             {
-                // No map application available to open
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -108,7 +140,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         public async Task LoadPurchaseItemsAsync(int purchaseId)
         {
-            
+            ShowProgressBar();
             Purchase_Items.Clear();
             var purchase_items = await Task.Run(async() => await _db.GetAllPurchaseItemById(purchaseId));
             for(int i = 0; i <  purchase_items.Count; i++)
@@ -116,7 +148,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 purchase_items[i].Purchase = Purchases;
                 Purchase_Items.Add(purchase_items[i]);
             }
-            Show = false;
+            HideProgressBar();
         }
         private async Task<Location> GetCurrentLocation()
         {
@@ -132,7 +164,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
             catch (Exception ex)
             {
-                Trace.Write(ex.Message);
+                Debug.Write(ex.Message);
                 return null;
             }
             
@@ -141,10 +173,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if(query.Count > 0)
             {
-                Show = true;
                 Purchases = query["purchase"] as Purchases;
-                //if (Purchases is Purchases p)
-                //    _ = LoadPurchaseItemsAsync(p.Purchase_Id);
             }
         }
     }

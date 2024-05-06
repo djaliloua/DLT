@@ -5,6 +5,7 @@ using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
+using AutoMapper;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -12,7 +13,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         public int Item_Id { get; set; }
         public int Purchase_Id { get; set; }
-        private string item_name = "hello";
+        private string item_name = "Hello";
         public string Item_Name
         {
             get => item_name;
@@ -36,10 +37,28 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _item_desc;
             set => UpdateObservable(ref _item_desc, value);
         }
-        
+        private double _longitude;
+        public double Longitude
+        {
+            get => _longitude;
+            set => UpdateObservable(ref _longitude, value);
+        }
+        private double _latitude;
+        public double Latitude
+        {
+            get => _latitude;
+            set => UpdateObservable(ref _latitude, value);
+        }
+        private bool _isLocation;
+        public bool IsLocation
+        {
+            get => _isLocation;
+            set => UpdateObservable(ref _isLocation, value);
+        }
+
         public Purchase_ItemsProxy()
         {
-            
+            IsLocation = Longitude != 0;
         }
 
     }
@@ -59,18 +78,20 @@ namespace PurchaseManagement.MVVM.ViewModels
             set => UpdateObservable(ref _isSave, value);    
         }
         private static int count = 0;
+        Mapper mapper;
         public ICommand CancelCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand UpdateCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
         public MarketFormViewModel(IRepository _db)
         {
+            db = _db;
+            mapper = MapperConfig.InitializeAutomapper();
             PurchaseItem = new();
             CancelCommand = new Command(On_Cancel);
             SaveCommand = new Command(On_Save);
             BackCommand = new Command(On_Back);
             UpdateCommand = new Command(On_Update);
-            db = _db;
         }
         
         private async void On_Back(object parameter)
@@ -92,7 +113,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Update(object parameter)
         {
             IEnumerable<Purchases> purchases = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);;
-            var mapper = MapperConfig.InitializeFromDbAutomapper();
             PurchaseStatistics purchaseStatistics;
             if (purchases.Count() >= 1)
             {
@@ -114,10 +134,9 @@ namespace PurchaseManagement.MVVM.ViewModels
             PurchaseStatistics purchaseStatistics;
             if (purchases.Count() >= 1)
             {
-                await db.SavePurchaseItemAsync(new(purchases.ElementAt(0).Purchase_Id,
-                    PurchaseItem.Item_Name,
-                    PurchaseItem.Item_Price,
-                    PurchaseItem.Item_Quantity, PurchaseItem.Item_Description));
+                var item = mapper.Map<Purchase_Items>(PurchaseItem);
+                item.Purchase_Id = purchases.ElementAt(0).Purchase_Id;
+                await db.SavePurchaseItemAsync(item);
                 purchaseStatistics = await db.GetPurchaseStatistics(purchases.ElementAt(0).Purchase_Id);
                 purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.ElementAt(0).Purchase_Id);
                 purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "price");
@@ -128,10 +147,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
             {
                 await db.SavePurchaseAsync(purchase);
-                await db.SavePurchaseItemAsync(new(purchase.Purchase_Id,
-                        PurchaseItem.Item_Name,
-                        PurchaseItem.Item_Price,
-                        PurchaseItem.Item_Quantity, PurchaseItem.Item_Description));
+                await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(PurchaseItem));
                 purchaseStatistics = new(purchase.Purchase_Id, "1",
                         PurchaseItem.Item_Price,
                         PurchaseItem.Item_Quantity);

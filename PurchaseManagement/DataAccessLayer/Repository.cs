@@ -19,6 +19,7 @@ namespace PurchaseManagement.DataAccessLayer
             {
                 connection.CreateTable<Purchases>();
                 connection.CreateTable<PurchaseStatistics>();
+                connection.EnableWriteAheadLogging();
                 purchases = connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Date).ToList();
             }
             return purchases;
@@ -31,6 +32,7 @@ namespace PurchaseManagement.DataAccessLayer
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase_Items>();
+                connection.EnableWriteAheadLogging();
                 purchase_items = connection.Query<Purchase_Items>(sql);
             }
             return purchase_items;
@@ -42,6 +44,7 @@ namespace PurchaseManagement.DataAccessLayer
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchases>();
+                connection.EnableWriteAheadLogging();
                 if (purchase.Purchase_Id != 0)
                     res = connection.Update(purchase);
                 else
@@ -57,6 +60,7 @@ namespace PurchaseManagement.DataAccessLayer
             using(var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchases>();
+                connection.EnableWriteAheadLogging();
                 purchases = connection.Query<Purchases>(sql);
             }
             return purchases;
@@ -68,6 +72,7 @@ namespace PurchaseManagement.DataAccessLayer
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase_Items>();
+                connection.EnableWriteAheadLogging();
                 if (purchase_item.Item_Id != 0)
                     res = connection.Update(purchase_item);
                 else
@@ -82,6 +87,7 @@ namespace PurchaseManagement.DataAccessLayer
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
+                connection.EnableWriteAheadLogging();
                 if (purchaseStatistics.Id != 0)
                     res = connection.Update(purchaseStatistics);
                 else
@@ -100,6 +106,7 @@ namespace PurchaseManagement.DataAccessLayer
                 sql = $"select sum(pi.Item_Quantity) Value\r\nfrom purchases p\r\ninner join purchase_items pi on pi.Purchase_Id=p.Purchase_Id\r\nwhere pi.Purchase_Id={purchases.Purchase_Id};";
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
+                connection.EnableWriteAheadLogging();
                 results = connection.Query<Result>(sql).ToList();
                 if(results.Count == 1)
                 {
@@ -116,6 +123,7 @@ namespace PurchaseManagement.DataAccessLayer
             string sql = $"select ps.*\r\nfrom purchases p\r\ninner join PurchaseStatistics ps on p.Purchase_Id = ps.Purchase_Id\r\nwhere ps.Purchase_Id = {id};";
             using(SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
+                connection.EnableWriteAheadLogging();
                 p = connection.Query<PurchaseStatistics>(sql).ElementAt(0);
             }
             return p;
@@ -131,6 +139,7 @@ namespace PurchaseManagement.DataAccessLayer
             await Task.Delay(1);
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
+                connection.EnableWriteAheadLogging();
                 res = connection.Delete(purchase);
             }
             return res;

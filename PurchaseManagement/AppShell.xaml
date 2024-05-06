@@ -15,7 +15,7 @@
         <views:ControlView />
     </Shell.FlyoutHeader>
     <FlyoutItem FlyoutDisplayOptions="AsSingleItem"
-                
+                IsVisible="False"
                 Title="Home">
         <FlyoutItem.FlyoutIcon>
             <FontImageSource FontFamily="MaterialRegular"

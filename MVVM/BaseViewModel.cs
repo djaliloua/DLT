@@ -23,7 +23,14 @@ namespace MVVM
         }
 
         //public event EventHandler OnLoad;
-
+        public void ShowProgressBar()
+        {
+            Show = true;
+        }
+        public void HideProgressBar()
+        {
+            Show = false;
+        }
         public void UpdateObservable<T>(ref T oldValue, T newValue, [CallerMemberName] string propertyName = "")
         {
             oldValue = newValue;
