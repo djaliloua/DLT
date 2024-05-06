@@ -48,6 +48,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ICommand DeleteCommand { get; private set; }
         public AccountViewModel(IAccountRepository _accountRepository)
         {
+            Show = true;
             accountRepository = _accountRepository;
             Accounts = new ObservableCollection<Account>();
             SelectedDate = DateTime.Now;
@@ -56,7 +57,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 .ContinueWith(t => 
                 MakeSnackBarAsync($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA")
                 );
-           
+            Show = false;
             AddCommand = new Command(On_Add);
             DeleteCommand = new Command(On_Delete);
         }

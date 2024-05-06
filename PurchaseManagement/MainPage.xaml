@@ -7,7 +7,7 @@
              xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
              xmlns:models="clr-namespace:PurchaseManagement.MVVM.Models"
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
-             xmlns:service="clr-namespace:PurchaseManagement.Services"
+             xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              x:Name="main"
              BindingContext="{x:Static service:ViewModelLocator.MainViewModel}"
              BackgroundColor="{StaticResource Surface}">
@@ -21,6 +21,16 @@
             </Grid.RowDefinitions>
             <material:DatePickerField Date="{Binding SelectedDate}"
                                       Title="Date" />
+            <ActivityIndicator IsRunning="{Binding Show}"
+                               Color="Blue"
+                               Grid.Row="1"
+                               IsVisible="{Binding Show}"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               HeightRequest="80"
+                               WidthRequest="80"
+                               x:Name="activity"
+                               ZIndex="10" />
             <ListView ItemsSource="{Binding Purchases}"
                       RowHeight="150"
                       Grid.Row="1"
@@ -30,8 +40,9 @@
                     <DataTemplate>
                         <ViewCell>
                             <SwipeView>
-                                <Frame CornerRadius="10">
-                                    <VerticalStackLayout>
+                                <Frame CornerRadius="10"
+                                       BackgroundColor="{StaticResource Surface}">
+                                    <VerticalStackLayout Spacing="20">
                                         <VerticalStackLayout.GestureRecognizers>
                                             <TapGestureRecognizer NumberOfTapsRequired="2"
                                                                   BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
@@ -39,6 +50,7 @@
                                         </VerticalStackLayout.GestureRecognizers>
                                         <Label Text="{Binding Purchase_Date}" />
                                         <Label Text="{Binding PurchaseStatistics.PurchaseCount}" />
+                                        <Label Text="{Binding PurchaseStatistics.TotalPrice, StringFormat='{0:C2}'}" />
                                     </VerticalStackLayout>
                                 </Frame>
                             </SwipeView>

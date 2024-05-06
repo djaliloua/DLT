@@ -6,7 +6,7 @@ using LiveChartsCore.SkiaSharpView.VisualElements;
 using MVVM;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.Services;
+using PurchaseManagement.ServiceLocator;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 
@@ -54,6 +54,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public AccountAnalyticViewModel(IAccountRepository _accountRepository)
         {
+            Show = true;
             accountRepository = _accountRepository;
             Statistics = new ObservableCollection<Statistics>();
             _ = Load();
@@ -87,7 +88,8 @@ namespace PurchaseManagement.MVVM.ViewModels
                 }
             };
             
-            BarSeries = new ISeries[] { col};
+            BarSeries = new ISeries[] { col };
+            Show = false;
         }
 
 

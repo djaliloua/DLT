@@ -2,6 +2,7 @@
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
+using PurchaseManagement.ServiceLocator;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -29,12 +30,14 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ICommand DoubleClickCommand { get; private set; }
         public MainViewModel(IRepository db)
         {
+            Show = true;
             _db = db;
-            SelectedDate = DateTime.Now;
+            //SelectedDate = DateTime.Now;
             Purchases = new ObservableCollection<Purchases>();
             _ = Load();
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
+            Show = false;
         }
         private async void On_DoubleClick(object sender)
         {
@@ -44,12 +47,18 @@ namespace PurchaseManagement.MVVM.ViewModels
                         {
                             { "purchase", SelectedPurchase }
                         };
+                SelectedDate = DateTime.Parse(SelectedPurchase.Purchase_Date);
                 await Shell.Current.GoToAsync(nameof(PurchaseItemsPage), navigationParameter);
             }
         }
         private async void On_Add(object sender)
         {
-            await Shell.Current.GoToAsync(nameof(MarketFormPage));
+            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "IsSave", true },
+                            { "Purchase_ItemsProxy",  new Purchase_ItemsProxy()}
+                        };
+            await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }
         public async Task Load()
         {
@@ -61,6 +70,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         public async Task LoadPurchasesAsync()
         {
+            ShowProgressBar();
             Purchases.Clear();
             IEnumerable<Purchases> _purchases = await Task.Run(_db.GetAllPurchases);
             foreach (Purchases purchase in _purchases)
@@ -68,6 +78,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 purchase.PurchaseStatistics = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
                 Purchases.Add(purchase);
             }
+            HideProgressBar();
         }
     }
 }

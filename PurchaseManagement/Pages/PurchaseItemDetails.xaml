@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PurchaseManagement.Pages.PurchaseItemDetails"
              xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
-             xmlns:service="clr-namespace:PurchaseManagement.Services"
+             xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              BindingContext="{x:Static service:ViewModelLocator.PurchaseItemDetailsViewModel}"
              BackgroundColor="{StaticResource Surface}"
              Title="Item Details">
