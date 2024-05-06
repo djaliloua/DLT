@@ -19,14 +19,14 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => item_name;
             set => UpdateObservable(ref item_name, value);
         }
-        private string item_price;
-        public string Item_Price
+        private long item_price;
+        public long Item_Price
         {
             get => item_price;
             set => UpdateObservable(ref item_price, value);
         }
-        private string item_quantity;
-        public string Item_Quantity
+        private long item_quantity;
+        public long Item_Quantity
         {
             get => item_quantity;   
             set => UpdateObservable(ref item_quantity, value);  
@@ -37,28 +37,9 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _item_desc;
             set => UpdateObservable(ref _item_desc, value);
         }
-        private double _longitude;
-        public double Longitude
-        {
-            get => _longitude;
-            set => UpdateObservable(ref _longitude, value);
-        }
-        private double _latitude;
-        public double Latitude
-        {
-            get => _latitude;
-            set => UpdateObservable(ref _latitude, value);
-        }
-        private bool _isLocation;
-        public bool IsLocation
-        {
-            get => _isLocation;
-            set => UpdateObservable(ref _isLocation, value);
-        }
-
         public Purchase_ItemsProxy()
         {
-            IsLocation = Longitude != 0;
+
         }
 
     }
@@ -148,8 +129,8 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 await db.SavePurchaseAsync(purchase);
                 await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(PurchaseItem));
-                purchaseStatistics = new(purchase.Purchase_Id, "1",
-                        PurchaseItem.Item_Price,
+                purchaseStatistics = new(purchase.Purchase_Id, 1,
+                       PurchaseItem.Item_Price,
                         PurchaseItem.Item_Quantity);
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
             }

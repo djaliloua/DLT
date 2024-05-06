@@ -13,9 +13,9 @@ namespace PurchaseManagement.DataAccessLayer
         Task<int> SavePurchaseItemAsync(Purchase_Items purchase_item);
         Task<IEnumerable<Purchases>> GetPurchasesByDate(DateTime dt);
         Task<int> SavePurchaseStatisticsItemAsyn(PurchaseStatistics purchaseStatistics);
-        Task<string> GetTotalValue(Purchases purchases, string colname);
+        Task<long> GetTotalValue(Purchases purchases, string colname);
         Task<PurchaseStatistics> GetPurchaseStatistics(int id);
-        Task<string> CountPurchaseItems(int purchase_id);
+        Task<int> CountPurchaseItems(int purchase_id);
         Task<int> DeletePurchaseItemAsync(Purchase_Items purchase);
     }
 }

@@ -42,7 +42,7 @@
                             <SwipeView>
                                 <Frame CornerRadius="10"
                                        BackgroundColor="{StaticResource Surface}">
-                                    <VerticalStackLayout>
+                                    <VerticalStackLayout Spacing="20">
                                         <VerticalStackLayout.GestureRecognizers>
                                             <TapGestureRecognizer NumberOfTapsRequired="2"
                                                                   BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
@@ -50,6 +50,7 @@
                                         </VerticalStackLayout.GestureRecognizers>
                                         <Label Text="{Binding Purchase_Date}" />
                                         <Label Text="{Binding PurchaseStatistics.PurchaseCount}" />
+                                        <Label Text="{Binding PurchaseStatistics.TotalPrice, StringFormat='{0:C2}'}" />
                                     </VerticalStackLayout>
                                 </Frame>
                             </SwipeView>
