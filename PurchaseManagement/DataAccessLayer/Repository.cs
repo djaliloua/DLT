@@ -81,23 +81,16 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return res;
         }
-        public async Task<IEnumerable<Purchases>> GetPurchasesByDate(DateTime dt)
+        public async Task<Purchases> GetPurchasesByDate(DateTime dt)
         {
-            string sql = $"select *\r\nfrom purchases p\r\nwhere p.Purchase_Date = '{dt:yyyy-MM-dd}'";
-            List<Purchases> purchases = null;
-            await Task.Delay(1);
-            using(var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
-            {
-                connection.CreateTable<Purchases>();
-                connection.EnableWriteAheadLogging();
-                purchases = connection.Query<Purchases>(sql);
-            }
+            var d = await GetAllPurchases();
+            Purchases purchases = d.FirstOrDefault(p => p.Purchase_Date == $"{dt:yyyy-MM-dd}");
             return purchases;
         }
         public async Task<int> SavePurchaseItemAsync(Purchase_Items purchase_item)
         {
             int res = 0;
-            await Task.Delay(100);
+            await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase_Items>();
@@ -149,11 +142,10 @@ namespace PurchaseManagement.DataAccessLayer
         {
             await Task.Delay(1);
             PurchaseStatistics p;
-            string sql = $"select ps.*\r\nfrom purchases p\r\ninner join PurchaseStatistics ps on p.Purchase_Id = ps.Purchase_Id\r\nwhere ps.Purchase_Id = {id};";
             using(SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.EnableWriteAheadLogging();
-                p = connection.Query<PurchaseStatistics>(sql).ElementAt(0);
+                p = connection.Table<PurchaseStatistics>().FirstOrDefault(s => s.Purchase_Id == id);
             }
             return p;
         }

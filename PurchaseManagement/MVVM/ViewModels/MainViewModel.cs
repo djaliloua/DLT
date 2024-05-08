@@ -53,10 +53,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Add(object sender)
         {
+            Purchases purchase = await _db.GetPurchasesByDate(SelectedDate);
+            PurchaseStatistics stat = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", true },
-                            { "Purchase_ItemsProxy",  new Purchase_ItemsProxy()}
+                            { "Purchase_ItemsProxy", stat == null? new Purchase_ItemsProxy(0):new Purchase_ItemsProxy(stat.PurchaseCount)}
                         };
             await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }

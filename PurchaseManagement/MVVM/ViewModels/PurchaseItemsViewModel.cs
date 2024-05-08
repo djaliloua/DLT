@@ -53,10 +53,8 @@ namespace PurchaseManagement.MVVM.ViewModels
             ShowProgressBar();
             if (CanOpen)
             {
-                Location location = await GetCurrentLocation();
-                
-                IEnumerable<Purchases> purchases = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                if (purchases.Count() >= 1)
+                Location location = await GetCurrentLocation();;
+                if (await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
                 {
                     var loc = mapper.Map<MarketLocation>(location);
                     loc.Purchase_Id = Selected_Purchase_Item.Purchase_Id;
