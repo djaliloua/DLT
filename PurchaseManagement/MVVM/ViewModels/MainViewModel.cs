@@ -2,7 +2,6 @@
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.Pages;
-using PurchaseManagement.ServiceLocator;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -32,7 +31,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             Show = true;
             _db = db;
-            //SelectedDate = DateTime.Now;
             Purchases = new ObservableCollection<Purchases>();
             _ = Load();
             AddCommand = new Command(On_Add);
@@ -53,11 +51,23 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Add(object sender)
         {
+            Purchase_ItemsProxy purchase_proxy_item;
+            Purchases purchase = await _db.GetPurchasesByDate(SelectedDate);
+            if(purchase != null)
+            {
+                PurchaseStatistics stat = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
+                purchase_proxy_item = stat == null ? new Purchase_ItemsProxy(0) : new Purchase_ItemsProxy(stat.PurchaseCount);
+            }
+            else
+            {
+                purchase_proxy_item = new Purchase_ItemsProxy(0);
+            }
+
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", true },
-                            { "Purchase_ItemsProxy",  new Purchase_ItemsProxy()}
-                        };
+                            { "Purchase_ItemsProxy", purchase_proxy_item }
+                };
             await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }
         public async Task Load()
@@ -67,7 +77,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await LoadPurchasesAsync();
             }
         }
-        
         public async Task LoadPurchasesAsync()
         {
             ShowProgressBar();

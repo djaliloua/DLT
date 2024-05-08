@@ -37,9 +37,14 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _item_desc;
             set => UpdateObservable(ref _item_desc, value);
         }
+        public int Counter { get; set; }
+        public Purchase_ItemsProxy(int counter)
+        {
+            Counter = counter;
+        }
         public Purchase_ItemsProxy()
         {
-
+            
         }
 
     }
@@ -58,7 +63,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _isSave;
             set => UpdateObservable(ref _isSave, value);    
         }
-        private static int count = 0;
+        public int Counter = 0;
         Mapper mapper;
         public ICommand CancelCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
@@ -77,7 +82,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         private async void On_Back(object parameter)
         {
-            count = 0;
+            Counter = 0;
             await Shell.Current.GoToAsync("..");
         }
         private async Task MakeToast(int count)
@@ -93,15 +98,14 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Update(object parameter)
         {
-            IEnumerable<Purchases> purchases = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);;
             PurchaseStatistics purchaseStatistics;
-            if (purchases.Count() >= 1)
+            if (await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
             {
                 await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(PurchaseItem));
-                purchaseStatistics = await db.GetPurchaseStatistics(purchases.ElementAt(0).Purchase_Id);
-                purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.ElementAt(0).Purchase_Id);
-                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "price");
-                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "quantity");
+                purchaseStatistics = await db.GetPurchaseStatistics(purchases.Purchase_Id);
+                purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.Purchase_Id);
+                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "price");
+                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "quantity");
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
 
             }
@@ -110,33 +114,36 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Save(object sender)
         {
-            IEnumerable<Purchases> purchases = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
             Purchases purchase = new Purchases("test", ViewModelLocator.MainViewModel.SelectedDate);
+            var item = mapper.Map<Purchase_Items>(PurchaseItem);
             PurchaseStatistics purchaseStatistics;
-            if (purchases.Count() >= 1)
+            if (await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
             {
-                var item = mapper.Map<Purchase_Items>(PurchaseItem);
-                item.Purchase_Id = purchases.ElementAt(0).Purchase_Id;
+                item.Purchase_Id = purchases.Purchase_Id;
+                item.Purchase = purchases;
                 await db.SavePurchaseItemAsync(item);
-                purchaseStatistics = await db.GetPurchaseStatistics(purchases.ElementAt(0).Purchase_Id);
-                purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.ElementAt(0).Purchase_Id);
-                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "price");
-                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases.ElementAt(0), "quantity");
+                purchaseStatistics = await db.GetPurchaseStatistics(purchases.Purchase_Id);
+                purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.Purchase_Id);
+                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "price");
+                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "quantity");
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
                
             }
             else
             {
                 await db.SavePurchaseAsync(purchase);
-                await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(PurchaseItem));
+                item = mapper.Map<Purchase_Items>(PurchaseItem);
+                item.Purchase_Id = purchase.Purchase_Id;
+                item.Purchase = purchase;
+                await db.SavePurchaseItemAsync(item);
                 purchaseStatistics = new(purchase.Purchase_Id, 1,
                        PurchaseItem.Item_Price,
                         PurchaseItem.Item_Quantity);
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
             }
             await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
-            count++;
-            await MakeToast(count);
+            Counter++;
+            await MakeToast(Counter);
         }
         private async void On_Cancel(object sender)
         {
@@ -149,6 +156,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 IsSave = (bool)query["IsSave"];
                 PurchaseItem = query["Purchase_ItemsProxy"] as Purchase_ItemsProxy;
+                Counter = PurchaseItem.Counter;
             }
         }
     }
