@@ -9,7 +9,7 @@ using AutoMapper;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public class Purchase_ItemsProxy:BaseViewModel
+    public class Purchase_ItemsProxyViewModel:BaseViewModel
     {
         public int Item_Id { get; set; }
         public int Purchase_Id { get; set; }
@@ -38,11 +38,11 @@ namespace PurchaseManagement.MVVM.ViewModels
             set => UpdateObservable(ref _item_desc, value);
         }
         public int Counter { get; set; }
-        public Purchase_ItemsProxy(int counter)
+        public Purchase_ItemsProxyViewModel(int counter)
         {
             Counter = counter;
         }
-        public Purchase_ItemsProxy()
+        public Purchase_ItemsProxyViewModel()
         {
             
         }
@@ -51,8 +51,8 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class MarketFormViewModel:BaseViewModel, IQueryAttributable
     {
         private readonly IRepository db;
-        private Purchase_ItemsProxy _purchaseItem;
-        public Purchase_ItemsProxy PurchaseItem
+        private Purchase_ItemsProxyViewModel _purchaseItem;
+        public Purchase_ItemsProxyViewModel PurchaseItem
         {
             get => _purchaseItem;
             set => UpdateObservable(ref _purchaseItem, value);
@@ -155,7 +155,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             if(query.Count() > 0)
             {
                 IsSave = (bool)query["IsSave"];
-                PurchaseItem = query["Purchase_ItemsProxy"] as Purchase_ItemsProxy;
+                PurchaseItem = query["Purchase_ItemsProxy"] as Purchase_ItemsProxyViewModel;
                 Counter = PurchaseItem.Counter;
             }
         }
