@@ -51,16 +51,16 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Add(object sender)
         {
-            Purchase_ItemsProxy purchase_proxy_item;
+            Purchase_ItemsProxyViewModel purchase_proxy_item;
             Purchases purchase = await _db.GetPurchasesByDate(SelectedDate);
             if(purchase != null)
             {
                 PurchaseStatistics stat = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
-                purchase_proxy_item = stat == null ? new Purchase_ItemsProxy(0) : new Purchase_ItemsProxy(stat.PurchaseCount);
+                purchase_proxy_item = stat == null ? new Purchase_ItemsProxyViewModel(0) : new Purchase_ItemsProxyViewModel(stat.PurchaseCount);
             }
             else
             {
-                purchase_proxy_item = new Purchase_ItemsProxy(0);
+                purchase_proxy_item = new Purchase_ItemsProxyViewModel(0);
             }
 
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>

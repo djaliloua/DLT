@@ -11,8 +11,8 @@ namespace PurchaseManagement
             var config = new MapperConfiguration(cfg =>
             {
                 //Configuring Employee and EmployeeDTO
-                cfg.CreateMap<Purchase_Items,Purchase_ItemsProxy>();
-                cfg.CreateMap<Purchase_ItemsProxy, Purchase_Items>();
+                cfg.CreateMap<Purchase_Items,Purchase_ItemsProxyViewModel>();
+                cfg.CreateMap<Purchase_ItemsProxyViewModel, Purchase_Items>();
                 cfg.CreateMap<Location, MarketLocation>();
                 cfg.CreateMap<MarketLocation, Location>();
                 //Any Other Mapping Configuration ....
