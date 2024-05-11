@@ -15,10 +15,10 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         private readonly IRepository _db;
 
-        public ObservableCollection<Purchase_Items> Purchase_Items { get; }
-        public Purchases Purchases;
-        private Purchase_Items _selected_Purchase_Item;
-        public Purchase_Items Selected_Purchase_Item
+        public ObservableCollection<Purchase_ItemsDTO> Purchase_Items { get; }
+        public PurchasesDTO Purchases;
+        private Purchase_ItemsDTO _selected_Purchase_Item;
+        public Purchase_ItemsDTO Selected_Purchase_Item
         {
             get => _selected_Purchase_Item;
             set => UpdateObservable(ref _selected_Purchase_Item, value);
@@ -41,7 +41,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             this._db = _db;
             mapper = MapperConfig.InitializeAutomapper();
-            Purchase_Items = new ObservableCollection<Purchase_Items>();
+            Purchase_Items = new ObservableCollection<Purchase_ItemsDTO>();
             DoubleClickCommand = new Command(On_DoubleClick);
             OpenCommand = new Command(On_Open);
             DeleteCommand = new Command(On_Delete);
@@ -61,7 +61,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                     loc.Purchase_Id = Selected_Purchase_Item.Purchase_Id;
                     loc.Purchase_Item_Id = Selected_Purchase_Item.Item_Id;
                     await _db.SaveAndUpdateLocationAsync(loc);
-                    await _db.SavePurchaseItemAsync(Selected_Purchase_Item);
+                    await _db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(Selected_Purchase_Item));
                 }
                 await LoadPurchaseItemsAsync(Selected_Purchase_Item.Purchase_Id);
 
@@ -80,7 +80,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", false },
-                            {"Purchase_ItemsProxy", proxy }
+                            {"Purchase_ItemsDTO", proxy }
                         };
                 await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
             }
@@ -105,12 +105,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if(await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    await _db.DeletePurchaseItemAsync(Selected_Purchase_Item);
+                    await _db.DeletePurchaseItemAsync(mapper.Map<Purchase_Items>(Selected_Purchase_Item));
                     await LoadPurchaseItemsAsync(Purchases.Purchase_Id);
                     Purchases.PurchaseStatistics.PurchaseCount = await _db.CountPurchaseItems(Purchases.Purchase_Id); ;
-                    Purchases.PurchaseStatistics.TotalPrice = await _db.GetTotalValue(Purchases, "price");
-                    Purchases.PurchaseStatistics.TotalQuantity = await _db.GetTotalValue(Purchases, "quantity");
-                    await _db.SavePurchaseStatisticsItemAsyn(Purchases.PurchaseStatistics);
+                    Purchases.PurchaseStatistics.TotalPrice = await _db.GetTotalValue(mapper.Map<Purchases>(Purchases), "price");
+                    Purchases.PurchaseStatistics.TotalQuantity = await _db.GetTotalValue(mapper.Map<Purchases>(Purchases), "quantity");
+                    await _db.SavePurchaseStatisticsItemAsyn(mapper.Map<Purchases>(Purchases).PurchaseStatistics);
                     await ViewModelLocator.MainViewModel.LoadPurchasesAsync();
                 }
             }
@@ -150,9 +150,9 @@ namespace PurchaseManagement.MVVM.ViewModels
             var purchase_items = await Task.Run(async() => await _db.GetAllPurchaseItemById(purchaseId));
             for(int i = 0; i <  purchase_items.Count; i++)
             {
-                purchase_items[i].Purchase = Purchases;
+                purchase_items[i].Purchase = mapper.Map<Purchases>(Purchases);
                 purchase_items[i].Location = await _db.GetMarketLocationAsync(purchaseId, purchase_items[i].Item_Id);
-                Purchase_Items.Add(purchase_items[i]);
+                Purchase_Items.Add(mapper.Map<Purchase_ItemsDTO>(purchase_items[i]));
             }
             HideProgressBar();
         }
@@ -179,7 +179,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if(query.Count > 0)
             {
-                Purchases = query["purchase"] as Purchases;
+                Purchases = query["purchase"] as PurchasesDTO;
             }
         }
     }

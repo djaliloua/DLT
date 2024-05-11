@@ -1,4 +1,4 @@
-using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Diagnostics;
 
@@ -26,7 +26,7 @@ public partial class PurchaseItemsPage : ContentPage
     private async void PurchaseItemsPage_NavigatedTo(object sender, NavigatedToEventArgs e)
     {
         
-        if (ViewModelLocator.PurchaseItemsViewModel.Purchases is Purchases p)
+        if (ViewModelLocator.PurchaseItemsViewModel.Purchases is PurchasesDTO p)
         {
             await ViewModelLocator.PurchaseItemsViewModel.LoadPurchaseItemsAsync(p.Purchase_Id);
         }

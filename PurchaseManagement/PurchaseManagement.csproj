@@ -32,7 +32,7 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\project_management.png" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#FFEBEEFF" />
+		<MauiIcon Include="Resources\AppIcon\project_management.png" ForegroundFile="Resources\AppIcon\appiconfg.svg" BaseSize="64,64" Color="#FFEBEEFF" />
 
 		<!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\project_management.svg" BaseSize="128,128" TintColor="#66B3FF" Color="#FFEBEEFF" />

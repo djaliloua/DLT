@@ -1,14 +1,15 @@
 ﻿using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.MVVM.Models.DTOs;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public class PurchaseItemDetailsViewModel:BaseViewModel, IQueryAttributable
     {
         private readonly IRepository _db;
-        private Purchase_Items _purchaseDetails;
-        public Purchase_Items PurchaseDetails
+        private Purchase_ItemsDTO _purchaseDetails;
+        public Purchase_ItemsDTO PurchaseDetails
         {
             get => _purchaseDetails;
             set => UpdateObservable(ref _purchaseDetails, value);
@@ -22,7 +23,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if(query.Count > 0)
             {
-                PurchaseDetails = query["details"] as Purchase_Items;
+                PurchaseDetails = query["details"] as Purchase_ItemsDTO;
             }
         }
     }

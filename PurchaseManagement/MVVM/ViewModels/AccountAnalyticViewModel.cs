@@ -4,7 +4,7 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using MVVM;
-using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.ServiceLocator;
 using SkiaSharp;
@@ -22,7 +22,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private readonly IAccountRepository accountRepository;
         public ISeries[] LineSeries { get; set; } =
     {
-        new LineSeries<Account>
+        new LineSeries<AccountDTO>
         {
             Values = ViewModelLocator.AccountViewModel.Accounts,
             DataLabelsFormatter = point => $"{point.Model?.Money} CFA",
