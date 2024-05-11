@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using PurchaseManagement.MVVM.Models;
-using PurchaseManagement.MVVM.ViewModels;
+using PurchaseManagement.MVVM.Models.DTOs;
 
 namespace PurchaseManagement
 {
