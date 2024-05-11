@@ -161,15 +161,14 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
-                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid RowSpacing="20">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <HorizontalStackLayout Spacing="25"
-                                       >
+                <HorizontalStackLayout Spacing="25">
                     <Border StrokeShape="Ellipse"
                             WidthRequest="50"
                             HeightRequest="50"
@@ -190,31 +189,18 @@
                                HorizontalOptions="End" />
 
                         <Label Text="{Binding Item_Name}"
-                               VerticalOptions="Start"
-                                />
+                               VerticalOptions="Start" />
                     </VerticalStackLayout>
-                    
+
                 </HorizontalStackLayout>
-                <Label Text="{Binding Item_Description}" Grid.Row="1" Padding="5,0,0,0"/>
+                <Label Text="{Binding Item_Description}"
+                       Grid.Row="1"
+                       Padding="5,0,0,0" />
             </Grid>
 
             <Switch Grid.Column="1"
                     VerticalOptions="Start"
-                    IsToggled="{Binding IsLocation}"
-                     />
+                    IsToggled="{Binding IsPurchased}" />
         </Grid>
-        
-        
-        <!--<HorizontalStackLayout Grid.Row="1" Spacing="25"
-                               HorizontalOptions="Start">
-            <Button Text="Edit"
-                    BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}, Mode=FindAncestor}, Path=BindingContext}"
-                    Command="{Binding OpenCommand}"
-                    WidthRequest="100" />
-            <Button Text="Delete"
-                    BindingContext="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}, Mode=FindAncestor}, Path=BindingContext}"
-                    Command="{Binding DeleteCommand}"
-                    WidthRequest="100" />
-        </HorizontalStackLayout>-->
     </Grid>
 </ContentView>

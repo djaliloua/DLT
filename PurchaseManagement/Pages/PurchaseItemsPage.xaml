@@ -75,8 +75,13 @@
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
                                            Command="{Binding GetMapCommand}"
-                                           Text="Map"
-                                           />
+                                           >
+                                    <SwipeItem.IconImageSource>
+                                        <FontImageSource FontFamily="MaterialRegular"
+                                                         Color="Green"
+                                                         Glyph="{x:Static m:MaterialRound.Maps_ugc}" />
+                                    </SwipeItem.IconImageSource>
+                                </SwipeItem>
                             </SwipeView.RightItems>
                             <Frame CornerRadius="10"
                                    HasShadow="True"
@@ -84,7 +89,8 @@
                                    BackgroundColor="{StaticResource Surface}"
                                    ZIndex="20">
                                 <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer BindingContext="{Binding Path=BindingContext, Source={x:Reference main}}"
+                                    <TapGestureRecognizer BindingContext="{Binding Path=BindingContext, 
+                                        Source={x:Reference main}}"
                                                           Command="{Binding DoubleClickCommand}"
                                                           NumberOfTapsRequired="2" />
                                 </Frame.GestureRecognizers>
