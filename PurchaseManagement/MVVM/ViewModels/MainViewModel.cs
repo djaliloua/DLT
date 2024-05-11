@@ -89,6 +89,11 @@ namespace PurchaseManagement.MVVM.ViewModels
             foreach (Purchases purchase in _purchases)
             {
                 purchase.PurchaseStatistics = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
+                purchase.Purchase_Items = await Task.Run(async () => await _db.GetAllPurchaseItemById(purchase.Purchase_Id));
+                for (int i = 0; i < purchase.Purchase_Items.Count; i++)
+                {
+                    purchase.Purchase_Items[i].Location = await _db.GetMarketLocationAsync(purchase.Purchase_Id, purchase.Purchase_Items[i].Item_Id);
+                }
                 Purchases.Add(mapper.Map<PurchasesDTO>(purchase));
             }
             HideProgressBar();
