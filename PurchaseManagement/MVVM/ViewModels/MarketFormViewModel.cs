@@ -73,7 +73,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             db = _db;
             mapper = MapperConfig.InitializeAutomapper();
-            PurchaseItem = new();
             CancelCommand = new Command(On_Cancel);
             SaveCommand = new Command(On_Save);
             BackCommand = new Command(On_Back);

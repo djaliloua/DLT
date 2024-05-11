@@ -54,8 +54,13 @@ namespace PurchaseManagement.MVVM.ViewModels
             SelectedDate = DateTime.Now;
             _ = Load();
             _ = GetMax()
-                .ContinueWith(t => 
-                MakeSnackBarAsync($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA")
+                .ContinueWith(async (t) =>
+                {
+                    if(Accounts.Count > 0)
+                    {
+                        await MakeSnackBarAsync($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                    }
+                }
                 );
             Show = false;
             AddCommand = new Command(On_Add);

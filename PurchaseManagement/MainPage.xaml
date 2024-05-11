@@ -42,15 +42,46 @@
                             <SwipeView>
                                 <Frame CornerRadius="10"
                                        BackgroundColor="{StaticResource Surface}">
-                                    <VerticalStackLayout Spacing="20">
+                                    <VerticalStackLayout Spacing="10">
                                         <VerticalStackLayout.GestureRecognizers>
                                             <TapGestureRecognizer NumberOfTapsRequired="2"
                                                                   BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                                                   Command="{Binding DoubleClickCommand}" />
                                         </VerticalStackLayout.GestureRecognizers>
-                                        <Label Text="{Binding Purchase_Date}" />
-                                        <Label Text="{Binding PurchaseStatistics.PurchaseCount}" />
-                                        <Label Text="{Binding PurchaseStatistics.TotalPrice, StringFormat='{0:C2}'}" />
+                                        
+                                        <HorizontalStackLayout Spacing="10">
+                                            <Image>
+                                                <Image.Source>
+                                                    <FontImageSource FontFamily="MaterialRegular"
+                                                                     Color="Black"
+                                                                     Glyph="{x:Static m:MaterialRound.Date_range}" />
+                                                </Image.Source>
+                                            </Image>
+                                            <Label Text="{Binding Purchase_Date}" 
+                                                   VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+                                        <HorizontalStackLayout Spacing="10">
+                                            <Image>
+                                                <Image.Source>
+                                                    <FontImageSource FontFamily="MaterialRegular"
+                                                                     Color="Black"
+                                                                     Glyph="{x:Static m:MaterialRound.Countertops}" />
+                                                </Image.Source>
+                                            </Image>
+                                            <Label Text="{Binding PurchaseStatistics.PurchaseCount}" VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+                                        <HorizontalStackLayout Spacing="10">
+                                            <Image>
+                                                <Image.Source>
+                                                    <FontImageSource FontFamily="MaterialRegular"
+                                                                     Color="Black"
+                                                                     Glyph="{x:Static m:MaterialRound.Attach_money}" />
+                                                </Image.Source>
+                                            </Image>
+                                            <Label Text="{Binding PurchaseStatistics.TotalPrice, StringFormat='{0:C2}'}"
+                                                   VerticalOptions="Center" />
+
+                                        </HorizontalStackLayout>
                                     </VerticalStackLayout>
                                 </Frame>
                             </SwipeView>
