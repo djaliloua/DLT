@@ -10,7 +10,6 @@ using AutoMapper;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    
     public class MarketFormViewModel:BaseViewModel, IQueryAttributable
     {
         private readonly IRepository db;
@@ -89,6 +88,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "price");
                 purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "quantity");
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
+               
             }
             else
             {
@@ -116,7 +116,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             if(query.Count() > 0)
             {
                 IsSave = (bool)query["IsSave"];
-                PurchaseItem = query["Purchase_ItemsProxy"] as Purchase_ItemsDTO;
+                PurchaseItem = query["Purchase_ItemsDTO"] as Purchase_ItemsDTO;
                 Counter = PurchaseItem.Counter;
             }
         }

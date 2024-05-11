@@ -6,7 +6,7 @@
              xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              BindingContext="{x:Static service:ViewModelLocator.PurchaseItemDetailsViewModel}"
              BackgroundColor="{StaticResource Surface}"
-             Title="Item Details">
+             Title="Details">
     <VerticalStackLayout>
         <Label Text="{Binding PurchaseDetails.Item_Name}"
             VerticalOptions="Center" 

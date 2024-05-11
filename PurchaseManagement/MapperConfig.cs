@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.ViewModels;
 
 namespace PurchaseManagement
 {
@@ -10,30 +11,33 @@ namespace PurchaseManagement
         {
             var config = new MapperConfiguration(cfg =>
             {
-                //Configuring Employee and EmployeeDTO
                 cfg.CreateMap<Purchase_Items,Purchase_ItemsDTO>();
                 cfg.CreateMap<Purchase_ItemsDTO, Purchase_Items>();
+                //
                 cfg.CreateMap<Location, MarketLocation>();
                 cfg.CreateMap<MarketLocation, Location>();
-                //Any Other Mapping Configuration ....
+                //
+                cfg.CreateMap<Location, MarketLocationDTO>();
+                cfg.CreateMap<MarketLocationDTO, Location>();
+
+                //
+                cfg.CreateMap<MarketLocation, MarketLocationDTO>();
+                cfg.CreateMap<MarketLocationDTO, MarketLocation>();
+                //
+                cfg.CreateMap<Account, AccountDTO>();
+                cfg.CreateMap<AccountDTO, Account>();
+                //
+                cfg.CreateMap<Purchases, PurchasesDTO>();
+                cfg.CreateMap<PurchasesDTO, Purchases>();
+                //
+                cfg.CreateMap<PurchaseStatistics, PurchaseStatisticsDTO>();
+                cfg.CreateMap<PurchaseStatisticsDTO, PurchaseStatistics>();
+                //
             });
 
             //Create an Instance of Mapper and return that Instance
             var mapper = new Mapper(config);
             return mapper;
         }
-        //public static Mapper InitializeFromDbAutomapper()
-        //{
-        //    var config = new MapperConfiguration(cfg =>
-        //    {
-        //        //Configuring Employee and EmployeeDTO
-        //        cfg.CreateMap<Purchase_ItemsProxy, Purchase_Items>();
-        //        //Any Other Mapping Configuration ....
-        //    });
-
-        //    //Create an Instance of Mapper and return that Instance
-        //    var mapper = new Mapper(config);
-        //    return mapper;
-        //}
     }
 }

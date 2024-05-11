@@ -1,8 +1,10 @@
-﻿using CommunityToolkit.Maui.Alerts;
+﻿using AutoMapper;
+using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.MVVM.Models.DTOs;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 
@@ -11,7 +13,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class AccountViewModel:BaseViewModel
     {
         private readonly IAccountRepository accountRepository;
-        public ObservableCollection<Account> Accounts { get; }
+        public ObservableCollection<AccountDTO> Accounts { get; }
         private MaxMin _maxSaleValue;
         public MaxMin MaxSaleValue
         {
@@ -30,8 +32,8 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _money;
             set => UpdateObservable(ref _money, value);
         }
-        private Account _selectedAccount;
-        public Account SelectedAccount
+        private AccountDTO _selectedAccount;
+        public AccountDTO SelectedAccount
         {
             get => _selectedAccount;
             set => UpdateObservable(ref _selectedAccount, value);
@@ -42,7 +44,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _selectedDate;
             set => UpdateObservable(ref _selectedDate, value);
         }
-        
+        private Mapper mapper;
         private bool CanProceed => SelectedAccount != null;
         public ICommand AddCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
@@ -50,7 +52,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             Show = true;
             accountRepository = _accountRepository;
-            Accounts = new ObservableCollection<Account>();
+            mapper = MapperConfig.InitializeAutomapper();
+            Accounts = new ObservableCollection<AccountDTO>();
             SelectedDate = DateTime.Now;
             _ = Load();
             _ = GetMax()
@@ -72,7 +75,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if(await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    await accountRepository.DeleteAsync(SelectedAccount);
+                    await accountRepository.DeleteAsync(mapper.Map<Account>(SelectedAccount));
                     await Load();
                 }
                 
@@ -145,7 +148,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             var data = await accountRepository.GetAllAsync();
             for(int i = 0; i < data.Count; i++)
             {
-                Accounts.Add(data[i]);
+                Accounts.Add(mapper.Map<AccountDTO>(data[i]));
             }
         }
         private bool IsAlreadyIn() => Accounts.FirstOrDefault(account => account.DateTime.ToString("M").Contains(SelectedDate.ToString("M"))) != null;

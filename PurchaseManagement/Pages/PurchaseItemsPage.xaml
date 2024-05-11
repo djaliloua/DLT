@@ -11,7 +11,7 @@
              NavigationPage.BackButtonTitle="Back"
              BindingContext="{x:Static service:ViewModelLocator.PurchaseItemsViewModel}"
              BackgroundColor="{StaticResource Surface}"
-             Title="Purchase Items"
+             Title="Purchases"
              >
     <ContentPage.Resources>
         <!--<Style TargetType="{x:Type SwipeItem}">

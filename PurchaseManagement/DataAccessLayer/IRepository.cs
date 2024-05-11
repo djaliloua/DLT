@@ -1,10 +1,10 @@
 ﻿using PurchaseManagement.MVVM.Models;
-using System.Collections.ObjectModel;
 
 namespace PurchaseManagement.DataAccessLayer
 {
     public interface IRepository
     {
+        //Task<Purchase_Items> GetPurchaseItemsAsync();
         Task<MarketLocation> GetMarketLocationAsync(int purchase_id, int purchase_item_id);
         Task<int> SaveAndUpdateLocationAsync(MarketLocation location);
         Task<IEnumerable<Purchases>> GetAllPurchases();

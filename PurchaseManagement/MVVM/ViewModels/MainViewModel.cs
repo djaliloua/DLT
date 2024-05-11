@@ -1,4 +1,5 @@
-﻿using MVVM;
+﻿using AutoMapper;
+using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
@@ -10,10 +11,10 @@ namespace PurchaseManagement.MVVM.ViewModels
 {
     public class MainViewModel:BaseViewModel
     {
-        public ObservableCollection<Purchases> Purchases { get; }
+        public ObservableCollection<PurchasesDTO> Purchases { get; }
         
-        private Purchases _selectedPurchase;
-        public Purchases SelectedPurchase
+        private PurchasesDTO _selectedPurchase;
+        public PurchasesDTO SelectedPurchase
         {
             get => _selectedPurchase;
             set => UpdateObservable(ref _selectedPurchase, value);
@@ -24,6 +25,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _selectedDate;
             set => UpdateObservable(ref _selectedDate, value);
         }
+        private Mapper mapper;
         bool CanOpen => SelectedPurchase != null;
         private readonly IRepository _db;
         public ICommand AddCommand { get; private set; }
@@ -32,7 +34,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             Show = true;
             _db = db;
-            Purchases = new ObservableCollection<Purchases>();
+            mapper = MapperConfig.InitializeAutomapper();
+            Purchases = new ObservableCollection<PurchasesDTO>();
             _ = Load();
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
@@ -67,7 +70,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", true },
-                            { "Purchase_ItemsProxy", purchase_proxy_item }
+                            { "Purchase_ItemsDTO", purchase_proxy_item }
                 };
             await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }
@@ -86,7 +89,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             foreach (Purchases purchase in _purchases)
             {
                 purchase.PurchaseStatistics = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
-                Purchases.Add(purchase);
+                Purchases.Add(mapper.Map<PurchasesDTO>(purchase));
             }
             HideProgressBar();
         }
