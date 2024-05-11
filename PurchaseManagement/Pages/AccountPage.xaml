@@ -28,13 +28,13 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <material:DatePickerField Date="{Binding SelectedDate}"
-                                     
                                       Title="Date" />
 
-            <material:TextField Title="Name"
+            <material:TextField Title="Money"
                                 x:Name="entry"
                                 Grid.Column="1"
                                 VerticalOptions="Center"
+                                
                                 Text="{Binding Money}"
                                 Keyboard="Numeric"
                                 CornerRadius="10"

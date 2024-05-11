@@ -14,6 +14,7 @@ namespace PurchaseManagement.MVVM.Models
         public long Item_Price { get; set; }
         public long Item_Quantity { get; set;}
         public string Item_Description { get; set; }
+        public bool IsPurchased { get; set; }
 
         [ForeignKey(typeof(MarketLocation))]
         public int Location_Id { get; set; }

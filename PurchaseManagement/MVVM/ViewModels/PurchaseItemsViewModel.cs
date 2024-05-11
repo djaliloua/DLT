@@ -75,7 +75,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             if (CanOpen)
             {
                 var mapper = MapperConfig.InitializeAutomapper();
-                Purchase_ItemsProxyViewModel proxy = mapper.Map<Purchase_ItemsProxyViewModel>(Selected_Purchase_Item);
+                Purchase_ItemsDTO proxy = mapper.Map<Purchase_ItemsDTO>(Selected_Purchase_Item);
                 Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", false },

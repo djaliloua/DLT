@@ -9,7 +9,7 @@ using AutoMapper;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public class Purchase_ItemsProxyViewModel:BaseViewModel
+    public class Purchase_ItemsDTO:BaseViewModel
     {
         public int Item_Id { get; set; }
         public int Purchase_Id { get; set; }
@@ -37,22 +37,28 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _item_desc;
             set => UpdateObservable(ref _item_desc, value);
         }
+        private bool _isPurchased;
+        public bool IsPurchased
+        {
+            get => _isPurchased;
+            set => UpdateObservable(ref _isPurchased, value);
+        }
         public int Counter { get; set; }
-        public Purchase_ItemsProxyViewModel(int counter)
+        public Purchase_ItemsDTO(int counter)
         {
             Counter = counter;
         }
-        public Purchase_ItemsProxyViewModel()
+        public Purchase_ItemsDTO()
         {
-            
+            Counter = 0;
         }
 
     }
     public class MarketFormViewModel:BaseViewModel, IQueryAttributable
     {
         private readonly IRepository db;
-        private Purchase_ItemsProxyViewModel _purchaseItem;
-        public Purchase_ItemsProxyViewModel PurchaseItem
+        private Purchase_ItemsDTO _purchaseItem;
+        public Purchase_ItemsDTO PurchaseItem
         {
             get => _purchaseItem;
             set => UpdateObservable(ref _purchaseItem, value);
@@ -73,7 +79,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             db = _db;
             mapper = MapperConfig.InitializeAutomapper();
-            PurchaseItem = new();
             CancelCommand = new Command(On_Cancel);
             SaveCommand = new Command(On_Save);
             BackCommand = new Command(On_Back);
@@ -127,7 +132,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                 purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "price");
                 purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "quantity");
                 await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
-               
             }
             else
             {
@@ -155,7 +159,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             if(query.Count() > 0)
             {
                 IsSave = (bool)query["IsSave"];
-                PurchaseItem = query["Purchase_ItemsProxy"] as Purchase_ItemsProxyViewModel;
+                PurchaseItem = query["Purchase_ItemsProxy"] as Purchase_ItemsDTO;
                 Counter = PurchaseItem.Counter;
             }
         }

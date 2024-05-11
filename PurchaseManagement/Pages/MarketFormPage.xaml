@@ -27,6 +27,7 @@
                                 Text="{Binding PurchaseItem.Item_Quantity}" />
             <material:TextField Title="Note"
                                 Text="{Binding PurchaseItem.Item_Description}" />
+            <material:CheckBox IsChecked="{Binding PurchaseItem.IsPurchased}"/>
         </VerticalStackLayout>
         <Grid Grid.Row="1"
               VerticalOptions="Center"

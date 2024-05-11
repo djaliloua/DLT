@@ -15,7 +15,7 @@
         <views:ControlView />
     </Shell.FlyoutHeader>
     <FlyoutItem FlyoutDisplayOptions="AsSingleItem"
-                IsVisible="True"
+                IsVisible="{OnPlatform Android=True, Default=True}"
                 Title="Home">
         <FlyoutItem.FlyoutIcon>
             <FontImageSource FontFamily="MaterialRegular"
@@ -68,9 +68,8 @@
             </ShellContent.Icon>
         </ShellContent>
     </FlyoutItem>
-
-    
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems"
+                IsVisible="False"
                 Title="Settings">
         <ShellContent Title="Settings"
                       ContentTemplate="{DataTemplate pages:SettingsPage}"

@@ -32,11 +32,10 @@
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\project_management.png" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#FFEBEEFF" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-
+		<MauiSplashScreen Include="Resources\Splash\project_management.svg" BaseSize="128,128" TintColor="#66B3FF" Color="#FFEBEEFF" />
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
@@ -49,6 +48,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\ali.jpg" />
 	  <None Remove="Resources\Images\tof.jpg" />
 	</ItemGroup>
 
@@ -109,6 +109,7 @@
 
 	<ItemGroup>
 	  <Folder Include="BusinessLogic\" />
+	  <Folder Include="MVVM\Models\DTOs\" />
 	</ItemGroup>
 
 </Project>

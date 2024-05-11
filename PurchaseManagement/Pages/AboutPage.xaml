@@ -2,13 +2,41 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PurchaseManagement.Pages.AboutPage"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:vm="clr-namespace:PurchaseManagement.ServiceLocator"
              BindingContext="{x:Static vm:ViewModelLocator.AboutViewModel}"
              BackgroundColor="{StaticResource Surface}"
              Title="About">
-    <Grid Margin="15">
-        <Label Text="{Binding DevName, StringFormat='My name is {0}'}"
-               VerticalOptions="Center"
-               HorizontalOptions="Center" />
+    <Grid Margin="15" RowSpacing="50">
+        <Grid.RowDefinitions>
+            <!--<RowDefinition Height="auto"/>-->
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <VerticalStackLayout HorizontalOptions="Center"
+                             Spacing="20"
+                             Grid.Row="1">
+            <toolkit:AvatarView ImageSource="Resources/Images/ali.jpg"
+                                WidthRequest="100"
+                                HeightRequest="100"
+                                 />
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Description" />
+                <Label Text="   I am Mr. Abdou Djalilou Ali, young and passionate software developer at Msc Technology."
+                       VerticalTextAlignment="Center"
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Contact" />
+                <Label Text="djailoua@gmail.com"
+                       CharacterSpacing="1"
+                       FontSize="Body"
+                       FontAttributes="Bold"
+                       FontAutoScalingEnabled="True"
+                       VerticalTextAlignment="Center"
+                       HorizontalOptions="Start" />
+            </VerticalStackLayout>
+        </VerticalStackLayout>
     </Grid>
 </ContentPage>
