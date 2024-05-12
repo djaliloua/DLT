@@ -50,7 +50,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ICommand DeleteCommand { get; private set; }
         public AccountViewModel(IAccountRepository _accountRepository)
         {
-            Show = true;
             accountRepository = _accountRepository;
             mapper = MapperConfig.InitializeAutomapper();
             Accounts = new ObservableCollection<AccountDTO>();
@@ -65,7 +64,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                     }
                 }
                 );
-            Show = false;
             AddCommand = new Command(On_Add);
             DeleteCommand = new Command(On_Delete);
         }
@@ -144,12 +142,14 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         public async Task Load()
         {
+            ShowProgressBar();
             Accounts.Clear();
             var data = await accountRepository.GetAllAsync();
             for(int i = 0; i < data.Count; i++)
             {
                 Accounts.Add(mapper.Map<AccountDTO>(data[i]));
             }
+            HideProgressBar();
         }
         private bool IsAlreadyIn() => Accounts.FirstOrDefault(account => account.DateTime.ToString("M").Contains(SelectedDate.ToString("M"))) != null;
 

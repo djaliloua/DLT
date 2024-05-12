@@ -14,7 +14,6 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class PurchaseItemsViewModel:BaseViewModel, IQueryAttributable
     {
         private readonly IRepository _db;
-
         public ObservableCollection<Purchase_ItemsDTO> Purchase_Items { get; }
         public PurchasesDTO Purchases;
         private Purchase_ItemsDTO _selected_Purchase_Item;
@@ -146,13 +145,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         public async Task LoadPurchaseItemsAsync(int purchaseId)
         {
             ShowProgressBar();
+            await Task.Delay(1);
             Purchase_Items.Clear();
-            var purchase_items = await Task.Run(async() => await _db.GetAllPurchaseItemById(purchaseId));
-            for(int i = 0; i <  purchase_items.Count; i++)
+            for(int i = 0; i < Purchases.Purchase_Items.Count; i++)
             {
-                purchase_items[i].Purchase = mapper.Map<Purchases>(Purchases);
-                purchase_items[i].Location = await _db.GetMarketLocationAsync(purchaseId, purchase_items[i].Item_Id);
-                Purchase_Items.Add(mapper.Map<Purchase_ItemsDTO>(purchase_items[i]));
+                Purchase_Items.Add(mapper.Map<Purchase_ItemsDTO>(Purchases.Purchase_Items[i]));
             }
             HideProgressBar();
         }

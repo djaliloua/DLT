@@ -13,7 +13,7 @@ namespace PurchaseManagement.DataAccessLayer
         Task<int> SavePurchaseItemAsync(Purchase_Items purchase_item);
         Task<Purchases> GetPurchasesByDate(DateTime dt);
         Task<int> SavePurchaseStatisticsItemAsyn(PurchaseStatistics purchaseStatistics);
-        Task<long> GetTotalValue(Purchases purchases, string colname);
+        Task<double> GetTotalValue(Purchases purchases, string colname);
         Task<PurchaseStatistics> GetPurchaseStatistics(int id);
         Task<int> CountPurchaseItems(int purchase_id);
         Task<int> DeletePurchaseItemAsync(Purchase_Items purchase);

@@ -35,7 +35,7 @@
 		<MauiIcon Include="Resources\AppIcon\project_management.png" ForegroundFile="Resources\AppIcon\appiconfg.svg" BaseSize="64,64" Color="#FFEBEEFF" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\project_management.svg" BaseSize="128,128" TintColor="#66B3FF" Color="#FFEBEEFF" />
+		<MauiSplashScreen Include="Resources\Splash\project_management.svg" BaseSize="100,100" TintColor="#66B3FF" Color="#FFEBEEFF" />
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />

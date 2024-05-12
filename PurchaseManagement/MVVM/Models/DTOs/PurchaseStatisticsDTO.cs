@@ -22,19 +22,19 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _purchaseCount;
             set => UpdateObservable(ref _purchaseCount, value);
         }
-        private long _totalPrice;
-        public long TotalPrice
+        private double _totalPrice;
+        public double TotalPrice
         {
             get => _totalPrice;
             set => UpdateObservable(ref _totalPrice, value);
         }
-        private long _totalQuantity;
-        public long TotalQuantity
+        private double _totalQuantity;
+        public double TotalQuantity
         {
             get => _totalQuantity;
             set => UpdateObservable(ref _totalQuantity, value);
         }
-        public PurchaseStatisticsDTO(int p_id, int p_count, long total_price, long total_quantity)
+        public PurchaseStatisticsDTO(int p_id, int p_count, double total_price, double total_quantity)
         {
             Purchase_Id = p_id;
             PurchaseCount = p_count;
