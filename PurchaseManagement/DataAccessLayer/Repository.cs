@@ -117,26 +117,15 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return res;
         }
-        public async Task<long> GetTotalValue(Purchases purchases, string colname)
+        public async Task<double> GetTotalValue(Purchases purchases, string colname)
         {
-            int res = 0;
-            string sql;
-            List<Result> results = new List<Result>();
-            if(colname == "price")
-                sql = $"select sum(pi.Item_price) Value\r\nfrom purchases p\r\ninner join purchase_items pi on pi.Purchase_Id=p.Purchase_Id\r\nwhere pi.Purchase_Id={purchases.Purchase_Id};";
+            var d = await GetAllPurchaseItemById(purchases.Purchase_Id);
+            double result = 0;
+            if (colname == "Price")
+                result  = d.Sum(x => x.Item_Price);
             else
-                sql = $"select sum(pi.Item_Quantity) Value\r\nfrom purchases p\r\ninner join purchase_items pi on pi.Purchase_Id=p.Purchase_Id\r\nwhere pi.Purchase_Id={purchases.Purchase_Id};";
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
-            {
-                connection.EnableWriteAheadLogging();
-                results = connection.Query<Result>(sql).ToList();
-                if(results.Count == 1)
-                {
-                    res = results.ElementAt(0).Value;
-                }
-            }
-            await Task.Delay(1);
-            return res;
+                result = d.Sum(x => x.Item_Quantity);
+            return result;
         }
         public async Task<PurchaseStatistics> GetPurchaseStatistics(int id)
         {

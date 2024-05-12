@@ -32,14 +32,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ICommand DoubleClickCommand { get; private set; }
         public MainViewModel(IRepository db)
         {
-            Show = true;
             _db = db;
             mapper = MapperConfig.InitializeAutomapper();
             Purchases = new ObservableCollection<PurchasesDTO>();
             _ = Load();
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
-            Show = false;
         }
         private async void On_DoubleClick(object sender)
         {
@@ -52,6 +50,11 @@ namespace PurchaseManagement.MVVM.ViewModels
                 SelectedDate = DateTime.Parse(SelectedPurchase.Purchase_Date);
                 await Shell.Current.GoToAsync(nameof(PurchaseItemsPage), navigationParameter);
             }
+        }
+        public PurchasesDTO GetPurchasesDTOByDate()
+        {
+            PurchasesDTO purchases = Purchases.FirstOrDefault(p => p.Purchase_Date == $"{SelectedDate:yyyy-MM-dd}");
+            return purchases;
         }
         private async void On_Add(object sender)
         {
@@ -88,13 +91,17 @@ namespace PurchaseManagement.MVVM.ViewModels
             IEnumerable<Purchases> _purchases = await Task.Run(_db.GetAllPurchases);
             foreach (Purchases purchase in _purchases)
             {
-                purchase.PurchaseStatistics = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
-                purchase.Purchase_Items = await Task.Run(async () => await _db.GetAllPurchaseItemById(purchase.Purchase_Id));
-                for (int i = 0; i < purchase.Purchase_Items.Count; i++)
+                try
                 {
-                    purchase.Purchase_Items[i].Location = await _db.GetMarketLocationAsync(purchase.Purchase_Id, purchase.Purchase_Items[i].Item_Id);
+                    purchase.PurchaseStatistics = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
+                    purchase.Purchase_Items = await _db.GetAllPurchaseItemById(purchase.Purchase_Id);
+                    for (int i = 0; i < purchase.Purchase_Items.Count; i++)
+                    {
+                        purchase.Purchase_Items[i].Location = await _db.GetMarketLocationAsync(purchase.Purchase_Id, purchase.Purchase_Items[i].Item_Id);
+                    }
+                    Purchases.Add(mapper.Map<PurchasesDTO>(purchase));
                 }
-                Purchases.Add(mapper.Map<PurchasesDTO>(purchase));
+                catch { }
             }
             HideProgressBar();
         }

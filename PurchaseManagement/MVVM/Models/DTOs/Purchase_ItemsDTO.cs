@@ -39,19 +39,13 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _isPurchased;
             set => UpdateObservable(ref _isPurchased, value, async () =>
             {
-                PurchaseStatistics purchaseStatistics;
+                //PurchaseStatistics purchaseStatistics;
                 var db = new Repository();
                 var mapper = MapperConfig.InitializeAutomapper();
                 Purchases purchases = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
                 if (purchases != null)
                 {
                     await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(this));
-                    purchaseStatistics = await db.GetPurchaseStatistics(purchases.Purchase_Id);
-                    purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.Purchase_Id);
-                    purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "price");
-                    purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "quantity");
-                    await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
-
                 }
             });
         }
