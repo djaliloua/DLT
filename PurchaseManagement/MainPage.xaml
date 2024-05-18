@@ -9,99 +9,115 @@
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              x:Name="main"
+             IsEnabled="{Binding IsSavebtnEnabled}"
+             BackgroundColor="LightBlue"
              BindingContext="{x:Static service:ViewModelLocator.MainViewModel}"
-             BackgroundColor="{StaticResource Surface}">
-    <ScrollView Margin="20" 
-                VerticalScrollBarVisibility="Never">
-        <Grid RowSpacing="20">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition />
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <material:DatePickerField Date="{Binding SelectedDate}"
-                                      Title="Date" />
-            <ActivityIndicator IsRunning="{Binding Show}"
-                               Color="Blue"
-                               Grid.Row="1"
-                               IsVisible="{Binding Show}"
-                               VerticalOptions="Center"
-                               HorizontalOptions="Center"
-                               HeightRequest="80"
-                               WidthRequest="80"
-                               x:Name="activity"
-                               ZIndex="10" />
-            <ListView ItemsSource="{Binding Purchases}"
-                      RowHeight="150"
-                      Grid.Row="1"
-                      VerticalScrollBarVisibility="Never"
-                      SelectedItem="{Binding SelectedPurchase}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <SwipeView>
-                                <Frame CornerRadius="10"
-                                       BackgroundColor="{StaticResource Surface}">
-                                    <VerticalStackLayout Spacing="10">
-                                        <VerticalStackLayout.GestureRecognizers>
-                                            <TapGestureRecognizer NumberOfTapsRequired="2"
-                                                                  BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
-                                                                  Command="{Binding DoubleClickCommand}" />
-                                        </VerticalStackLayout.GestureRecognizers>
-                                        
-                                        <HorizontalStackLayout Spacing="10">
-                                            <Image>
-                                                <Image.Source>
-                                                    <FontImageSource FontFamily="MaterialRegular"
-                                                                     Color="Black"
-                                                                     Glyph="{x:Static m:MaterialRound.Date_range}" />
-                                                </Image.Source>
-                                            </Image>
-                                            <Label Text="{Binding Purchase_Date}" 
-                                                   VerticalOptions="Center"/>
-                                        </HorizontalStackLayout>
-                                        <HorizontalStackLayout Spacing="10">
-                                            <Image>
-                                                <Image.Source>
-                                                    <FontImageSource FontFamily="MaterialRegular"
-                                                                     Color="Black"
-                                                                     Glyph="{x:Static m:MaterialRound.Countertops}" />
-                                                </Image.Source>
-                                            </Image>
-                                            <Label Text="{Binding PurchaseStatistics.PurchaseCount}" VerticalOptions="Center"/>
-                                        </HorizontalStackLayout>
-                                        <HorizontalStackLayout Spacing="10">
-                                            <Image>
-                                                <Image.Source>
-                                                    <FontImageSource FontFamily="MaterialRegular"
-                                                                     Color="Black"
-                                                                     Glyph="{x:Static m:MaterialRound.Attach_money}" />
-                                                </Image.Source>
-                                            </Image>
-                                            <Label Text="{Binding PurchaseStatistics.TotalPrice, StringFormat='{0:C2}'}"
-                                                   VerticalOptions="Center" />
+             >
+    <ContentPage.Triggers>
+        <DataTrigger TargetType="ContentPage"
+                     Binding="{Binding Source={x:Reference main}, Path=IsEnabled}"
+                     Value="true">
+            <Setter Property="BackgroundColor"
+                    Value="{StaticResource Surface}" />
 
-                                        </HorizontalStackLayout>
-                                    </VerticalStackLayout>
-                                </Frame>
-                            </SwipeView>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            
-            <Button FontAttributes="Bold"
-                    HorizontalOptions="End"
-                    StyleClass="Elevation4"
+        </DataTrigger>
+    </ContentPage.Triggers>
+    <Grid RowSpacing="20"
+          
+          Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <HorizontalStackLayout Spacing="120"
+                               HorizontalOptions="Center">
+            <material:DatePickerField Date="{Binding SelectedDate}"
+                                      VerticalOptions="End"
+                                      Title="Date" />
+
+            <Button HorizontalOptions="Center"
+                    VerticalOptions="End"
+                    Margin="0,5,0,0"
                     Command="{Binding AddCommand}"
-                    Margin="10"
                     Grid.Row="2">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="MaterialRegular"
                                      Glyph="{x:Static m:MaterialRound.Add}" />
                 </Button.ImageSource>
             </Button>
-        </Grid>
-    </ScrollView>
+        </HorizontalStackLayout>
+        <ActivityIndicator IsRunning="{Binding Show}"
+                           Color="Blue"
+                           Grid.Row="1"
+                           IsVisible="{Binding Show}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HeightRequest="80"
+                           WidthRequest="80"
+                           x:Name="activity"
+                           ZIndex="10" />
+        <ListView ItemsSource="{Binding Purchases}"
+                  RowHeight="150"
+                  Grid.Row="2"
+                  VerticalScrollBarVisibility="Never"
+                  SelectedItem="{Binding SelectedPurchase}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <SwipeView>
+                            <Frame CornerRadius="10"
+                                   BackgroundColor="{StaticResource Surface}">
+                                <VerticalStackLayout Spacing="10">
+                                    <VerticalStackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                              BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                                              Command="{Binding DoubleClickCommand}" />
+                                    </VerticalStackLayout.GestureRecognizers>
+
+                                    <HorizontalStackLayout Spacing="10">
+                                        <Image>
+                                            <Image.Source>
+                                                <FontImageSource FontFamily="MaterialRegular"
+                                                                 Color="Black"
+                                                                 Glyph="{x:Static m:MaterialRound.Date_range}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Label Text="{Binding Purchase_Date}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="10">
+                                        <Image>
+                                            <Image.Source>
+                                                <FontImageSource FontFamily="MaterialRegular"
+                                                                 Color="Black"
+                                                                 Glyph="{x:Static m:MaterialRound.Countertops}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Label Text="{Binding PurchaseStatistics.PurchaseCount}"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="10">
+                                        <Image>
+                                            <Image.Source>
+                                                <FontImageSource FontFamily="MaterialRegular"
+                                                                 Color="Black"
+                                                                 Glyph="{x:Static m:MaterialRound.Attach_money}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Label Text="{Binding PurchaseStatistics.TotalPrice, StringFormat='{0:C2}'}"
+                                               VerticalOptions="Center" />
+
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+
+    </Grid>
 
 </ContentPage>

@@ -5,12 +5,20 @@ namespace MVVM
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        protected virtual void OnShow()
+        {
+
+        }
+        public BaseViewModel()
+        {
+            Show = false;
+        }
         //public abstract Task Load();
         private bool show;
         public bool Show
         {
             get => show; 
-            set => UpdateObservable(ref show, value);
+            set => UpdateObservable(ref show, value, () => OnShow());
         }
         
         public event PropertyChangedEventHandler PropertyChanged;

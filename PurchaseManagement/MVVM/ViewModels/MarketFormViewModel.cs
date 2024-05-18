@@ -8,6 +8,7 @@ using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 using AutoMapper;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -25,6 +26,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             get => _isSave;
             set => UpdateObservable(ref _isSave, value);    
+        }
+        private bool _isSavebtnEnabled;
+        public bool IsSavebtnEnabled
+        {
+            get => _isSavebtnEnabled;
+            set => UpdateObservable(ref _isSavebtnEnabled, value);
         }
         public int Counter = 0;
         Mapper mapper;
@@ -47,6 +54,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             Counter = 0;
             await Shell.Current.GoToAsync("..");
         }
+        protected override void OnShow()
+        {
+            IsSavebtnEnabled = !Show;
+        }
         private async Task MakeToast(int count)
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -61,88 +72,99 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Update(object parameter)
         {
 
-            PurchaseStatistics purchaseStatistics;
-            PurchasesDTO p_dto = ViewModelLocator.MainViewModel.GetPurchasesDTOByDate();
             if (await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
             {
-                await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(PurchaseItem));
-                purchaseStatistics = await db.GetPurchaseStatistics(purchases.Purchase_Id);
-                purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.Purchase_Id);
-                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "price");
-                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "quantity");
-                await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
-                ViewModelLocator.PurchaseItemsViewModel.Purchases.PurchaseStatistics = mapper.Map<PurchaseStatisticsDTO>(purchaseStatistics);
-                // Update UI
-                p_dto.PurchaseStatistics = mapper.Map<PurchaseStatisticsDTO>(purchaseStatistics);
-                p_dto.Purchase_Items.Clear();
-                IList<Purchase_Items> d = await Task.Run(async () => await db.GetAllPurchaseItemById(purchases.Purchase_Id));
-                for (int i = 0; i < d.Count(); i++)
-                {
-                    p_dto.Purchase_Items.Add(mapper.Map<Purchase_ItemsDTO>(d[i]));
-                }
+                await _update(purchases);
             }
             await Shell.Current.GoToAsync("..");
         }
         private async void On_Save(object sender)
         {
-            List<PurchasesDTO> Temp = new();
-            List<Purchase_ItemsDTO> Temp_Purchase_Items = new();
+            ShowProgressBar();
             Purchases purchase = new Purchases("test", ViewModelLocator.MainViewModel.SelectedDate);
-            var item = mapper.Map<Purchase_Items>(PurchaseItem);
-            PurchasesDTO p_dto = ViewModelLocator.MainViewModel.GetPurchasesDTOByDate();
-            
-            PurchaseStatistics purchaseStatistics;
             if (await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
             {
-                item.Purchase_Id = purchases.Purchase_Id;
-                item.Purchase = purchases;
-                await db.SavePurchaseItemAsync(item);
-                purchaseStatistics = await db.GetPurchaseStatistics(purchases.Purchase_Id);
-                purchaseStatistics.PurchaseCount = await db.CountPurchaseItems(purchases.Purchase_Id);
-                purchaseStatistics.TotalPrice = await db.GetTotalValue(purchases, "Price");
-                purchaseStatistics.TotalQuantity = await db.GetTotalValue(purchases, "Quantity");
-                await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
-
-                // Update UI data
-                p_dto.PurchaseStatistics = mapper.Map<PurchaseStatisticsDTO>(purchaseStatistics);
-                p_dto.Purchase_Items.Clear();
-                IList<Purchase_Items> d = await db.GetAllPurchaseItemById(purchases.Purchase_Id);
-                for (int i = 0; i < d.Count(); i++)
-                {
-                    p_dto.Purchase_Items.Add(mapper.Map<Purchase_ItemsDTO>(d[i]));
-                }
-
+                await _savePurchaseItemAndStatDb(purchases);
             }
             else
             {
-                await db.SavePurchaseAsync(purchase);
-                item = mapper.Map<Purchase_Items>(PurchaseItem);
-                
-                await db.SavePurchaseItemAsync(item);
-                purchaseStatistics = new(purchase.Purchase_Id, 1,
-                       PurchaseItem.Item_Price,
-                        PurchaseItem.Item_Quantity);
-                
-                await db.SavePurchaseStatisticsItemAsyn(purchaseStatistics);
-
-                // Update UI data
-                purchase.PurchaseStatistics = purchaseStatistics;
-                item.Purchase_Id = purchase.Purchase_Id;
-                item.Purchase = purchase;
-                p_dto = mapper.Map<PurchasesDTO>(purchase);
-                p_dto.Purchase_Items = new List<Purchase_ItemsDTO>() { mapper.Map<Purchase_ItemsDTO>(item) };
-                ViewModelLocator.MainViewModel.Purchases.Add(p_dto);
-                Temp.AddRange(ViewModelLocator.MainViewModel.Purchases);
-                ViewModelLocator.MainViewModel.Purchases.Clear();
-                var d = Temp.OrderByDescending(x => x.Purchase_Date).ToArray();
-                for(int i=0; i<d.Length; i++)
-                {
-                    ViewModelLocator.MainViewModel.Purchases.Add(d[i]);
-                }
-               
+                await _saveDb(purchase);
             }
             Counter++;
             await MakeToast(Counter);
+            HideProgressBar();
+        }
+        private async Task _update(Purchases purchase)
+        {
+            Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(PurchaseItem);
+            for(int i = 0; i < purchase.Purchase_Items.Count; i++)
+            {
+                if (purchase.Purchase_Items[i].Item_Id == m_purchase_item.Item_Id)
+                {
+                    purchase.Purchase_Items[i].Item_Description = m_purchase_item.Item_Description;
+                    purchase.Purchase_Items[i].Item_Quantity = m_purchase_item.Item_Quantity;
+                    purchase.Purchase_Items[i].Purchase = m_purchase_item.Purchase;
+                    purchase.Purchase_Items[i].IsPurchased = m_purchase_item.IsPurchased;
+                    purchase.Purchase_Items[i].Item_Price = m_purchase_item.Item_Price;
+                    purchase.Purchase_Items[i].Location = m_purchase_item.Location;
+                    purchase.Purchase_Items[i].Location_Id = m_purchase_item.Location_Id;
+                    purchase.Purchase_Items[i].Item_Id = m_purchase_item.Item_Id;
+                    purchase.Purchase_Items[i].Item_Name = m_purchase_item.Item_Name;
+                    break;
+                }
+            }
+            purchase = await db.SavePurchaseAsync(purchase);
+
+            // Update UI
+            UpdateById(mapper.Map<PurchasesDTO>(purchase));
+        }
+       
+        private async Task _savePurchaseItemAndStatDb(Purchases purchase)
+        {
+            Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(PurchaseItem);
+            purchase.Purchase_Items.Add(m_purchase_item);
+            PurchaseStatistics stat = await db.GetPurchaseStatistics(purchase.Purchase_Id);
+            purchase.PurchaseStatistics = stat;
+            purchase = await db.SavePurchaseAsync(purchase);
+
+
+            // Update UI
+
+            UpdateById(mapper.Map<PurchasesDTO>(purchase));
+
+        }
+        
+        private void UpdateById(PurchasesDTO newObj)
+        {
+            foreach (PurchasesDTO p in ViewModelLocator.MainViewModel.Purchases)
+            {
+                if(p.Purchase_Id == newObj.Purchase_Id)
+                {
+                    p.Purchase_Items = newObj.Purchase_Items;
+                    p.PurchaseStatistics = newObj.PurchaseStatistics;
+                    break;
+                }
+            }
+        }
+        private async Task _saveDb(Purchases purchase)
+        {
+            purchase = await db.SavePurchaseAsync(purchase);
+            PurchaseStatistics m_purchaseStatistics = new(purchase.Purchase_Id, 1, PurchaseItem.Item_Price, PurchaseItem.Item_Quantity);
+            Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(PurchaseItem);
+            //
+            m_purchase_item.Purchase = purchase;
+            m_purchase_item.Purchase_Id = purchase.Purchase_Id;
+            purchase.Purchase_Items.Add(m_purchase_item);
+            purchase.PurchaseStatistics = m_purchaseStatistics;
+            purchase = await db.SavePurchaseAsync(purchase);
+            //
+            ViewModelLocator.MainViewModel.Purchases.Add(mapper.Map<PurchasesDTO>(purchase));
+            var data = ViewModelLocator.MainViewModel.Purchases.OrderByDescending(p => p.Purchase_Date).ToArray();
+            ViewModelLocator.MainViewModel.Purchases.Clear();
+            for (int i=0; i<data.Count(); i++)
+            {
+                ViewModelLocator.MainViewModel.Purchases.Add(data[i]);
+            }
         }
         private async void On_Cancel(object sender)
         {

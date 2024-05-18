@@ -6,16 +6,30 @@
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              BindingContext="{x:Static service:ViewModelLocator.MarketFormViewModel}"
-             BackgroundColor="{StaticResource Surface}"
+             BackgroundColor="LightBlue"
+             IsEnabled="{Binding IsSavebtnEnabled}"
+             x:Name="page"
              Title="Form">
+    <ContentPage.Triggers>
+        <DataTrigger TargetType="ContentPage"
+                     Binding="{Binding Source={x:Reference page}, Path=IsEnabled}" Value="true">
+            <Setter Property="BackgroundColor"
+                    Value="{StaticResource Surface}" />
+
+        </DataTrigger>
+    </ContentPage.Triggers>
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding BackCommand}" />
     </Shell.BackButtonBehavior>
-    <Grid Margin="20">
+    
+    <Grid Margin="20"
+          >
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
+        
+        
         <VerticalStackLayout Spacing="15">
             <material:TextField Title="Name"
                                 Text="{Binding PurchaseItem.Item_Name}" />
@@ -29,6 +43,16 @@
                                 Text="{Binding PurchaseItem.Item_Description}" />
             <material:CheckBox IsChecked="{Binding PurchaseItem.IsPurchased}"/>
         </VerticalStackLayout>
+        <ActivityIndicator IsRunning="{Binding Show}"
+                           Color="Blue"
+                           Grid.Row="{x:OnPlatform Android=0, Default=0}"
+                           IsVisible="{Binding Show}"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HeightRequest="80"
+                           WidthRequest="80"
+                           x:Name="activity"
+                           ZIndex="10" />
         <Grid Grid.Row="1"
               VerticalOptions="Center"
               HorizontalOptions="End">
@@ -38,6 +62,7 @@
                     IsVisible="{Binding IsSave}"
                     Text="Save"
                     Command="{Binding SaveCommand}"
+                    
                     Margin="10">
             </Button>
             <Button FontAttributes="Bold"

@@ -15,19 +15,19 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => item_name;
             set => UpdateObservable(ref item_name, value);
         }
-        private long item_price;
+        private long item_price = 1000;
         public long Item_Price
         {
             get => item_price;
             set => UpdateObservable(ref item_price, value);
         }
-        private long item_quantity;
+        private long item_quantity = 10;
         public long Item_Quantity
         {
             get => item_quantity;
             set => UpdateObservable(ref item_quantity, value);
         }
-        private string _item_desc;
+        private string _item_desc = "Je t'aime bien";
         public string Item_Description
         {
             get => _item_desc;
@@ -67,6 +67,13 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         {
             get => _purchases;
             set => UpdateObservable(ref _purchases, value);
+        }
+        //public bool IsLocation => Location != null; 
+        private bool isLocation;
+        public bool IsLocation
+        {
+            get => isLocation;
+            set => UpdateObservable(ref isLocation, value);
         }
         public Purchase_ItemsDTO()
         {

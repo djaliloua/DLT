@@ -168,10 +168,10 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <HorizontalStackLayout Spacing="25">
+                <HorizontalStackLayout Spacing="25" >
                     <Border StrokeShape="Ellipse"
-                            WidthRequest="50"
-                            HeightRequest="50"
+                            WidthRequest="{x:OnPlatform Android=70, Default=100}"
+                            HeightRequest="{Binding Source={RelativeSource Self}, Path=WidthRequest}"
                             VerticalOptions="Start"
                             Style="{StaticResource bder}"
                             HorizontalOptions="Start">
@@ -181,21 +181,22 @@
                                VerticalOptions="Center"
                                HorizontalOptions="Center" />
                     </Border>
-                    <VerticalStackLayout Spacing="4"
-                                         Margin="0,5,0,0">
+                    <VerticalStackLayout Spacing="1"
+                                         VerticalOptions="{x:OnPlatform Android=Start, Default=Center}"
+                                         Margin="0,0,0,0">
                         <Label Text="{Binding Purchase.Purchase_Date}"
                                VerticalOptions="Start"
                                Margin="0,0,0,0"
-                               HorizontalOptions="End" />
-
+                               HorizontalOptions="Start" />
                         <Label Text="{Binding Item_Name}"
                                VerticalOptions="Start" />
+                        <Label Text="{Binding Item_Price, StringFormat='{0:C2}'}"
+                               VerticalOptions="Start" />
                     </VerticalStackLayout>
-
-                </HorizontalStackLayout>
+                </HorizontalStackLayout >
                 <Label Text="{Binding Item_Description}"
                        Grid.Row="1"
-                       Padding="5,0,0,0" />
+                       Padding="10,0,0,0" />
             </Grid>
 
             <Switch Grid.Column="1"

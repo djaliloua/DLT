@@ -50,6 +50,7 @@ namespace PurchaseManagement
                 .UseUraniumUI()
                 .UseSkiaSharp(true)
                 .UseUraniumUIMaterial()
+                //.UseMaterialMauiIcons()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
