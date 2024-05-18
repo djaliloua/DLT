@@ -5,12 +5,14 @@ using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public class MainViewModel:BaseViewModel
     {
+        private readonly object lockObject;
         public ObservableCollection<PurchasesDTO> Purchases { get; }
         
         private PurchasesDTO _selectedPurchase;
@@ -26,6 +28,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             set => UpdateObservable(ref _selectedDate, value);
         }
         private Mapper mapper;
+        private bool _isSavebtnEnabled;
+        public bool IsSavebtnEnabled
+        {
+            get => _isSavebtnEnabled;
+            set => UpdateObservable(ref _isSavebtnEnabled, value);
+        }
         bool CanOpen => SelectedPurchase != null;
         private readonly IRepository _db;
         public ICommand AddCommand { get; private set; }
@@ -35,9 +43,14 @@ namespace PurchaseManagement.MVVM.ViewModels
             _db = db;
             mapper = MapperConfig.InitializeAutomapper();
             Purchases = new ObservableCollection<PurchasesDTO>();
+            lockObject = new object();
             _ = Load();
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
+        }
+        protected override void OnShow()
+        {
+            IsSavebtnEnabled = !Show;
         }
         private async void On_DoubleClick(object sender)
         {
@@ -88,20 +101,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             ShowProgressBar();
             Purchases.Clear();
-            IEnumerable<Purchases> _purchases = await Task.Run(_db.GetAllPurchases);
-            foreach (Purchases purchase in _purchases)
+            IList<Purchases> _purchases = await _db.GetAllPurchases();
+            for (int p = 0; p < _purchases.Count; p++)
             {
-                try
-                {
-                    purchase.PurchaseStatistics = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
-                    purchase.Purchase_Items = await _db.GetAllPurchaseItemById(purchase.Purchase_Id);
-                    for (int i = 0; i < purchase.Purchase_Items.Count; i++)
-                    {
-                        purchase.Purchase_Items[i].Location = await _db.GetMarketLocationAsync(purchase.Purchase_Id, purchase.Purchase_Items[i].Item_Id);
-                    }
-                    Purchases.Add(mapper.Map<PurchasesDTO>(purchase));
-                }
-                catch { }
+                Purchases.Add(mapper.Map<PurchasesDTO>(_purchases[p]));
             }
             HideProgressBar();
         }

@@ -33,6 +33,7 @@ namespace PurchaseManagement
                 cfg.CreateMap<PurchaseStatistics, PurchaseStatisticsDTO>();
                 cfg.CreateMap<PurchaseStatisticsDTO, PurchaseStatistics>();
                 //
+
             });
 
             //Create an Instance of Mapper and return that Instance

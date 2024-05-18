@@ -1,15 +1,60 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              x:Class="PurchaseManagement.Pages.PurchaseItemDetails"
              xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
              xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              BindingContext="{x:Static service:ViewModelLocator.PurchaseItemDetailsViewModel}"
              BackgroundColor="{StaticResource Surface}"
              Title="Details">
-    <VerticalStackLayout>
-        <Label Text="{Binding PurchaseDetails.Item_Name}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+    <ContentPage.Resources>
+        <Style TargetType="HorizontalStackLayout">
+            <Setter Property="Spacing"
+                    Value="20" />
+        </Style>
+    </ContentPage.Resources>
+    <VerticalStackLayout Spacing="20"
+                         Margin="20">
+        <HorizontalStackLayout>
+            <Label Text="Name: " />
+            <Label Text="{Binding PurchaseDetails.Item_Name}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout>
+            <Label Text="Price: " />
+            <Label Text="{Binding PurchaseDetails.Item_Price, StringFormat='{0:C2}'}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout>
+            <Label Text="Quantity: " />
+            <Label Text="{Binding PurchaseDetails.Item_Quantity}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+        </HorizontalStackLayout>
+
+        <HorizontalStackLayout>
+            <Label Text="Bought: " />
+            <Label Text="{Binding PurchaseDetails.IsPurchased}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+        </HorizontalStackLayout>
+        <HorizontalStackLayout>
+            <Label Text="Location: " />
+            <Label Text="{Binding PurchaseDetails.IsLocation}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+        </HorizontalStackLayout>
+        <VerticalStackLayout Spacing="10"
+                             x:Name="vert">
+            <Label Text="Description" />
+            <material:TextField Text="{Binding PurchaseDetails.Item_Description}"
+                                WidthRequest="250"
+                                IsReadOnly="True"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Start" />
+        </VerticalStackLayout>
     </VerticalStackLayout>
 </ContentPage>

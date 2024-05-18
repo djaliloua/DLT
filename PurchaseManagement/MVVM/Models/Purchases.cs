@@ -10,8 +10,14 @@ namespace PurchaseManagement.MVVM.Models
         public int Purchase_Id { get; set; }
         public string Title { get; set; }
         public string Purchase_Date { get; set; }
+        
+        private IList<Purchase_Items> _purchase_Items = new List<Purchase_Items>();
         [OneToMany(nameof(Purchase_Id))]
-        public IList<Purchase_Items> Purchase_Items { get; set; }
+        public IList<Purchase_Items> Purchase_Items
+        {
+            get => _purchase_Items;
+            set => _purchase_Items = value; 
+        }
 
         [ForeignKey(typeof(PurchaseStatistics))]
         public int Purchase_Stats_Id { get; set; }

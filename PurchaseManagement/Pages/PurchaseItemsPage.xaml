@@ -10,9 +10,18 @@
              x:Name="main"
              NavigationPage.BackButtonTitle="Back"
              BindingContext="{x:Static service:ViewModelLocator.PurchaseItemsViewModel}"
-             BackgroundColor="{StaticResource Surface}"
+             BackgroundColor="LightBlue"
              Title="Purchases"
              >
+    <ContentPage.Triggers>
+        <DataTrigger TargetType="ContentPage"
+                     Binding="{Binding Source={x:Reference main}, Path=IsEnabled}"
+                     Value="true">
+            <Setter Property="BackgroundColor"
+                    Value="{StaticResource Surface}" />
+
+        </DataTrigger>
+    </ContentPage.Triggers>
     <ContentPage.Resources>
         <!--<Style TargetType="{x:Type SwipeItem}">
             <Setter Property="BackgroundColor"
