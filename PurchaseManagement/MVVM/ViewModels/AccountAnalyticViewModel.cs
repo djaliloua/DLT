@@ -24,7 +24,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         new LineSeries<AccountDTO>
         {
-            Values = ViewModelLocator.AccountViewModel.Accounts,
+            Values = ViewModelLocator.AccountViewModel.GetItems(),
             DataLabelsFormatter = point => $"{point.Model?.Money} CFA",
             DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
             TooltipLabelFormatter = point => $"{point.Model?.DateTime:D}",

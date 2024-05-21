@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CommunityToolkit.Maui.Core.Extensions;
 using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
@@ -11,17 +12,32 @@ using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public class PurchaseItemsViewModel:BaseViewModel, IQueryAttributable
+    public abstract class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: Purchase_ItemsDTO
+    {
+        
+        public double GetTotalValue(string colname)
+        {
+            double result = 0;
+            if (colname == "Price")
+                result = GetItems().Sum(x => x.Item_Price);
+            else
+                result = GetItems().Sum(x => x.Item_Quantity);
+            return result;
+        }
+        public override void Reorder()
+        {
+            var data = Items.OrderByDescending(item => item.Item_Id).ToList();
+            SetItems(data);
+        }
+        public int CountPurchaseItems() => Counter;
+
+    }
+    public class PurchaseItemsViewModel: PurchaseItemsViewModelLoadable<Purchase_ItemsDTO>, IQueryAttributable
     {
         private readonly IRepository _db;
-        public ObservableCollection<Purchase_ItemsDTO> Purchase_Items { get; }
+
         public PurchasesDTO Purchases;
-        private Purchase_ItemsDTO _selected_Purchase_Item;
-        public Purchase_ItemsDTO Selected_Purchase_Item
-        {
-            get => _selected_Purchase_Item;
-            set => UpdateObservable(ref _selected_Purchase_Item, value);
-        }
+        
         private bool _isLocAvailable;
         public bool IsLocAvailable
         {
@@ -34,8 +50,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _isSavebtnEnabled;
             set => UpdateObservable(ref _isSavebtnEnabled, value);
         }
-        private Mapper mapper;
-        bool CanOpen => Selected_Purchase_Item != null;
+        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand OpenMapCommand { get; private set; }
@@ -45,8 +60,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public PurchaseItemsViewModel(IRepository db)
         {
             _db = db;
-            mapper = MapperConfig.InitializeAutomapper();
-            Purchase_Items = new ObservableCollection<Purchase_ItemsDTO>();
+            _ = LoadItems();
             DoubleClickCommand = new Command(On_DoubleClick);
             OpenCommand = new Command(On_Open);
             DeleteCommand = new Command(On_Delete);
@@ -56,19 +70,17 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async Task _savePurchaseItemAndStatDb(Purchases purchase)
         {
-            Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(Selected_Purchase_Item);
+            Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(SelectedItem);
             purchase.Purchase_Items.Add(m_purchase_item);
             await _db.SavePurchaseAsync(purchase);
 
-
             // Update UI
             purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            UpdateById(mapper.Map<PurchasesDTO>(purchase));
+            ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(purchase));
         }
         private void UpdateById(PurchasesDTO newObj)
         {
-            
-            foreach(PurchasesDTO p in ViewModelLocator.MainViewModel.Purchases)
+            foreach(PurchasesDTO p in ViewModelLocator.MainViewModel.GetItems())
             {
                 if(p.Purchase_Id == newObj.Purchase_Id)
                 {
@@ -77,25 +89,25 @@ namespace PurchaseManagement.MVVM.ViewModels
                     break;
                 }
             }
+            ViewModelLocator.MainViewModel.Reorder();
         }
         private async void On_GetMap(object parameter)
         {
-            
             ShowProgressBar();
-            if (CanOpen)
+            if (IsSelected)
             {
                 Location location = await GetCurrentLocation();
-                if (await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
+                if (await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases)
                 {
                     var loc = mapper.Map<MarketLocation>(location);
-                    Selected_Purchase_Item.Location = mapper.Map<MarketLocationDTO>(loc);
-                    loc.Purchase_Id = Selected_Purchase_Item.Purchase_Id;
-                    loc.Purchase_Item_Id = Selected_Purchase_Item.Item_Id;
-                    Selected_Purchase_Item.IsLocation = Selected_Purchase_Item.Location != null;
+                    SelectedItem.Location = mapper.Map<MarketLocationDTO>(loc);
+                    loc.Purchase_Id = SelectedItem.Purchase_Id;
+                    loc.Purchase_Item_Id = SelectedItem.Item_Id;
+                    SelectedItem.IsLocation = SelectedItem.Location != null;
                     await _db.SaveAndUpdateLocationAsync(loc);
                     
                     var purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    UpdateById(mapper.Map<PurchasesDTO>(purchase));
+                    ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(purchase));
                 }
                 
             }
@@ -105,10 +117,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Edit(object parameter)
         {
-            if (CanOpen)
+            if (IsSelected)
             {
                 var mapper = MapperConfig.InitializeAutomapper();
-                Purchase_ItemsDTO proxy = mapper.Map<Purchase_ItemsDTO>(Selected_Purchase_Item);
+                Purchase_ItemsDTO proxy = mapper.Map<Purchase_ItemsDTO>(SelectedItem);
                 Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", false },
@@ -121,10 +133,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_OpenMap(object parameter)
         {
-            if (CanOpen)
+            if (IsSelected)
             {
-                if (Selected_Purchase_Item.Location != null)
-                    await NavigateToBuilding25(mapper.Map<Location>(Selected_Purchase_Item.Location));
+                if (SelectedItem.Location != null)
+                    await NavigateToBuilding25(mapper.Map<Location>(SelectedItem.Location));
                 else
                     await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
             }
@@ -133,19 +145,21 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_Delete(object parameter)
         {
-            if(CanOpen)
+            if(IsSelected)
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    await _db.DeletePurchaseItemAsync(mapper.Map<Purchase_Items>(Selected_Purchase_Item));
-                    var purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    UpdateById(mapper.Map<PurchasesDTO>(purchase));
-                    await LoadPurchaseItemsDTOAsync(mapper.Map<PurchasesDTO>(purchase).Purchase_Items);
+                    await _db.DeletePurchaseItemAsync(mapper.Map<Purchase_Items>(SelectedItem));
+                    var p = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+
+                    ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(p));
+                    DeleteItem(SelectedItem);
                 }
             }
             else
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
         }
+        
         protected override void OnShow()
         {
             IsSavebtnEnabled = !Show;
@@ -167,27 +181,17 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void On_DoubleClick(object parameter)
         {
-            if (CanOpen)
+            if (IsSelected)
             {
                 Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
-                            { "details", Selected_Purchase_Item }
+                            { "details", SelectedItem }
                         };
                 await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), navigationParameter);
             }
         }
-        public async Task LoadPurchaseItemsDTOAsync(IList<Purchase_ItemsDTO> items)
-        {
-            ShowProgressBar();
-            await Task.Delay(1);
-            Purchase_Items.Clear();
-            var data = items.OrderByDescending(p => p.Item_Id).ToList();
-            for (int i = 0; i < data.Count; i++)
-            {
-                Purchase_Items.Add(mapper.Map<Purchase_ItemsDTO>(data[i]));
-            }
-            HideProgressBar();
-        }
+       
+       
         private async Task<Location> GetCurrentLocation()
         {
             try
@@ -214,5 +218,14 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Purchases = query["purchase"] as PurchasesDTO;
             }
         }
+
+        public override async Task LoadItems()
+        {
+            ShowProgressBar();
+            await Task.Delay(1);
+            SetItems(Purchases.Purchase_Items);
+            HideProgressBar();
+        }
+        
     }
 }

@@ -57,11 +57,11 @@
                            WidthRequest="80"
                            x:Name="activity"
                            ZIndex="10" />
-        <ListView ItemsSource="{Binding Purchases}"
+        <ListView ItemsSource="{Binding Items}"
                   RowHeight="150"
                   Grid.Row="2"
                   VerticalScrollBarVisibility="Never"
-                  SelectedItem="{Binding SelectedPurchase}">
+                  SelectedItem="{Binding SelectedItem}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

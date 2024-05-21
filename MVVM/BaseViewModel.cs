@@ -3,8 +3,10 @@ using System.Runtime.CompilerServices;
 
 namespace MVVM
 {
-    public class BaseViewModel : INotifyPropertyChanged
+
+    public class BaseViewModel: INotifyPropertyChanged
     {
+
         protected virtual void OnShow()
         {
 
@@ -18,7 +20,7 @@ namespace MVVM
         public bool Show
         {
             get => show; 
-            set => UpdateObservable(ref show, value, () => OnShow());
+            set => UpdateObservable(ref show, value, OnShow);
         }
         
         public event PropertyChangedEventHandler PropertyChanged;

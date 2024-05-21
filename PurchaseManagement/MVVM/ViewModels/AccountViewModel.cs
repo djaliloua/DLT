@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
-using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
@@ -10,10 +9,9 @@ using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public class AccountViewModel:BaseViewModel
+    public class AccountViewModel: Loadable<AccountDTO>
     {
         private readonly IAccountRepository accountRepository;
-        public ObservableCollection<AccountDTO> Accounts { get; }
         private MaxMin _maxSaleValue;
         public MaxMin MaxSaleValue
         {
@@ -32,11 +30,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _money;
             set => UpdateObservable(ref _money, value);
         }
-        private AccountDTO _selectedAccount;
-        public AccountDTO SelectedAccount
+        
+        private bool _isSavebtnEnabled;
+        public bool IsSavebtnEnabled
         {
-            get => _selectedAccount;
-            set => UpdateObservable(ref _selectedAccount, value);
+            get => _isSavebtnEnabled;
+            set => UpdateObservable(ref _isSavebtnEnabled, value);
         }
         private DateTime _selectedDate;
         public DateTime SelectedDate
@@ -45,20 +44,18 @@ namespace PurchaseManagement.MVVM.ViewModels
             set => UpdateObservable(ref _selectedDate, value);
         }
         private Mapper mapper;
-        private bool CanProceed => SelectedAccount != null;
         public ICommand AddCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public AccountViewModel(IAccountRepository _accountRepository)
         {
             accountRepository = _accountRepository;
             mapper = MapperConfig.InitializeAutomapper();
-            Accounts = new ObservableCollection<AccountDTO>();
             SelectedDate = DateTime.Now;
-            _ = Load();
+            _ = LoadItems();
             _ = GetMax()
                 .ContinueWith(async (t) =>
                 {
-                    if(Accounts.Count > 0)
+                    if(Items.Count > 0)
                     {
                         await MakeSnackBarAsync($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
                     }
@@ -67,16 +64,33 @@ namespace PurchaseManagement.MVVM.ViewModels
             AddCommand = new Command(On_Add);
             DeleteCommand = new Command(On_Delete);
         }
+        public override void Reorder()
+        {
+            var data = Items.OrderByDescending(a => a.DateTime).ToList();
+            SetItems(data);
+        }
+        public override async Task LoadItems()
+        {
+            ShowProgressBar();
+            var data = await accountRepository.GetAllAsync();
+            var dt = data.Select(mapper.Map<AccountDTO>).ToList();
+            SetItems(dt);
+            
+            HideProgressBar();
+        }
+        protected override void OnShow()
+        {
+            IsSavebtnEnabled = !Show;
+        }
         private async void On_Delete(object parameter)
         {
-            if (CanProceed)
+            if (IsSelected)
             {
                 if(await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    await accountRepository.DeleteAsync(mapper.Map<Account>(SelectedAccount));
-                    await Load();
+                    await accountRepository.DeleteAsync(mapper.Map<Account>(SelectedItem));
+                    DeleteItem(SelectedItem);
                 }
-                
             }
             else
             {
@@ -94,16 +108,6 @@ namespace PurchaseManagement.MVVM.ViewModels
 
             MaxSaleValue = max;
         }
-        private async void GetMin()
-        {
-            MaxMin min = new();
-            IList<MaxMin> val = await accountRepository.GetMinAsync();
-            if (val.Count == 1)
-            {
-                min = val[0];
-            }
-            MinSaleValue = min;
-        }
         private async void On_Add(object parameter)
         {
             string tempVal = (string)parameter;
@@ -112,9 +116,9 @@ namespace PurchaseManagement.MVVM.ViewModels
                 if (!string.IsNullOrEmpty(tempVal))
                 {
                     Account account = new Account(SelectedDate, double.Parse(Money.ToString()));
-                    await accountRepository.SaveOrUpdateAsync(account);
+                    var x = await accountRepository.SaveOrUpdateAsync(account);
                     Money = 0;
-                    await Load();
+                    AddItem(mapper.Map<AccountDTO>(x));
                 }
             }
             else
@@ -140,18 +144,8 @@ namespace PurchaseManagement.MVVM.ViewModels
             var snackbar = Snackbar.Make(text, duration:duration, visualOptions: snackbarOptions);
             await snackbar.Show(cancellationTokenSource.Token);
         }
-        public async Task Load()
-        {
-            ShowProgressBar();
-            Accounts.Clear();
-            var data = await accountRepository.GetAllAsync();
-            for(int i = 0; i < data.Count; i++)
-            {
-                Accounts.Add(mapper.Map<AccountDTO>(data[i]));
-            }
-            HideProgressBar();
-        }
-        private bool IsAlreadyIn() => Accounts.FirstOrDefault(account => account.DateTime.ToString("M").Contains(SelectedDate.ToString("M"))) != null;
+        private bool IsAlreadyIn() => Items.FirstOrDefault(account => $"{account.DateTime:yyyy-MM-dd}".Contains($"{SelectedDate:yyyy-MM-dd}")) != null;
 
+        
     }
 }

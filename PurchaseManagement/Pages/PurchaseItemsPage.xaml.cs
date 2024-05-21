@@ -9,16 +9,16 @@ public partial class PurchaseItemsPage : ContentPage
 	public PurchaseItemsPage()
 	{
 		InitializeComponent();
-        NavigatedTo += PurchaseItemsPage_NavigatedTo;
+        //Loaded += PurchaseItemsPage_Loaded;
 	}
-    
-    // TODO: Show data on UI by batch(20) and trigger additional data loading when scroll reaches last item
-    private async void PurchaseItemsPage_NavigatedTo(object sender, NavigatedToEventArgs e)
+
+    private async void PurchaseItemsPage_Loaded(object sender, EventArgs e)
     {
-        
-        if (ViewModelLocator.PurchaseItemsViewModel.Purchases is PurchasesDTO p)
+        if (ViewModelLocator.PurchaseItemsViewModel.Purchases is PurchasesDTO)
         {
-            await ViewModelLocator.PurchaseItemsViewModel.LoadPurchaseItemsDTOAsync(p.Purchase_Items);
+            await ViewModelLocator.PurchaseItemsViewModel.LoadItems();
         }
     }
+
+    
 }
