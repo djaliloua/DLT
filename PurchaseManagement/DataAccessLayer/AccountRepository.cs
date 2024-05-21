@@ -38,7 +38,7 @@ namespace PurchaseManagement.DataAccessLayer
             return accounts;
         }
 
-        public async Task<int> SaveOrUpdateAsync(Account account)
+        public async Task<Account> SaveOrUpdateAsync(Account account)
         {
             int res = 0;
             await Task.Delay(1);
@@ -50,7 +50,7 @@ namespace PurchaseManagement.DataAccessLayer
                 else
                     res = connection.Insert(account);
             }
-            return res;
+            return account;
         }
         public async Task<int> DeleteAsync(Account account)
         {
@@ -103,7 +103,7 @@ namespace PurchaseManagement.DataAccessLayer
     public interface IAccountRepository
     {
         Task<IList<Account>> GetAllAsync();
-        Task<int> SaveOrUpdateAsync(Account account);
+        Task<Account> SaveOrUpdateAsync(Account account);
         Task<int> DeleteAsync(Account account);
         Task<IList<Statistics>> GetStatisticsAsync();
         Task<IList<MaxMin>> GetMaxAsync();

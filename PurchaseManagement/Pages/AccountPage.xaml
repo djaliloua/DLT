@@ -6,9 +6,19 @@
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:local="clr-namespace:PurchaseManagement.ServiceLocator"
-             BackgroundColor="{StaticResource Surface}"
+             BackgroundColor="LightBlue"
+             x:Name="page"
              BindingContext="{x:Static local:ViewModelLocator.AccountViewModel}"
              Title="Account">
+    <ContentPage.Triggers>
+        <DataTrigger TargetType="ContentPage"
+                     Binding="{Binding Source={x:Reference page}, Path=IsEnabled}"
+                     Value="true">
+            <Setter Property="BackgroundColor"
+                    Value="{StaticResource Surface}" />
+
+        </DataTrigger>
+    </ContentPage.Triggers>
     <ContentPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="Fuchsia"
                                    StatusBarStyle="LightContent" />
@@ -29,12 +39,10 @@
             </Grid.ColumnDefinitions>
             <material:DatePickerField Date="{Binding SelectedDate}"
                                       Title="Date" />
-
             <material:TextField Title="Money"
                                 x:Name="entry"
                                 Grid.Column="1"
                                 VerticalOptions="Center"
-                                
                                 Text="{Binding Money}"
                                 Keyboard="Numeric"
                                 CornerRadius="10"
@@ -43,8 +51,21 @@
                     HorizontalOptions="CenterAndExpand"
                     VerticalOptions="Center"
                     Command="{Binding AddCommand}"
+                    IsEnabled="True"
                     CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"
                     Grid.Column="2">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference entry}, Path=Text}" Value="0">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={x:Reference entry}, Path=Text}"
+                                 Value="">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                </Button.Triggers>
                 <Button.ImageSource>
                     <FontImageSource FontFamily="MaterialRegular"
                                      Glyph="{x:Static m:MaterialRound.Add}" />
@@ -61,14 +82,14 @@
                            WidthRequest="80"
                            x:Name="activity"
                            ZIndex="10" />
-        <ListView ItemsSource="{Binding Accounts}"
+        <ListView ItemsSource="{Binding Items}"
                   Margin="0,20,0,0"
                   x:Name="listview"
                   RowHeight="150"
                   VerticalScrollBarVisibility="Never"
                   VerticalOptions="Start"
                   Grid.Row="1"
-                  SelectedItem="{Binding SelectedAccount}">
+                  SelectedItem="{Binding SelectedItem}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

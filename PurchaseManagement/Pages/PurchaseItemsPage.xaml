@@ -42,13 +42,13 @@
                            WidthRequest="80"
                            x:Name="activity"
                            ZIndex="10" />
-        <ListView SelectedItem="{Binding Selected_Purchase_Item}"
+        <ListView SelectedItem="{Binding SelectedItem}"
                   HasUnevenRows="True"
                   x:Name="listview"
                   Grid.Row="0"
                   VerticalScrollBarVisibility="Never"
                   CachingStrategy="RecycleElementAndDataTemplate"
-                  ItemsSource="{Binding Purchase_Items}">
+                  ItemsSource="{Binding Items}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -86,7 +86,7 @@
                                            Command="{Binding GetMapCommand}"
                                            >
                                     <SwipeItem.IconImageSource>
-                                        <FontImageSource FontFamily="MaterialRegular"
+                                        <FontImageSource FontFamily="MaterialOutlined"
                                                          Color="Green"
                                                          Glyph="{x:Static m:MaterialRound.Maps_ugc}" />
                                     </SwipeItem.IconImageSource>

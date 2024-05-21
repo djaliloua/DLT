@@ -28,6 +28,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<NeutralLanguage>en-US</NeutralLanguage>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -48,6 +49,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\abdou.jpg" />
 	  <None Remove="Resources\Images\ali.jpg" />
 	  <None Remove="Resources\Images\tof.jpg" />
 	</ItemGroup>
@@ -109,6 +111,15 @@
 
 	<ItemGroup>
 	  <Folder Include="BusinessLogic\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Strings\AppResources.es-US.resx">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Strings\AppResources.fr-FR.resx">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 </Project>

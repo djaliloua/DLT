@@ -17,25 +17,73 @@
         <VerticalStackLayout HorizontalOptions="Center"
                              Spacing="20"
                              Grid.Row="1">
-            <toolkit:AvatarView ImageSource="Resources/Images/ali.jpg"
-                                WidthRequest="100"
-                                HeightRequest="100"
-                                 />
-            <VerticalStackLayout Spacing="10">
-                <Label Text="Description" />
+            <Border HeightRequest="150"
+                    WidthRequest="150"
+                    StrokeShape="RoundRectangle 80,80,80,80"
+                    HorizontalOptions="Center"
+                    StrokeThickness="8"
+                    Margin="0,0,0,0">
+
+                <Image Aspect="AspectFit"
+                       Source="abdou.jpg"
+                       SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                       HeightRequest="160"
+                       WidthRequest="160"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Center" />
+            </Border>
+            <VerticalStackLayout>
+                <Label Text="Abdou Djalilou Ali" />
+                <Label Text="Software developer" />
                 <Label Text="   I am Mr. Abdou Djalilou Ali, young and passionate software developer at Msc Technology."
                        VerticalTextAlignment="Center"
                        HorizontalOptions="Center" />
             </VerticalStackLayout>
-            <VerticalStackLayout Spacing="10">
-                <Label Text="Contact" />
-                <Label Text="djailoua@gmail.com"
-                       CharacterSpacing="1"
-                       FontSize="Body"
-                       FontAttributes="Bold"
-                       FontAutoScalingEnabled="True"
+            <!--<VerticalStackLayout Spacing="10">
+                <Label Text="Description" />
+                <Label Text="   I am Mr. Abdou Djalilou Ali, young and passionate software developer at Msc Technology."
                        VerticalTextAlignment="Center"
-                       HorizontalOptions="Start" />
+                       HorizontalOptions="Center" />
+            </VerticalStackLayout>-->
+            <VerticalStackLayout Spacing="10">
+                <Label Text="Contacts" />
+                <HorizontalStackLayout Spacing="55">
+                    <Label Text="+39-327-814-1905"
+                           FontSize="Body"
+                           x:Name="phone"
+                           FontAttributes="Bold"
+                           FontAutoScalingEnabled="True"
+                           VerticalTextAlignment="Center"
+                           HorizontalOptions="Start" />
+                    <Button Command="{Binding DialCommand}"
+                            CommandParameter="{Binding Source={x:Reference phone}, Path=Text}">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MaterialRegular"
+                                             
+                                             Glyph="{x:Static m:MaterialRound.Call}" />
+                        </Button.ImageSource>
+                    </Button>
+
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="20">
+                    <Label Text="djailoua@gmail.com"
+                           CharacterSpacing="1"
+                           FontSize="Body"
+                           x:Name="email"
+                           FontAttributes="Bold"
+                           FontAutoScalingEnabled="True"
+                           VerticalTextAlignment="Center"
+                           HorizontalOptions="Start" />
+                    <Button 
+                            Command="{Binding CopyCommand}"
+                            CommandParameter="{Binding Source={x:Reference email}, Path=Text}">
+                        <Button.ImageSource>
+                            <FontImageSource FontFamily="MaterialRegular"
+                                             Glyph="{x:Static m:MaterialRound.Content_copy}" />
+                        </Button.ImageSource>
+                    </Button>
+
+                </HorizontalStackLayout>
             </VerticalStackLayout>
         </VerticalStackLayout>
     </Grid>

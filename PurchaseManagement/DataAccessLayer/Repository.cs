@@ -73,7 +73,7 @@ namespace PurchaseManagement.DataAccessLayer
             {
                 connection.CreateTable<Purchase_Items>();
                 connection.EnableWriteAheadLogging();
-                purchase_items = connection.Table<Purchase_Items>().Where(p => p.Purchase_Id == purchaseId).ToList();
+                purchase_items = connection.Table<Purchase_Items>().Where(p => p.Purchase_Id == purchaseId).OrderByDescending(x => x.Item_Id).ToList();
             }
             return purchase_items;
         }
@@ -97,14 +97,14 @@ namespace PurchaseManagement.DataAccessLayer
                     else
                         res = connection.Insert(purchase);
 
-                    for (int i = 0; i < purchase.Purchase_Items.Count; i++)
-                    {
-                        purchase.Purchase_Items[i].Purchase = purchase;
-                        purchase.Purchase_Items[i].Purchase_Id = purchase.Purchase_Id;
-                        await SavePurchaseItemAsync(purchase.Purchase_Items[i]);
-                    }
-                    PurchaseStatistics purchaseStatistics = await GetPurchaseStatistics(purchase.Purchase_Id);
-                    await SavePurchaseStatisticsItemAsyn(purchase, purchaseStatistics);
+                    //for (int i = 0; i < purchase.Purchase_Items.Count; i++)
+                    //{
+                    //    purchase.Purchase_Items[i].Purchase = purchase;
+                    //    purchase.Purchase_Items[i].Purchase_Id = purchase.Purchase_Id;
+                    //    await SavePurchaseItemAsync(purchase.Purchase_Items[i]);
+                    //}
+                    //PurchaseStatistics purchaseStatistics = await GetPurchaseStatistics(purchase.Purchase_Id);
+                    //await SavePurchaseStatisticsItemAsyn(purchase, purchaseStatistics);
                 }
                 catch (Exception ex)
                 {
@@ -120,7 +120,7 @@ namespace PurchaseManagement.DataAccessLayer
 
             return purchases;
         }
-        public async Task<int> SavePurchaseItemAsync(Purchase_Items purchase_item)
+        public async Task<Purchase_Items> SavePurchaseItemAsync(Purchase_Items purchase_item)
         {
             int res = 0;
             await Task.Delay(1);
@@ -135,6 +135,8 @@ namespace PurchaseManagement.DataAccessLayer
                     res = connection.Update(purchase_item);
                 else
                     res = connection.Insert(purchase_item);
+                PurchaseStatistics purchaseStatistics = await GetPurchaseStatistics(purchase_item.Purchase.Purchase_Id);
+                await SavePurchaseStatisticsItemAsyn(purchase_item.Purchase, purchaseStatistics);
                 if (purchase_item.Location != null)
                 {
                     if (purchase_item.Location.Location_Id != 0)
@@ -144,9 +146,9 @@ namespace PurchaseManagement.DataAccessLayer
                 }
 
             }
-            return res;
+            return purchase_item;
         }
-        public async Task<int> SavePurchaseStatisticsItemAsyn(Purchases purchase, PurchaseStatistics purchaseStatistics)
+        public async Task<PurchaseStatistics> SavePurchaseStatisticsItemAsyn(Purchases purchase, PurchaseStatistics purchaseStatistics)
         {
             int res = 0;
             await Task.Delay(1);
@@ -172,7 +174,7 @@ namespace PurchaseManagement.DataAccessLayer
                 else
                     res = connection.Insert(purchaseStatistics);
             }
-            return res;
+            return purchaseStatistics;
         }
         public async Task<double> GetTotalValue(Purchases purchases, string colname)
         {

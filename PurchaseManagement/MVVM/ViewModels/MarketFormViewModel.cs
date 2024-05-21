@@ -7,8 +7,6 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 using AutoMapper;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -85,6 +83,8 @@ namespace PurchaseManagement.MVVM.ViewModels
             if (await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
             {
                 await _savePurchaseItemAndStatDb(purchases);
+                // Update UI
+                
             }
             else
             {
@@ -97,54 +97,45 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async Task _update(Purchases purchase)
         {
             Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(PurchaseItem);
-            for(int i = 0; i < purchase.Purchase_Items.Count; i++)
-            {
-                if (purchase.Purchase_Items[i].Item_Id == m_purchase_item.Item_Id)
-                {
-                    purchase.Purchase_Items[i].Item_Description = m_purchase_item.Item_Description;
-                    purchase.Purchase_Items[i].Item_Quantity = m_purchase_item.Item_Quantity;
-                    purchase.Purchase_Items[i].Purchase = m_purchase_item.Purchase;
-                    purchase.Purchase_Items[i].IsPurchased = m_purchase_item.IsPurchased;
-                    purchase.Purchase_Items[i].Item_Price = m_purchase_item.Item_Price;
-                    purchase.Purchase_Items[i].Location = m_purchase_item.Location;
-                    purchase.Purchase_Items[i].Location_Id = m_purchase_item.Location_Id;
-                    purchase.Purchase_Items[i].Item_Id = m_purchase_item.Item_Id;
-                    purchase.Purchase_Items[i].Item_Name = m_purchase_item.Item_Name;
-                    break;
-                }
-            }
-            purchase = await db.SavePurchaseAsync(purchase);
+            PurchaseStatistics stat = await db.GetPurchaseStatistics(purchase.Purchase_Id);
+            purchase.PurchaseStatistics = stat;
+            m_purchase_item.Purchase = purchase;
+            m_purchase_item.Purchase_Id = purchase.Purchase_Id;
+            await db.SavePurchaseItemAsync(m_purchase_item);
+            var s = await db.SavePurchaseStatisticsItemAsyn(purchase, stat);
+            purchase.Purchase_Stats_Id = s.Id;
+            
+            _ = await db.SavePurchaseAsync(purchase);
 
             // Update UI
-            UpdateById(mapper.Map<PurchasesDTO>(purchase));
+            var p = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            Update(mapper.Map<PurchasesDTO>(p));
         }
        
         private async Task _savePurchaseItemAndStatDb(Purchases purchase)
         {
             Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(PurchaseItem);
-            purchase.Purchase_Items.Add(m_purchase_item);
             PurchaseStatistics stat = await db.GetPurchaseStatistics(purchase.Purchase_Id);
             purchase.PurchaseStatistics = stat;
-            purchase = await db.SavePurchaseAsync(purchase);
-
-
-            // Update UI
-
-            UpdateById(mapper.Map<PurchasesDTO>(purchase));
+            m_purchase_item.Purchase = purchase;
+            m_purchase_item.Purchase_Id = purchase.Purchase_Id;
+            await db.SavePurchaseItemAsync(m_purchase_item);
+            var s = await db.SavePurchaseStatisticsItemAsyn(purchase, stat);
+            purchase.Purchase_Stats_Id = s.Id;
+            await db.SavePurchaseAsync(purchase);
+            // UI
+            purchase = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            var p_DTO = mapper.Map<PurchasesDTO>(purchase);
+            ViewModelLocator.PurchaseItemsViewModel.SetItems(p_DTO.Purchase_Items);
+            ViewModelLocator.PurchaseItemsViewModel.Reorder();
+            p_DTO.Purchase_Items = ViewModelLocator.PurchaseItemsViewModel.GetItems();
+            Update(p_DTO);
 
         }
         
-        private void UpdateById(PurchasesDTO newObj)
+        private void Update(PurchasesDTO newObj)
         {
-            foreach (PurchasesDTO p in ViewModelLocator.MainViewModel.Purchases)
-            {
-                if(p.Purchase_Id == newObj.Purchase_Id)
-                {
-                    p.Purchase_Items = newObj.Purchase_Items;
-                    p.PurchaseStatistics = newObj.PurchaseStatistics;
-                    break;
-                }
-            }
+            ViewModelLocator.MainViewModel.Update(newObj);
         }
         private async Task _saveDb(Purchases purchase)
         {
@@ -152,19 +143,16 @@ namespace PurchaseManagement.MVVM.ViewModels
             PurchaseStatistics m_purchaseStatistics = new(purchase.Purchase_Id, 1, PurchaseItem.Item_Price, PurchaseItem.Item_Quantity);
             Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(PurchaseItem);
             //
-            m_purchase_item.Purchase = purchase;
             m_purchase_item.Purchase_Id = purchase.Purchase_Id;
             purchase.Purchase_Items.Add(m_purchase_item);
             purchase.PurchaseStatistics = m_purchaseStatistics;
-            purchase = await db.SavePurchaseAsync(purchase);
+            m_purchase_item.Purchase = purchase;
+            
+            await db.SavePurchaseItemAsync(m_purchase_item);
             //
-            ViewModelLocator.MainViewModel.Purchases.Add(mapper.Map<PurchasesDTO>(purchase));
-            var data = ViewModelLocator.MainViewModel.Purchases.OrderByDescending(p => p.Purchase_Date).ToArray();
-            ViewModelLocator.MainViewModel.Purchases.Clear();
-            for (int i=0; i<data.Count(); i++)
-            {
-                ViewModelLocator.MainViewModel.Purchases.Add(data[i]);
-            }
+            var p = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            ViewModelLocator.MainViewModel.AddItem(mapper.Map<PurchasesDTO>(p));
+            
         }
         private async void On_Cancel(object sender)
         {
