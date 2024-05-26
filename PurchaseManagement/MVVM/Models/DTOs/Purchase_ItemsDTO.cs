@@ -45,6 +45,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
                 Purchases purchases = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
                 if (purchases != null)
                 {
+                    //Purchase = mapper.Map<PurchasesDTO>(purchases);
                     await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(this));
                 }
             });

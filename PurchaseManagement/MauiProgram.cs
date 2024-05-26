@@ -7,6 +7,9 @@ using PurchaseManagement.DataAccessLayer;
 
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using UraniumUI;
+using Microsoft.Maui.LifecycleEvents;
+using System.Diagnostics;
+using PurchaseManagement.ServiceLocator;
 
 namespace PurchaseManagement
 {
@@ -50,14 +53,20 @@ namespace PurchaseManagement
                 .UseUraniumUI()
                 .UseSkiaSharp(true)
                 .UseUraniumUIMaterial()
-                //.UseMaterialMauiIcons()
+                .ConfigureLifecycleEvents(events =>
+                {
+#if ANDROID
+                     events.AddAndroid(android => android
+                    .OnStart(async (activity) => await ViewModelLocator.MainViewModel.Load()));
+#endif
+                })
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddMaterialIconFonts();
                 });
-
+            
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

@@ -1,17 +1,18 @@
 ﻿using MVVM;
 using System.Collections.ObjectModel;
 
-namespace PurchaseManagement.MVVM.ViewModels
+namespace Patterns
 {
     public abstract class Loadable<TItem> : BaseViewModel
     {
-        public ObservableCollection<TItem> Items { get; set; } = new ObservableCollection<TItem>();
+        public ObservableCollection<TItem> Items { get; private set; } = new ObservableCollection<TItem>();
         private TItem _selectedItem;
         public TItem SelectedItem
         {
             get => _selectedItem;
             set => UpdateObservable(ref _selectedItem, value);
         }
+        
         public abstract Task LoadItems();
         public virtual ObservableCollection<TItem> GetItems() => Items;
         public virtual void DeleteItem(TItem item)
@@ -31,7 +32,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             SelectedItem = item;
             OnPropertyChanged(nameof(SelectedItem));
         }
-        public virtual TItem GetAt(int index) => Items[index];  
+        public virtual TItem GetAt(int index) => Items[index];
 
         public virtual void AddItem(TItem item)
         {

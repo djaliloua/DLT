@@ -4,6 +4,7 @@ using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
+using Patterns;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -24,7 +25,12 @@ namespace PurchaseManagement.MVVM.ViewModels
                 item1.PurchaseStatistics = item.PurchaseStatistics;
                 item1.Purchase_Stats_Id = item.Purchase_Stats_Id;
             }
-      
+            
+        }
+        public override void Reorder()
+        {
+            var data = GetItems().OrderByDescending(a => a.Purchase_Date).ToList();
+            SetItems(data);
         }
 
     }
@@ -55,9 +61,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             _db = db;
             mapper = MapperConfig.InitializeAutomapper();
-            _ = Load();
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
+#if WINDOWS
+            _ = Load();
+#endif
         }
         protected override void OnShow()
         {
@@ -113,10 +121,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             SetItems(data); 
             HideProgressBar();
         }
-        public override void Reorder()
-        {
-            var data = GetItems().OrderByDescending(a => a.Purchase_Date).ToList();
-            SetItems(data);
-        }
+        
     }
 }

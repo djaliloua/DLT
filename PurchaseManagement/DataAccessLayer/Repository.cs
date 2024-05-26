@@ -43,6 +43,7 @@ namespace PurchaseManagement.DataAccessLayer
         }
         public async Task<IList<Purchases>> GetAllPurchases()
         {
+            string sqlComd = $"select *\r\nfrom Purchases P\r\nOrder by P.Purchase_Date desc\r\n;";
             List<Purchases> purchases = null;
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
@@ -50,7 +51,8 @@ namespace PurchaseManagement.DataAccessLayer
                 connection.CreateTable<PurchaseStatistics>();
                 connection.CreateTable<Purchase_Items>();
                 connection.EnableWriteAheadLogging();
-                purchases = connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Date).ToList();
+                purchases = connection.Query<Purchases>(sqlComd);
+                //purchases = connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Date).ToList();
                 for (int i = 0; i < purchases.Count; i++)
                 {
                     purchases[i].PurchaseStatistics = await GetPurchaseStatistics(purchases[i].Purchase_Id);
@@ -67,13 +69,16 @@ namespace PurchaseManagement.DataAccessLayer
         }
         public async Task<IList<Purchase_Items>> GetAllPurchaseItemById(int purchaseId)
         {
+            string sqlCmd = $"select *\r\nfrom Purchase_items P\r\nwhere P.Purchase_Id = {purchaseId}\r\norder by P.Item_id desc;";
             List<Purchase_Items> purchase_items = null;
             await Task.Delay(1);
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase_Items>();
                 connection.EnableWriteAheadLogging();
-                purchase_items = connection.Table<Purchase_Items>().Where(p => p.Purchase_Id == purchaseId).OrderByDescending(x => x.Item_Id).ToList();
+                purchase_items = connection.Query<Purchase_Items>(sqlCmd);
+
+                //purchase_items = connection.Table<Purchase_Items>().Where(p => p.Purchase_Id == purchaseId).OrderByDescending(x => x.Item_Id).ToList();
             }
             return purchase_items;
         }
@@ -97,14 +102,6 @@ namespace PurchaseManagement.DataAccessLayer
                     else
                         res = connection.Insert(purchase);
 
-                    //for (int i = 0; i < purchase.Purchase_Items.Count; i++)
-                    //{
-                    //    purchase.Purchase_Items[i].Purchase = purchase;
-                    //    purchase.Purchase_Items[i].Purchase_Id = purchase.Purchase_Id;
-                    //    await SavePurchaseItemAsync(purchase.Purchase_Items[i]);
-                    //}
-                    //PurchaseStatistics purchaseStatistics = await GetPurchaseStatistics(purchase.Purchase_Id);
-                    //await SavePurchaseStatisticsItemAsyn(purchase, purchaseStatistics);
                 }
                 catch (Exception ex)
                 {
@@ -120,6 +117,33 @@ namespace PurchaseManagement.DataAccessLayer
 
             return purchases;
         }
+        //public async Task<Purchases> GetPurchasesByDate(DateTime dt)
+        //{
+        //    string sqlCmd = $"select *\r\nfrom Purchases P\r\nwhere P.Purchase_Date= '{dt:yyyy-MM-dd}';";
+        //    Purchases purchases = null;
+        //    using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+        //    {
+        //        connection.CreateTable<Purchases>();
+        //        connection.CreateTable<PurchaseStatistics>();
+        //        connection.CreateTable<Purchase_Items>();
+        //        connection.CreateTable<MarketLocation>();
+        //        var p = connection.Query<Purchases>(sqlCmd);
+        //        if(p != null && p.Count > 0)
+        //        {
+        //            purchases = p[0];
+        //            purchases.PurchaseStatistics = await GetPurchaseStatistics(purchases.Purchase_Id);
+        //            var data = await GetAllPurchaseItemById(purchases.Purchase_Id); 
+        //            for(int i = 1; i < data.Count; i++)
+        //            {
+        //                data[i].Purchase = purchases;
+        //                data[i].Location = await GetMarketLocationAsync(purchases.Purchase_Id, data[i].Location_Id);
+        //            }
+        //            purchases.Purchase_Items = data;
+
+        //        }
+        //    }
+        //    return purchases;
+        //}
         public async Task<Purchase_Items> SavePurchaseItemAsync(Purchase_Items purchase_item)
         {
             int res = 0;

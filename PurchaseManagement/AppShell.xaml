@@ -15,7 +15,7 @@
         <views:ControlView />
     </Shell.FlyoutHeader>
     <FlyoutItem FlyoutDisplayOptions="AsSingleItem"
-                IsVisible="{OnPlatform Android=True, Default=False}"
+                IsVisible="{OnPlatform Android=True, Default=True}"
                 Title="Home">
         <FlyoutItem.FlyoutIcon>
             <FontImageSource FontFamily="MaterialRegular"
