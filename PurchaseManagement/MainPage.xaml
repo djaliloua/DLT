@@ -40,6 +40,7 @@
                     VerticalOptions="End"
                     Margin="0,5,0,0"
                     Command="{Binding AddCommand}"
+                    IsEnabled="{Binding IsSavebtnEnabled}"
                     Grid.Row="2">
                 <Button.ImageSource>
                     <FontImageSource FontFamily="MaterialRegular"

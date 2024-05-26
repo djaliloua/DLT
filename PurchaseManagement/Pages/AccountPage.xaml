@@ -9,6 +9,7 @@
              BackgroundColor="LightBlue"
              x:Name="page"
              BindingContext="{x:Static local:ViewModelLocator.AccountViewModel}"
+             IsEnabled="{Binding IsSavebtnEnabled}"
              Title="Account">
     <ContentPage.Triggers>
         <DataTrigger TargetType="ContentPage"

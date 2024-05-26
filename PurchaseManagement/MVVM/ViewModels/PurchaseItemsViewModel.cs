@@ -1,42 +1,35 @@
 ﻿using AutoMapper;
-using CommunityToolkit.Maui.Core.Extensions;
-using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using Patterns;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: Purchase_ItemsDTO
     {
-        
-        public double GetTotalValue(string colname)
-        {
-            double result = 0;
-            if (colname == "Price")
-                result = GetItems().Sum(x => x.Item_Price);
-            else
-                result = GetItems().Sum(x => x.Item_Quantity);
-            return result;
-        }
+        public PurchasesDTO Purchases;
+        //public override void SetItems(IEnumerable<TItem> items)
+        //{
+        //    base.SetItems(items);
+        //    Purchases = items.FirstOrDefault().Purchase;
+        //}
         public override void Reorder()
         {
             var data = Items.OrderByDescending(item => item.Item_Id).ToList();
             SetItems(data);
         }
-        public int CountPurchaseItems() => Counter;
 
     }
     public class PurchaseItemsViewModel: PurchaseItemsViewModelLoadable<Purchase_ItemsDTO>, IQueryAttributable
     {
         private readonly IRepository _db;
 
-        public PurchasesDTO Purchases;
+        
         
         private bool _isLocAvailable;
         public bool IsLocAvailable

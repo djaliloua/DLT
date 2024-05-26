@@ -62,7 +62,7 @@
                     IsVisible="{Binding IsSave}"
                     Text="Save"
                     Command="{Binding SaveCommand}"
-                    
+                    IsEnabled="{Binding IsSavebtnEnabled}"
                     Margin="10">
             </Button>
             <Button FontAttributes="Bold"

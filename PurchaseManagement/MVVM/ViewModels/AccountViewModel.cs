@@ -4,8 +4,8 @@ using CommunityToolkit.Maui.Core;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Patterns;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
