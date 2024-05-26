@@ -114,6 +114,7 @@
 
 	<ItemGroup>
 	  <Folder Include="BusinessLogic\" />
+	  <Folder Include="Output\" />
 	</ItemGroup>
 
 	<ItemGroup>
