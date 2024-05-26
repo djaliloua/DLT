@@ -19,5 +19,11 @@ jobs:
         dotnet-version: 7.0.x
     - name: Install MAUI workload
       run: dotnet workload install maui
-    - name: test
-      run: ls
+
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Publish
+      run: |
+         cd PurchaseManagement
+         dotnet build --configuration Release --no-restore
+         echo 'build done'
