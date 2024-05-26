@@ -1,15 +1,6 @@
-﻿using CommunityToolkit.Maui;
-using Microsoft.Extensions.Logging;
-using Mopups.Hosting;
-using PurchaseManagement.MVVM.ViewModels;
+﻿using PurchaseManagement.MVVM.ViewModels;
 using PurchaseManagement.Pages;
 using PurchaseManagement.DataAccessLayer;
-
-using SkiaSharp.Views.Maui.Controls.Hosting;
-using UraniumUI;
-using Microsoft.Maui.LifecycleEvents;
-using System.Diagnostics;
-using PurchaseManagement.ServiceLocator;
 
 namespace PurchaseManagement
 {
