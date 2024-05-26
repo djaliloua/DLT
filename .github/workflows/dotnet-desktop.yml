@@ -25,5 +25,6 @@ jobs:
     - name: Publish
       run: |
          cd PurchaseManagement
-         dotnet build --configuration Release --no-restore
+         dotnet build -f net7.0 --configuration Release --no-restore
+         ls
          echo 'build done'
