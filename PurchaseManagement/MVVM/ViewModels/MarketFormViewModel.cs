@@ -7,6 +7,7 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 using AutoMapper;
+using Microsoft.Maui.ApplicationModel;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

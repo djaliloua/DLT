@@ -6,6 +6,7 @@ using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;
+using Microsoft.Maui.ApplicationModel;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

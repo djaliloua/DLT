@@ -1,6 +1,12 @@
 ﻿using PurchaseManagement.MVVM.ViewModels;
 using PurchaseManagement.Pages;
 using PurchaseManagement.DataAccessLayer;
+using CommunityToolkit.Maui;
+using UraniumUI;
+using SkiaSharp.Views.Maui.Controls.Hosting;
+using Microsoft.Maui.LifecycleEvents;
+using PurchaseManagement.ServiceLocator;
+using Microsoft.Extensions.Logging;
 
 namespace PurchaseManagement
 {
@@ -38,7 +44,6 @@ namespace PurchaseManagement
                 .PagesExtensions()
                 .DbContextExtension()
                 .ViewModelsExtension()
-                .ConfigureMopups()
                 .UseMauiCommunityToolkit()
                 .UseMauiApp<App>()
                 .UseUraniumUI()

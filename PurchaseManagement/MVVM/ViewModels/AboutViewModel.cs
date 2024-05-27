@@ -2,6 +2,8 @@
 using CommunityToolkit.Maui.Core;
 using MVVM;
 using System.Windows.Input;
+using Microsoft.Maui.ApplicationModel.Communication;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

@@ -7,6 +7,8 @@ using PurchaseManagement.ServiceLocator;
 using System.Diagnostics;
 using System.Windows.Input;
 using Patterns;
+using Microsoft.Maui.Devices.Sensors;
+using Microsoft.Maui.ApplicationModel;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

@@ -2,6 +2,7 @@
 using SQLite;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace PurchaseManagement.DataAccessLayer
 {
