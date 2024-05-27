@@ -25,7 +25,7 @@ jobs:
     - name: Publish
       run: |
          cd PurchaseManagement
-         dotnet restore -r win-x64
+         dotnet restore -r win10-x64
          dotnet clean
          dotnet build -f net8.0-windows10.0.19041.0 --configuration Release --no-restore
          dotnet publish -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifierOverride=win10-x64 -p:WindowsPackageType=None -o Output
