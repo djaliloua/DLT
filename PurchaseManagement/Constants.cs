@@ -1,4 +1,5 @@
-﻿namespace PurchaseManagement
+﻿using Microsoft.Maui.Storage;
+namespace PurchaseManagement
 {
     public class Constants
     {

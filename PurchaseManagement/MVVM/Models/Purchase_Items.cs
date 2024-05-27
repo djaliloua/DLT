@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace PurchaseManagement.MVVM.Models
 {

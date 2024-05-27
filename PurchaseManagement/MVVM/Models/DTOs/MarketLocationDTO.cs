@@ -1,4 +1,5 @@
 ﻿using MVVM;
+using Microsoft.Maui.Devices.Sensors;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {

@@ -2,6 +2,7 @@
 using MVVM;
 using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.ServiceLocator;
+using Microsoft.Maui.ApplicationModel;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
