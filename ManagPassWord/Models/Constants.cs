@@ -1,4 +1,5 @@
-﻿namespace ManagPassWord.Models
+﻿using Microsoft.Maui.Storage;
+namespace ManagPassWord.Models
 {
     public class Constants
     {

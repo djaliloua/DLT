@@ -3,6 +3,9 @@ using ManagPassWord.Models;
 using ManagPassWord.ViewModels.Debt;
 using MVVM;
 using System.Windows.Input;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.Storage;
 
 namespace ManagPassWord.ViewModels.Password
 {
