@@ -25,6 +25,6 @@ jobs:
     - name: Publish
       run: |
          cd PurchaseManagement
-         dotnet build -f net8.0 --configuration Release --no-restore
+         dotnet build -f net8.0-windows10.0.19041.0 --configuration Release --no-restore
          dotnet publish -f net8.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifierOverride=win10-x64 -p:WindowsPackageType=None -o Output
          echo 'build done'
