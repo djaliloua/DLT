@@ -30,9 +30,9 @@ namespace ManagPassWord.ViewModels.Password
                 if (UserDetail.Id != 0)
                 {
                     await _db.DeleteById(UserDetail);
+                    ViewModelLocator.MainPageViewModel.DeleteItem(UserDetail);
                 }
                 await Shell.Current.GoToAsync("..");
-                await ViewModelLocator.MainPageViewModel.Load();
             }
 
         }

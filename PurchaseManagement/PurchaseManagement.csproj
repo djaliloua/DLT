@@ -97,10 +97,6 @@
     </MauiXaml>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="BusinessLogic\" />
-    <Folder Include="Output\" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Update="Resources\Strings\AppResources.es-US.resx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>

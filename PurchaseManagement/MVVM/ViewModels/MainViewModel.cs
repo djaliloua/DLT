@@ -5,7 +5,6 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
 using Patterns;
-using Microsoft.Maui.ApplicationModel;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -37,8 +36,6 @@ namespace PurchaseManagement.MVVM.ViewModels
     }
     public class MainViewModel: LaodableMainViewModel<PurchasesDTO>
     {
-        private readonly object lockObject;
-
         private DateTime _selectedDate;
         public DateTime SelectedDate
         {

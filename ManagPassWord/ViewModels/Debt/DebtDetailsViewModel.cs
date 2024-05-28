@@ -35,7 +35,7 @@ namespace ManagPassWord.ViewModels.Debt
         {
             if(DebtDetails != null)
             {
-                if (await _db.SaveItemAsync(DebtDetails) != 0)
+                if (await _db.SaveItemAsync(DebtDetails) is DebtModel debt && debt.Id != 0)
                 {
                     await MessageDialogs.ShowToast($"{DebtDetails.Name} has been updated");
                 }

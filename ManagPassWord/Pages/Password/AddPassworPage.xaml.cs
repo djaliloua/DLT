@@ -12,7 +12,7 @@ public partial class AddPassworPage : ContentPage
     protected override bool OnBackButtonPressed()
     {
         MainPageViewModel mainPageViewModel = ViewModelLocator.MainPageViewModel;
-        Task<int> _ = mainPageViewModel.Load();
+        //_ = mainPageViewModel.LoadItems();
         AddPasswordViewModel addPasswordViewModel = (AddPasswordViewModel)BindingContext;
         addPasswordViewModel.ClearFields();
         return base.OnBackButtonPressed();

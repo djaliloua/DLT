@@ -21,7 +21,7 @@ namespace ManagPassWord.Data_AcessLayer
             return res;
         }
        
-        public async Task<int> SaveItemAsync(DebtModel item)
+        public async Task<DebtModel> SaveItemAsync(DebtModel item)
         {
             int res = 0;
             await Task.Delay(100);
@@ -33,7 +33,7 @@ namespace ManagPassWord.Data_AcessLayer
                 else
                     res = connection.Insert(item);
             }
-            return res;
+            return item;
         }
 
         public async Task<int> DeleteAll()

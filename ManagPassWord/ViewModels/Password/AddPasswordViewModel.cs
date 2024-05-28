@@ -52,20 +52,22 @@ namespace ManagPassWord.ViewModels.Password
 
         private async void On_Back(object sender)
         {
-            Task<int> _ = ViewModelLocator.MainPageViewModel.Load();
+            //_ = ViewModelLocator.MainPageViewModel.LoadItems();
             await Shell.Current.GoToAsync("..");
             ClearFields();
         }
 
         private async void On_Save(object sender)
         {
+            User temp_item;
             try
             {
                 if (!IsEditPage)
                 {
                     if (!string.IsNullOrEmpty(Site) && !string.IsNullOrEmpty(Password))
                     {
-                        await _db.SaveItemAsync(new(Site, UserName, Password, Note));
+                        temp_item = await _db.SaveItemAsync(new(Site, UserName, Password, Note));
+                        ViewModelLocator.MainPageViewModel.AddItem(temp_item);
                     }
                     else
                     {
@@ -76,12 +78,11 @@ namespace ManagPassWord.ViewModels.Password
                 else
                 {
                     update();
-                    await _db.SaveItemAsync(_current);
+                    temp_item = await _db.SaveItemAsync(_current);
+                    ViewModelLocator.MainPageViewModel.Update(temp_item);
                 }
                 await Shell.Current.GoToAsync("..");
                 ClearFields();
-                MainPageViewModel mainPageViewModel = ViewModelLocator.MainPageViewModel;
-                await mainPageViewModel.Load();
             }
             catch(Exception ex)
             {
