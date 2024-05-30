@@ -71,7 +71,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
             // Update UI
             purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(purchase));
+            ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
         }
         private void UpdateById(PurchasesDTO newObj)
         {
@@ -102,7 +102,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                     await _db.SaveAndUpdateLocationAsync(loc);
                     
                     var purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(purchase));
+                    ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
                 }
                 
             }
@@ -147,7 +147,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                     await _db.DeletePurchaseItemAsync(mapper.Map<Purchase_Items>(SelectedItem));
                     var p = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
 
-                    ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(p));
+                    ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(p));
                     DeleteItem(SelectedItem);
                 }
             }

@@ -96,26 +96,26 @@
                             x:Name="site"
                             IsVisible="{Binding IsEditPage, Converter={x:StaticResource boolTobool}}"
                             Margin="15"
-                            Text="{Binding Site}">
+                            Text="{Binding User.Site}">
           
         </material:TextField>
       
         <material:TextField Title="Site"
                             Grid.Row="0"
                             Margin="15"
-                            Text="{Binding Site}" />
+                            Text="{Binding User.Site}" />
         
         <material:TextField Title="UserName"
                             Grid.Row="1"
                             Margin="15"
                             x:Name="username"
-                            Text="{Binding UserName}" />
+                            Text="{Binding User.Username}" />
        
         <material:TextField Title="Password"
                             Grid.Row="2"
                             Margin="15"
                             x:Name="password"
-                            Text="{Binding Password}"
+                            Text="{Binding User.Password}"
                             IsPassword="True">
             <material:TextField.Attachments>
                 <material:TextFieldPasswordShowHideAttachment />
@@ -127,7 +127,7 @@
                             Grid.Row="3"
                             HeightRequest="150"
                             Margin="15"
-                            Text="{Binding Note}" />
+                            Text="{Binding User.Note}" />
     </Grid>
     
 </ContentPage>

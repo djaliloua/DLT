@@ -136,7 +136,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         private void Update(PurchasesDTO newObj)
         {
-            ViewModelLocator.MainViewModel.Update(newObj);
+            ViewModelLocator.MainViewModel.UpdateItem(newObj);
             ViewModelLocator.PurchaseItemsViewModel.Purchases = newObj;
         }
         private async Task _saveDb(Purchases purchase)

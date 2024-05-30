@@ -19,6 +19,7 @@
                             Grid.Row="0" />
         <material:TextField Title="Amount"
                             Text="{Binding Debt.Amount}"
+                            Keyboard="Numeric"
                             Grid.Row="01" />
         <material:TextField Title="Description"
                             Text="{Binding Debt.Description}"

@@ -14,7 +14,7 @@ public partial class AddPassworPage : ContentPage
         MainPageViewModel mainPageViewModel = ViewModelLocator.MainPageViewModel;
         //_ = mainPageViewModel.LoadItems();
         AddPasswordViewModel addPasswordViewModel = (AddPasswordViewModel)BindingContext;
-        addPasswordViewModel.ClearFields();
+        //addPasswordViewModel.ClearFields();
         return base.OnBackButtonPressed();
     }
 }

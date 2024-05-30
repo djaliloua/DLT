@@ -1,4 +1,5 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using AutoMapper;
+using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
 using MVVM;
@@ -9,8 +10,9 @@ namespace ManagPassWord.ViewModels.Password
     public class DetailViewModel : BaseViewModel, IQueryAttributable
     {
         private readonly IRepository<User> _db;
-        private User _userDetail;
-        public User UserDetail
+        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private UserDTO _userDetail;
+        public UserDTO UserDetail
         {
             get => _userDetail;
             set => UpdateObservable(ref _userDetail, value);
@@ -29,7 +31,7 @@ namespace ManagPassWord.ViewModels.Password
             {
                 if (UserDetail.Id != 0)
                 {
-                    await _db.DeleteById(UserDetail);
+                    await _db.DeleteById(mapper.Map<User>(UserDetail));
                     ViewModelLocator.MainPageViewModel.DeleteItem(UserDetail);
                 }
                 await Shell.Current.GoToAsync("..");
@@ -49,7 +51,7 @@ namespace ManagPassWord.ViewModels.Password
         {
             if (query.Count > 0)
             {
-                UserDetail = query["user"] as User;
+                UserDetail = query["user"] as UserDTO;
             }
         }
     }

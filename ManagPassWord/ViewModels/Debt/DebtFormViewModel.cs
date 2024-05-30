@@ -1,4 +1,5 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using AutoMapper;
+using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
 using MVVM;
@@ -9,8 +10,9 @@ namespace ManagPassWord.ViewModels.Debt
     public class DebtFormViewModel:BaseViewModel, IQueryAttributable
     {
         private readonly IRepository<DebtModel> _db;
-        private DebtModel _debt;
-        public DebtModel Debt
+        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private DebtModelDTO _debt;
+        public DebtModelDTO Debt
         {
             get => _debt;
             set => UpdateObservable(ref _debt, value);
@@ -18,14 +20,14 @@ namespace ManagPassWord.ViewModels.Debt
         public ICommand SaveCommand { get; private set; }
         public DebtFormViewModel(IRepository<DebtModel> db)
         {
-            Debt = new DebtModel();
+            Debt = new DebtModelDTO();
             SaveCommand = new Command(On_Save);
             _db = db;
         }
         private async void On_Save(object sender)
         {
-            await _db.SaveItemAsync(Debt);
-            await ViewModelLocator.DebtPageViewModel.Load();
+            DebtModel debtitem = await _db.SaveItemAsync(mapper.Map<DebtModel>(Debt));
+            ViewModelLocator.DebtPageViewModel.AddOrUpdateItem(mapper.Map<DebtModelDTO>(debtitem));
             await Shell.Current.GoToAsync("..");
         }
 
@@ -33,7 +35,7 @@ namespace ManagPassWord.ViewModels.Debt
         {
             if (query.Count > 0)
             {
-                Debt = query["debt"] as DebtModel;
+                Debt = query["debt"] as DebtModelDTO;
             }
         }
     }

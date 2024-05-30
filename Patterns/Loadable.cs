@@ -27,10 +27,11 @@ namespace Patterns
 
         }
         public virtual void DeleteAllItems() => Items.Clear();
-        public virtual void Update(TItem item)
+        public virtual void UpdateItem(TItem item)
         {
-            SelectedItem = item;
-            OnPropertyChanged(nameof(SelectedItem));
+            int index = Items.IndexOf(item);  
+            DeleteItem(item);
+            Items.Insert(index, item);
         }
         public virtual TItem GetAt(int index) => Items[index];
 
@@ -38,6 +39,17 @@ namespace Patterns
         {
             Items.Add(item);
             Reorder();
+        }
+        public virtual void AddOrUpdateItem(TItem item)
+        {
+            if (!Items.Contains(item))
+            {
+                AddItem(item);
+            }
+            else
+            {
+                UpdateItem(item);
+            }
         }
         public virtual void SetItems(IEnumerable<TItem> items)
         {

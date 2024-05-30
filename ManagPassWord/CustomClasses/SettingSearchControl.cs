@@ -6,12 +6,12 @@ namespace ManagPassWord.CustomClasses
 {
     public class SettingSearchControl:SearchHandler
     {
-        public IList<DebtModel> Debts { get; set; }
+        public IList<DebtModelDTO> Debts { get; set; }
         public Type SelectedItemNavigationTarget { get; set; }
         protected override async void OnQueryChanged(string oldValue, string newValue)
         {
             base.OnQueryChanged(oldValue, newValue);
-            Debts = Resolver.GetService<DebtPageViewModel>().Debts;
+            Debts = Resolver.GetService<DebtPageViewModel>().GetItems();
             await Task.Delay(1000);
             if (string.IsNullOrWhiteSpace(newValue))
             {

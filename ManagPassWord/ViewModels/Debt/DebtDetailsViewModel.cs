@@ -1,42 +1,92 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using AutoMapper;
+using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
 using MVVM;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Debt
 {
+    public interface IPublisher<TItem>
+    {
+        event Action<TItem> Published;
+        void OnPublished(TItem item);
+    }
+    public class Publisher<TItem> : IPublisher<TItem>
+    {
+        public event Action<TItem> Published;
+
+        public void OnPublished(TItem item)
+        {
+            Published?.Invoke(item);
+        }
+    }
+    public interface ISubscriber<IItem>
+    {
+        void Subscribe(IItem obj);
+    }
+    public class Subscriber<TItem> : ISubscriber<TItem>
+    {
+        private readonly IPublisher<TItem> _publisher;
+        public Subscriber(IPublisher<TItem> publisher)
+        {
+            _publisher = publisher;
+            _publisher.Published += _publisher_Published;
+        }
+
+        private void _publisher_Published(TItem obj)
+        {
+            Subscribe(obj);
+        }
+
+        public void Subscribe(TItem obj)
+        {
+            throw new NotImplementedException();
+        }
+    }
     public class DebtDetailsViewModel:BaseViewModel, IQueryAttributable
     {
-        public static event Action<DebtModel> OnUiUpdate;
         private readonly IRepository<DebtModel> _db;
-        private DebtModel debt = new();
-        public DebtModel DebtDetails
+        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private DebtModelDTO debt = new();
+        public DebtModelDTO DebtDetails
         {
             get => debt;
             set => UpdateObservable(ref debt, value);
         }
+        #region Commands
         public ICommand EditCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
+        #endregion
+
+        #region Constructor
         public DebtDetailsViewModel(IRepository<DebtModel> db)
         {
             _db = db;
+            CommandSetup();
+            
+        }
+        #endregion
+
+        #region Private Methods
+        private void CommandSetup()
+        {
             EditCommand = new Command(OnEdit);
             SaveCommand = new Command(On_Save);
             DeleteCommand = new Command(On_Delete);
-            DebtModel.OnUiUpdate += (sender) =>
-            {
-                DebtDetails = sender;
-                OnOnUpdate(sender);
-            };
         }
         private async void On_Save(object sender)
         {
+            
             if(DebtDetails != null)
             {
-                if (await _db.SaveItemAsync(DebtDetails) is DebtModel debt && debt.Id != 0)
+                if (await _db.SaveItemAsync(mapper.Map<DebtModel>(DebtDetails)) is DebtModel debt && debt.Id != 0)
                 {
+                    MessagingCenter.Send(this, "update", debt);
+                    
                     await MessageDialogs.ShowToast($"{DebtDetails.Name} has been updated");
                 }
             }
@@ -47,9 +97,9 @@ namespace ManagPassWord.ViewModels.Debt
             {
                 if (DebtDetails.Id != 0)
                 {
-                    await _db.DeleteById(DebtDetails);
+                    await _db.DeleteById(mapper.Map<DebtModel>(DebtDetails));
                     await Shell.Current.GoToAsync("..");
-                    await ViewModelLocator.DebtPageViewModel.Load();
+                    ViewModelLocator.DebtPageViewModel.DeleteItem(DebtDetails);
                 }
             }
         }
@@ -70,14 +120,17 @@ namespace ManagPassWord.ViewModels.Debt
                         DebtDetails.Amount = result;
                         break;
                 }
+            OnPropertyChanged(nameof(DebtDetails));
         }
+        #endregion
+
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.Count > 0)
             {
-                DebtDetails = query["debt"] as DebtModel;
+                DebtDetails = query["debt"] as DebtModelDTO;
             }
         }
-        protected virtual void OnOnUpdate(DebtModel model) => OnUiUpdate?.Invoke(model);
+        
     }
 }

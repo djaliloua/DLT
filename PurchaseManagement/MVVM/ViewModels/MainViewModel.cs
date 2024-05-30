@@ -16,7 +16,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             return item;
         }
         public DateTime DateTime { get; set; }
-        public override void Update(TItem item)
+        public override void UpdateItem(TItem item)
         {
             TItem item1 = GetItemByDate(DateTime);
             if (item1 != null)

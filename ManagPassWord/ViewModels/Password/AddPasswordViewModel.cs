@@ -1,4 +1,5 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using AutoMapper;
+using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
 using MVVM;
@@ -9,31 +10,14 @@ namespace ManagPassWord.ViewModels.Password
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
         private readonly IRepository<User> _db;
-        private string _site = "";
-        public string Site
+        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private UserDTO _user;
+        public UserDTO User
         {
-            get => _site;
-            set => UpdateObservable(ref _site, value);
+            get => _user;
+            set => UpdateObservable(ref _user, value);
         }
-        private string _userName = "";
-        public string UserName
-        {
-            get => _userName;
-            set => UpdateObservable(ref _userName, value);
-        }
-        private string _password = "";
-        public string Password
-        {
-            get => _password;
-            set => UpdateObservable(ref _password, value);
-        }
-        private string _note = "";
-        public string Note
-        {
-            get => _note;
-            set => UpdateObservable(ref _note, value);
-        }
-        private User _current;
+        private UserDTO _current;
         private bool _isEditPage;
         public bool IsEditPage
         {
@@ -46,15 +30,15 @@ namespace ManagPassWord.ViewModels.Password
         public AddPasswordViewModel(IRepository<User> db)
         {
             _db = db;
+            User = new();
             SaveCommand = new Command(On_Save);
             BackCommand = new Command(On_Back);
         }
 
         private async void On_Back(object sender)
         {
-            //_ = ViewModelLocator.MainPageViewModel.LoadItems();
             await Shell.Current.GoToAsync("..");
-            ClearFields();
+            //ClearFields();
         }
 
         private async void On_Save(object sender)
@@ -64,10 +48,10 @@ namespace ManagPassWord.ViewModels.Password
             {
                 if (!IsEditPage)
                 {
-                    if (!string.IsNullOrEmpty(Site) && !string.IsNullOrEmpty(Password))
+                    if (User.IsValid())
                     {
-                        temp_item = await _db.SaveItemAsync(new(Site, UserName, Password, Note));
-                        ViewModelLocator.MainPageViewModel.AddItem(temp_item);
+                        temp_item = await _db.SaveItemAsync(mapper.Map<User>(User));
+                        ViewModelLocator.MainPageViewModel.AddItem(mapper.Map<UserDTO>(temp_item));
                     }
                     else
                     {
@@ -77,12 +61,10 @@ namespace ManagPassWord.ViewModels.Password
                 }
                 else
                 {
-                    update();
-                    temp_item = await _db.SaveItemAsync(_current);
-                    ViewModelLocator.MainPageViewModel.Update(temp_item);
+                    await _db.SaveItemAsync(mapper.Map<User>(User));
+                    ViewModelLocator.MainPageViewModel.UpdateItem(mapper.Map<UserDTO>(User));
                 }
                 await Shell.Current.GoToAsync("..");
-                ClearFields();
             }
             catch(Exception ex)
             {
@@ -93,17 +75,14 @@ namespace ManagPassWord.ViewModels.Password
         }
         public void ClearFields()
         {
-            Note = string.Empty;
-            UserName = string.Empty;
-            Password = string.Empty;
-            Site = string.Empty;
+            User.Reset();
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.Count > 0)
             {
-                _current = query["user"] as User;
+                User = query["user"] as UserDTO;
                 IsEditPage = (bool)query["isedit"];
                 setFields();
             }
@@ -112,18 +91,18 @@ namespace ManagPassWord.ViewModels.Password
         {
             if (IsEditPage && CanOpen)
             {
-                Note = _current.Note;
-                UserName = _current.Username ?? string.Empty;
-                Password = _current.Password;
-                Site = _current.Site;
+                User.Note = _current.Note;
+                User.Username = _current.Username ?? string.Empty;
+                User.Password = _current.Password;
+                User.Site = _current.Site;
             }
         }
         private void update()
         {
-            _current.Note = Note;
-            _current.Username = UserName;
-            _current.Password = Password;
-            _current.Site = Site;
+            _current.Note = User.Note;
+            _current.Username = User.Username;
+            _current.Password = User.Password;
+            _current.Site = User.Site;
         }
 
     }
