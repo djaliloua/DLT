@@ -27,7 +27,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             }
             
         }
-        public override void Reorder()
+        protected override void Reorder()
         {
             var data = GetItems().OrderByDescending(a => a.Purchase_Date).ToList();
             SetItems(data);
@@ -45,7 +45,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 DateTime = value;
             });
         }
-        private Mapper mapper;
+        private Mapper mapper = MapperConfig.InitializeAutomapper();
         private bool _isSavebtnEnabled;
         public bool IsSavebtnEnabled
         {
@@ -58,17 +58,16 @@ namespace PurchaseManagement.MVVM.ViewModels
         public MainViewModel(IRepository db)
         {
             _db = db;
-            mapper = MapperConfig.InitializeAutomapper();
+            IsSavebtnEnabled = true;
+            _ = Load();
+            SetupCommands();
+        }
+        private void SetupCommands()
+        {
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
-#if WINDOWS
-            _ = Load();
-#endif
         }
-        protected override void OnShow()
-        {
-            IsSavebtnEnabled = !Show;
-        }
+        
         private async void On_DoubleClick(object sender)
         {
             if(IsSelected)
@@ -113,11 +112,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         public override async Task LoadItems()
         {
-            ShowProgressBar();
+            //ShowProgressBar();
             IList<Purchases> _purchases = await _db.GetAllPurchases();
             var data = _purchases.Select(mapper.Map<PurchasesDTO>).ToList();
             SetItems(data); 
-            HideProgressBar();
+            //HideProgressBar();
         }
         
     }

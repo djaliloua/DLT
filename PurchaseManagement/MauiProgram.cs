@@ -5,7 +5,6 @@ using CommunityToolkit.Maui;
 using UraniumUI;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using Microsoft.Maui.LifecycleEvents;
-using PurchaseManagement.ServiceLocator;
 using Microsoft.Extensions.Logging;
 
 namespace PurchaseManagement
@@ -17,12 +16,14 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddSingleton<MainPage>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetails>();
             mauiAppBuilder.Services.AddScoped<AccountAnalyticPage>();
+            
             return mauiAppBuilder;
         }
         public static MauiAppBuilder DbContextExtension(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<IRepository, Repository>();
             mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
+            mauiAppBuilder.Services.AddMemoryCache();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder ViewModelsExtension(this MauiAppBuilder mauiAppBuilder)
@@ -52,8 +53,8 @@ namespace PurchaseManagement
                 .ConfigureLifecycleEvents(events =>
                 {
 #if ANDROID
-                     events.AddAndroid(android => android
-                    .OnStart(async (activity) => await ViewModelLocator.MainViewModel.Load()));
+                    // events.AddAndroid(android => android
+                    //.OnStart(async (activity) => await ViewModelLocator.MainViewModel.Load()));
 #endif
                 })
                 .ConfigureFonts(fonts =>

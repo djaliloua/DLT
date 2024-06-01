@@ -11,10 +11,10 @@ namespace ManagPassWord.ViewModels.Debt
     
     public abstract class LoadableDebtPageViewModel<TItem> : Loadable<TItem> where TItem : DebtModelDTO
     {
-        public override void Reorder()
+        protected override void Reorder()
         {
             var data = Items.OrderByDescending(x => x.DebtDate);
-            SetItems(data);
+            SetItems(data.ToList());
         }
     }
     public class DebtPageViewModel : LoadableDebtPageViewModel<DebtModelDTO>, IQueryAttributable

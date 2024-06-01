@@ -6,13 +6,17 @@ using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;
-using Microsoft.Maui.ApplicationModel;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public class AccountViewModel: Loadable<AccountDTO>
     {
+        #region Private methods
         private readonly IAccountRepository accountRepository;
+        private Mapper mapper = MapperConfig.InitializeAutomapper();
+        #endregion
+
+        #region Properties
         private MaxMin _maxSaleValue;
         public MaxMin MaxSaleValue
         {
@@ -44,45 +48,92 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _selectedDate;
             set => UpdateObservable(ref _selectedDate, value);
         }
-        private Mapper mapper;
+        #endregion
+
+        #region Commands
         public ICommand AddCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
+        #endregion
+
+
+        #region Constructor
         public AccountViewModel(IAccountRepository _accountRepository)
         {
             accountRepository = _accountRepository;
-            mapper = MapperConfig.InitializeAutomapper();
+            Init();
+            SetupComands();
+        }
+        #endregion
+
+        #region Private methods
+        private async Task MakeSnackBarAsync(string msg)
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            var snackbarOptions = new SnackbarOptions
+            {
+                BackgroundColor = Colors.LightBlue,
+                TextColor = Colors.Black,
+                ActionButtonTextColor = Colors.Yellow,
+                CornerRadius = new CornerRadius(10),
+                CharacterSpacing = 0.5
+            };
+            string text = msg;
+            TimeSpan duration = TimeSpan.FromSeconds(5);
+            var snackbar = Snackbar.Make(text, duration: duration, visualOptions: snackbarOptions);
+            await snackbar.Show(cancellationTokenSource.Token);
+        }
+        private bool IsAlreadyIn() => Items.FirstOrDefault(account => $"{account.DateTime:yyyy-MM-dd}".Contains($"{SelectedDate:yyyy-MM-dd}")) != null;
+        private async Task GetMax()
+        {
+            MaxMin max = new();
+            IList<MaxMin> val = await accountRepository.GetMaxAsync();
+            if (val.Count == 1)
+            {
+                max = val[0];
+            }
+
+            MaxSaleValue = max;
+        }
+        private async void Init()
+        {
             SelectedDate = DateTime.Now;
-            _ = LoadItems();
-            _ = GetMax()
+            await LoadItems();
+            IsSavebtnEnabled = true;
+            await GetMax()
                 .ContinueWith(async (t) =>
                 {
-                    if(Items.Count > 0)
+                    if (Items.Count > 0)
                     {
                         await MakeSnackBarAsync($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
                     }
                 }
                 );
+        }
+        private void SetupComands()
+        {
             AddCommand = new Command(On_Add);
             DeleteCommand = new Command(On_Delete);
         }
-        public override void Reorder()
+        #endregion
+
+        #region Overriden methods
+        protected override void Reorder()
         {
             var data = Items.OrderByDescending(a => a.DateTime).ToList();
             SetItems(data);
         }
         public override async Task LoadItems()
         {
-            ShowProgressBar();
             var data = await accountRepository.GetAllAsync();
             var dt = data.Select(mapper.Map<AccountDTO>).ToList();
             SetItems(dt);
-            
-            HideProgressBar();
+
         }
-        protected override void OnShow()
-        {
-            IsSavebtnEnabled = !Show;
-        }
+        #endregion
+
+        #region Handlers
+
         private async void On_Delete(object parameter)
         {
             if (IsSelected)
@@ -98,17 +149,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
             }
         }
-        private async Task GetMax()
-        {
-            MaxMin max = new();
-            IList<MaxMin> val = await accountRepository.GetMaxAsync();
-            if (val.Count == 1)
-            {
-                max = val[0];
-            }
-
-            MaxSaleValue = max;
-        }
+        
         private async void On_Add(object parameter)
         {
             string tempVal = (string)parameter;
@@ -128,24 +169,8 @@ namespace PurchaseManagement.MVVM.ViewModels
             }
             
         }
-        private async Task MakeSnackBarAsync(string msg)
-        {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            var snackbarOptions = new SnackbarOptions
-            {
-                BackgroundColor = Colors.LightBlue,
-                TextColor = Colors.Black,
-                ActionButtonTextColor = Colors.Yellow,
-                CornerRadius = new CornerRadius(10),
-                CharacterSpacing = 0.5
-            };
-            string text = msg;
-            TimeSpan duration = TimeSpan.FromSeconds(5);
-            var snackbar = Snackbar.Make(text, duration:duration, visualOptions: snackbarOptions);
-            await snackbar.Show(cancellationTokenSource.Token);
-        }
-        private bool IsAlreadyIn() => Items.FirstOrDefault(account => $"{account.DateTime:yyyy-MM-dd}".Contains($"{SelectedDate:yyyy-MM-dd}")) != null;
+        #endregion
+        
 
         
     }

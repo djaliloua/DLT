@@ -9,7 +9,7 @@ namespace ManagPassWord.ViewModels.Password
 {
     public abstract class LoadableMainPageViewModel<TItem> : Loadable<TItem> where TItem : UserDTO
     {
-        public override void Reorder()
+        protected override void Reorder()
         {
             var data = GetItems().OrderByDescending(item => item.Id).ToList();  
             SetItems(data);
@@ -49,7 +49,7 @@ namespace ManagPassWord.ViewModels.Password
         {
             var repo = await repository.GetAll();
             var data = repo.Select(mapper.Map<UserDTO>);
-            SetItems(data);
+            SetItems(data.ToList());
         }
         
         private async void On_Open(object sender)
