@@ -24,10 +24,10 @@ namespace ManagPassWord.Data_AcessLayer
         {
             //this.fileSaver = fileSaver;
         }
-        public async Task<int> SaveItemAsync(User item)
+        public async Task<User> SaveItemAsync(User item)
         {
             int res = 0;
-            await Task.Delay(100);
+            await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.PasswordDataBasePath, Constants.Flags))
             {
                 connection.CreateTable<User>();
@@ -36,7 +36,7 @@ namespace ManagPassWord.Data_AcessLayer
                 else
                     res = connection.Insert(item);
             }
-            return res;
+            return item;
         }
 
         public async Task<int> DeleteAll()

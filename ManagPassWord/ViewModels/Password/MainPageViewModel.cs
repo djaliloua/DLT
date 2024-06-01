@@ -1,23 +1,25 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using AutoMapper;
+using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
-using MVVM;
-using System.Collections.ObjectModel;
+using Patterns;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Password
 {
-    public class MainPageViewModel : BaseViewModel
+    public abstract class LoadableMainPageViewModel<TItem> : Loadable<TItem> where TItem : UserDTO
+    {
+        protected override void Reorder()
+        {
+            var data = GetItems().OrderByDescending(item => item.Id).ToList();  
+            SetItems(data);
+        }
+       
+    }
+    public class MainPageViewModel : LoadableMainPageViewModel<UserDTO>
     {
         private readonly IRepository<User> repository;
-        public ObservableCollection<User> Users { get; }
-        private User _selectedUser;
-        public User SelectedUser
-        {
-            get => _selectedUser;
-            set => UpdateObservable(ref _selectedUser, value);
-        }
-        private bool CanOpen => SelectedUser != null;
+        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
         public ICommand AddCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand SettingCommand { get; private set; }
@@ -25,7 +27,6 @@ namespace ManagPassWord.ViewModels.Password
         public MainPageViewModel(IRepository<User> _db)
         {
             repository = _db;
-            Users = new ObservableCollection<User>();
             load();
             AddCommand = new Command(On_Add);
             OpenCommand = new Command(On_Open);
@@ -42,26 +43,22 @@ namespace ManagPassWord.ViewModels.Password
         }
         private async void load()
         {
-            await Load();
+            await LoadItems();
         }
-        public async Task<int> Load()
+        public override async Task LoadItems()
         {
             var repo = await repository.GetAll();
-            Users.Clear();
-            foreach (User item in repo)
-            {
-                Users.Add(item);
-            }
-            OnPropertyChanged(nameof(Users));
-            return 0;
+            var data = repo.Select(mapper.Map<UserDTO>);
+            SetItems(data.ToList());
         }
+        
         private async void On_Open(object sender)
         {
-            if (CanOpen)
+            if (IsSelected)
             {
                 var navigationParameter = new Dictionary<string, object>
                         {
-                            { "user", SelectedUser },
+                            { "user", SelectedItem },
                             { "isedit", false },
                         };
                 await Shell.Current.GoToAsync(nameof(DetailPage), navigationParameter);
@@ -69,14 +66,15 @@ namespace ManagPassWord.ViewModels.Password
         }
         private async void On_Add(object sender)
         {
-            SelectedUser = null;
+            SelectedItem = null;
             var navigationParameter = new Dictionary<string, object>
                         {
-                            { "user", new User() },
+                            { "user", new UserDTO() },
                             { "isedit", false }
                         };
             await Shell.Current.GoToAsync(nameof(AddPassworPage), navigationParameter);
            
         }
+        
     }
 }

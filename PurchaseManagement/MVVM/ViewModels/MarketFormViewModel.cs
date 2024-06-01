@@ -128,7 +128,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             purchase = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
             var p_DTO = mapper.Map<PurchasesDTO>(purchase);
             ViewModelLocator.PurchaseItemsViewModel.SetItems(p_DTO.Purchase_Items);
-            ViewModelLocator.PurchaseItemsViewModel.Reorder();
+            //ViewModelLocator.PurchaseItemsViewModel.Reorder();
             p_DTO.Purchase_Items = ViewModelLocator.PurchaseItemsViewModel.GetItems();
             Update(p_DTO);
 
@@ -136,7 +136,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         private void Update(PurchasesDTO newObj)
         {
-            ViewModelLocator.MainViewModel.Update(newObj);
+            ViewModelLocator.MainViewModel.UpdateItem(newObj);
             ViewModelLocator.PurchaseItemsViewModel.Purchases = newObj;
         }
         private async Task _saveDb(Purchases purchase)

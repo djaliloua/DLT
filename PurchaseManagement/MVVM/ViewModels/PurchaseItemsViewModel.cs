@@ -20,7 +20,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         //    base.SetItems(items);
         //    Purchases = items.FirstOrDefault().Purchase;
         //}
-        public override void Reorder()
+        protected override void Reorder()
         {
             var data = Items.OrderByDescending(item => item.Item_Id).ToList();
             SetItems(data);
@@ -71,7 +71,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
             // Update UI
             purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(purchase));
+            ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
         }
         private void UpdateById(PurchasesDTO newObj)
         {
@@ -84,11 +84,11 @@ namespace PurchaseManagement.MVVM.ViewModels
                     break;
                 }
             }
-            ViewModelLocator.MainViewModel.Reorder();
+            //ViewModelLocator.MainViewModel.Reorder();
         }
         private async void On_GetMap(object parameter)
         {
-            ShowProgressBar();
+            //ShowProgressBar();
             if (IsSelected)
             {
                 Location location = await GetCurrentLocation();
@@ -102,13 +102,13 @@ namespace PurchaseManagement.MVVM.ViewModels
                     await _db.SaveAndUpdateLocationAsync(loc);
                     
                     var purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(purchase));
+                    ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
                 }
                 
             }
             else
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
-            HideProgressBar();
+            //HideProgressBar();
         }
         private async void On_Edit(object parameter)
         {
@@ -147,7 +147,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                     await _db.DeletePurchaseItemAsync(mapper.Map<Purchase_Items>(SelectedItem));
                     var p = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
 
-                    ViewModelLocator.MainViewModel.Update(mapper.Map<PurchasesDTO>(p));
+                    ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(p));
                     DeleteItem(SelectedItem);
                 }
             }
@@ -155,10 +155,10 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
         }
         
-        protected override void OnShow()
-        {
-            IsSavebtnEnabled = !Show;
-        }
+        //protected override void OnShow()
+        //{
+        //    IsSavebtnEnabled = !Show;
+        //}
         private async void On_Open(object parameter)
         {
             await Task.Delay(1);
@@ -216,10 +216,10 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public override async Task LoadItems()
         {
-            ShowProgressBar();
+            //ShowProgressBar();
             await Task.Delay(1);
             SetItems(Purchases.Purchase_Items);
-            HideProgressBar();
+            //HideProgressBar();
         }
         
     }

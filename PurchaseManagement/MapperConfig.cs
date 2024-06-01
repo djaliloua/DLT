@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
-using PurchaseManagement.MVVM.ViewModels;
-using Microsoft.Maui.Devices.Sensors;
 
 namespace PurchaseManagement
 {

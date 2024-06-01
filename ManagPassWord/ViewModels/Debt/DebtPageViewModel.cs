@@ -1,17 +1,26 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using AutoMapper;
+using ManagPassWord.Data_AcessLayer;
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
 using ManagPassWord.Pages.Debt;
-using MVVM;
-using System.Collections.ObjectModel;
+using Patterns;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Debt
 {
-    public class DebtPageViewModel : BaseViewModel, IQueryAttributable
+    
+    public abstract class LoadableDebtPageViewModel<TItem> : Loadable<TItem> where TItem : DebtModelDTO
     {
+        protected override void Reorder()
+        {
+            var data = Items.OrderByDescending(x => x.DebtDate);
+            SetItems(data.ToList());
+        }
+    }
+    public class DebtPageViewModel : LoadableDebtPageViewModel<DebtModelDTO>, IQueryAttributable
+    {
+        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
         private readonly IRepository<DebtModel> _db;
-        public ObservableCollection<DebtModel> Debts { get; }
         private string _name;
         public string Name
         {
@@ -24,41 +33,31 @@ namespace ManagPassWord.ViewModels.Debt
             get => _amount;
             set => UpdateObservable(ref _amount, value);
         }
-        private DebtModel _selectedDebt;
-        public DebtModel SelectedDebt
-        {
-            get => _selectedDebt;
-            set => UpdateObservable(ref _selectedDebt, value);
-        }
-        private bool CanOpen => SelectedDebt != null;
+
+        #region Commands
         public ICommand AddCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand GoSearchCommand { get; private set; }
         public ICommand SettingCommand { get; private set; }
         public ICommand AboutCommand { get; private set; }
+        #endregion
         public DebtPageViewModel(IRepository<DebtModel> db)
         {
             _db = db;
-            Debts ??= new ObservableCollection<DebtModel>();
             load();
+            CommandSetups();
+            MessagingCenter.Subscribe<DebtDetailsViewModel, DebtModelDTO>(this, "update", (sender, arg) =>
+            {
+                AddOrUpdateItem(arg);
+            });
+        }
+        private void CommandSetups()
+        {
             AddCommand = new Command(On_Add);
             OpenCommand = new Command(On_Open);
             GoSearchCommand = new Command(On_GoSearch);
             SettingCommand = new Command(On_Setting);
             AboutCommand = new Command(On_About);
-            DebtDetailsViewModel.OnUiUpdate += DebtDetailsViewModel_OnUiUpdate;
-        }
-
-        private void DebtDetailsViewModel_OnUiUpdate(DebtModel obj)
-        {
-            for (int i = 0; i < Debts.Count; i++)
-            {
-                if (obj != null && Debts[i].Id == obj.Id)
-                {
-                    Debts[i] = obj;
-                    break;
-                }
-            }
         }
 
         private async void On_About(object sender)
@@ -75,11 +74,11 @@ namespace ManagPassWord.ViewModels.Debt
         }
         private async void On_Open(object sender)
         {
-            if (CanOpen)
+            if (IsSelected)
             {
                 Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
-                            { "debt", SelectedDebt }
+                            { "debt", SelectedItem }
                         };
                 await Shell.Current.GoToAsync(nameof(DebtDetailsPage), navigationParameter);
             }
@@ -88,25 +87,21 @@ namespace ManagPassWord.ViewModels.Debt
         {
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
-                            { "debt", new DebtModel() }
+                            { "debt", new DebtModelDTO() }
                         };
             await Shell.Current.GoToAsync(nameof(DebtFormPage), navigationParameter);
         }
         private async void load()
         {
-            await Load();
+            await LoadItems();
         }
-        public async Task Load()
+        public override async Task LoadItems()
         {
-            Debts.Clear();
             var repo = await _db.GetAll();
-            foreach (var item in repo)
-            {
-                Debts.Add(item);
-            }
-            OnPropertyChanged(nameof(Debts));  
+            var data = repo.Select(mapper.Map<DebtModelDTO>).ToList();
+            SetItems(data);
         }
-
+        
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if(query.Count > 0)
@@ -114,5 +109,7 @@ namespace ManagPassWord.ViewModels.Debt
 
             }
         }
+
+        
     }
 }

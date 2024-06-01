@@ -84,8 +84,8 @@
                        x:Name="listview"
                        SeparatorVisibility="Default"
                        VerticalScrollBarVisibility="Never"
-                       SelectedItem="{Binding SelectedDebt}"
-                       ItemsSource="{Binding Debts}">
+                       SelectedItem="{Binding SelectedItem}"
+                       ItemsSource="{Binding Items}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>

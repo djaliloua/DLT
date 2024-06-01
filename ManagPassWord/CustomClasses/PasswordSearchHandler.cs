@@ -5,12 +5,12 @@ namespace ManagPassWord.CustomClasses
 {
     public class PasswordSearchHandler:SearchHandler
     {
-        public IList<User> Passwords { get; set; }
+        public IList<UserDTO> Passwords { get; set; }
         public Type SelectedItemNavigationTarget { get; set; }
         protected override async void OnQueryChanged(string oldValue, string newValue)
         {
             base.OnQueryChanged(oldValue, newValue);
-            Passwords = Resolver.GetService<MainPageViewModel>().Users;
+            Passwords = Resolver.GetService<MainPageViewModel>().Items;
             await Task.Delay(1000);
             if (string.IsNullOrWhiteSpace(newValue))
             {

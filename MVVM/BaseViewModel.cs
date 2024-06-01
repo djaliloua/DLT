@@ -1,10 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace MVVM
 {
-
-    public class BaseViewModel: INotifyPropertyChanged
+    public class BaseViewModel : INotifyPropertyChanged
     {
 
         protected virtual void OnShow()
@@ -19,10 +19,10 @@ namespace MVVM
         private bool show;
         public bool Show
         {
-            get => show; 
+            get => show;
             set => UpdateObservable(ref show, value, OnShow);
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {

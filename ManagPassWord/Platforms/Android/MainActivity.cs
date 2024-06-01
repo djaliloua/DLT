@@ -2,8 +2,6 @@
 using Android.Content.PM;
 using Plugin.Fingerprint;
 using Android.OS;
-using Plugin.CurrentActivity;
-using Microsoft.Maui;
 
 namespace ManagPassWord;
 
