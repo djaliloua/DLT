@@ -111,40 +111,40 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return purchase;
         }
-        public async Task<Purchases> GetPurchasesByDate(DateTime dt)
-        {
-            var d = await GetAllPurchases();
-            Purchases purchases = d.FirstOrDefault(p => p.Purchase_Date.Contains($"{dt:yyyy-MM-dd}"));
-
-            return purchases;
-        }
         //public async Task<Purchases> GetPurchasesByDate(DateTime dt)
         //{
-        //    string sqlCmd = $"select *\r\nfrom Purchases P\r\nwhere P.Purchase_Date= '{dt:yyyy-MM-dd}';";
-        //    Purchases purchases = null;
-        //    using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
-        //    {
-        //        connection.CreateTable<Purchases>();
-        //        connection.CreateTable<PurchaseStatistics>();
-        //        connection.CreateTable<Purchase_Items>();
-        //        connection.CreateTable<MarketLocation>();
-        //        var p = connection.Query<Purchases>(sqlCmd);
-        //        if(p != null && p.Count > 0)
-        //        {
-        //            purchases = p[0];
-        //            purchases.PurchaseStatistics = await GetPurchaseStatistics(purchases.Purchase_Id);
-        //            var data = await GetAllPurchaseItemById(purchases.Purchase_Id); 
-        //            for(int i = 1; i < data.Count; i++)
-        //            {
-        //                data[i].Purchase = purchases;
-        //                data[i].Location = await GetMarketLocationAsync(purchases.Purchase_Id, data[i].Location_Id);
-        //            }
-        //            purchases.Purchase_Items = data;
+        //    var d = await GetAllPurchases();
+        //    Purchases purchases = d.FirstOrDefault(p => p.Purchase_Date.Contains($"{dt:yyyy-MM-dd}"));
 
-        //        }
-        //    }
         //    return purchases;
         //}
+        public async Task<Purchases> GetPurchasesByDate(DateTime dt)
+        {
+            string sqlCmd = $"select *\r\nfrom Purchases P\r\nwhere P.Purchase_Date= '{dt:yyyy-MM-dd}';";
+            Purchases purchases = null;
+            //await Task.Delay(1);
+            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                connection.CreateTable<Purchases>();
+                connection.CreateTable<PurchaseStatistics>();
+                connection.CreateTable<Purchase_Items>();
+                connection.CreateTable<MarketLocation>();
+                var p = connection.Query<Purchases>(sqlCmd);
+                if (p != null && p.Count > 0)
+                {
+                    purchases = p[0];
+                    purchases.PurchaseStatistics = await GetPurchaseStatistics(purchases.Purchase_Id);
+                    var data = await GetAllPurchaseItemById(purchases.Purchase_Id);
+                    for (int i = 1; i < data.Count; i++)
+                    {
+                        data[i].Purchase = purchases;
+                        data[i].Location = await GetMarketLocationAsync(purchases.Purchase_Id, data[i].Location_Id);
+                        purchases.Purchase_Items.Add(data[i]);
+                    }
+                }
+            }
+            return purchases;
+        }
         public async Task<Purchase_Items> SavePurchaseItemAsync(Purchase_Items purchase_item)
         {
             int res = 0;
