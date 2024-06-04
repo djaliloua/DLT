@@ -6,17 +6,27 @@ using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;
-using MVVM;
+
+/* Unmerged change from project 'PurchaseManagement (net8.0)'
+Before:
+using PurchaseManagement.ServiceLocator;
+After:
+using PurchaseManagement.ServiceLocator;
+using PurchaseManagement;
+using PurchaseManagement.MVVM;
+using PurchaseManagement.MVVM.ViewModels;
+using PurchaseManagement.MVVM.ViewModels.AccountPage;
+*/
 using PurchaseManagement.ServiceLocator;
 
-namespace PurchaseManagement.MVVM.ViewModels
+namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
     public interface IAccountListViewMethods
     {
         void AddAccount(AccountDTO account);
         void DeleteAccount(AccountDTO account);
     }
-    public class AccountListViewViewModel: Loadable<AccountDTO>, IAccountListViewMethods
+    public class AccountListViewViewModel : Loadable<AccountDTO>, IAccountListViewMethods
     {
         #region Private methods
         private readonly IAccountRepository accountRepository;
@@ -164,68 +174,5 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         #endregion
     }
-    public class AccountViewModel : BaseViewModel
-    {
-        #region Private methods
-        #endregion
-
-        #region Properties
-        private long _money;
-        public long Money
-        {
-            get => _money;
-            set => UpdateObservable(ref _money, value);
-        }
-        
-
-        private bool _isSavebtnEnabled;
-        public bool IsSavebtnEnabled
-        {
-            get => _isSavebtnEnabled;
-            set => UpdateObservable(ref _isSavebtnEnabled, value);
-        }
-        private DateTime _selectedDate;
-        public DateTime SelectedDate
-        {
-            get => _selectedDate;
-            set => UpdateObservable(ref _selectedDate, value);
-        }
-        private AccountListViewViewModel _accountListViewModel;
-        public AccountListViewViewModel AccountListViewViewModel
-        {
-            get => _accountListViewModel;
-            set => UpdateObservable(ref _accountListViewModel, value);
-        }
-        #endregion
-
-        #region Commands
-        public ICommand AddCommand { get; private set; }
-        #endregion
-
-        #region Constructor
-        public AccountViewModel()
-        {
-            AccountListViewViewModel = ViewModelLocator.AccountListViewViewModel;
-            Init();
-            CommandSetup();
-        }
-        #endregion
-
-        #region Private Methods
-
-        private void CommandSetup()
-        {
-            AddCommand = new Command(On_Add);
-        }
-        private void Init()
-        {
-            SelectedDate = DateTime.Now;
-            IsSavebtnEnabled = true;
-        }
-        private void On_Add(object parameter)
-        {
-            AccountListViewViewModel.AddAccount(new AccountDTO(SelectedDate, Money));
-        }
-        #endregion
-    }
+    
 }

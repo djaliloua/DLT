@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:PurchaseManagement.ServiceLocator"
              BackgroundColor="LightBlue"
              x:Name="page"
-             BindingContext="{x:Static local:ViewModelLocator.AccountViewModel}"
+             BindingContext="{x:Static local:ViewModelLocator.AccountPageViewModel}"
              Title="Account">
     <ContentPage.Triggers>
         <DataTrigger TargetType="ContentPage"
@@ -31,6 +31,7 @@
         <Grid Grid.Row="0"
               VerticalOptions="Start"
               ColumnSpacing="10"
+              BindingContext="{Binding AccountHeaderViewModel}"
               >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

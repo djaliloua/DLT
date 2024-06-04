@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using PurchaseManagement.MVVM.ViewModels.AccountPage;
 
 namespace PurchaseManagement
 {
@@ -40,7 +41,9 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddSingleton<PurchaseItemsViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
             mauiAppBuilder.Services.AddTransient<MarketFormViewModel>();
-            mauiAppBuilder.Services.AddScoped<AccountViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountPageViewModel>();
+            mauiAppBuilder.Services.AddScoped<IAccountListViewMethods, AccountListViewViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountHeaderViewModel>();
             return mauiAppBuilder;
         }
         public static MauiApp CreateMauiApp()
