@@ -71,7 +71,7 @@ namespace Patterns
         {
 
         }
-        public bool IsContains(TItem item)
+        public virtual bool IsContains(TItem item)
         {
             return _items.Contains(item);
         }

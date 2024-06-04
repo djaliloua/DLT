@@ -10,6 +10,7 @@ namespace PurchaseManagement.ServiceLocator
         public static AccountAnalyticViewModel AccountAnalyticViewModel => GetService<AccountAnalyticViewModel>();
         public static T GetService<T>() => Application.Current.Handler.MauiContext.Services.GetRequiredService<T>();
         public static MainViewModel GetMainViewModel() => GetService<MainViewModel>();
+        public static AccountListViewViewModel AccountListViewViewModel => GetService<AccountListViewViewModel>();
         public static AccountViewModel AccountViewModel => GetService<AccountViewModel>();
         public static MainViewModel MainViewModel => GetService<MainViewModel>();
         public static PurchaseItemsViewModel GetPurchaseItemsViewModel() => GetService<PurchaseItemsViewModel>();

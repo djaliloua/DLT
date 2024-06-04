@@ -35,11 +35,12 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddScoped<AboutViewModel>();
             mauiAppBuilder.Services.AddScoped<SettingsViewModel>();
             mauiAppBuilder.Services.AddSingleton<AccountAnalyticViewModel>();
-            mauiAppBuilder.Services.AddScoped<AccountViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountListViewViewModel>();
             mauiAppBuilder.Services.AddSingleton<MainViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemsViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
             mauiAppBuilder.Services.AddTransient<MarketFormViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountViewModel>();
             return mauiAppBuilder;
         }
         public static MauiApp CreateMauiApp()
