@@ -7,19 +7,22 @@ using PurchaseManagement.ServiceLocator;
 using System.Diagnostics;
 using System.Windows.Input;
 using Patterns;
-using Microsoft.Maui.Devices.Sensors;
-using Microsoft.Maui.ApplicationModel;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: Purchase_ItemsDTO
     {
-        public PurchasesDTO Purchases;
-        //public override void SetItems(IEnumerable<TItem> items)
-        //{
-        //    base.SetItems(items);
-        //    Purchases = items.FirstOrDefault().Purchase;
-        //}
+        private PurchasesDTO _purchases;
+        public PurchasesDTO Purchases
+        {
+            get => _purchases;
+            set
+            {
+                _purchases = value;
+                SetItems((IList<TItem>)value.Purchase_Items);
+            }
+        }
         protected override void Reorder()
         {
             var data = Items.OrderByDescending(item => item.Item_Id).ToList();
@@ -30,9 +33,6 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class PurchaseItemsViewModel: PurchaseItemsViewModelLoadable<Purchase_ItemsDTO>, IQueryAttributable
     {
         private readonly IRepository _db;
-
-        
-        
         private bool _isLocAvailable;
         public bool IsLocAvailable
         {
@@ -46,16 +46,30 @@ namespace PurchaseManagement.MVVM.ViewModels
             set => UpdateObservable(ref _isSavebtnEnabled, value);
         }
         private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        #region Commands
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand OpenMapCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public ICommand EditCommand { get; private set; }
         public ICommand GetMapCommand { get; private set; }
+        #endregion
+
+        #region Constructor
         public PurchaseItemsViewModel(IRepository db)
         {
             _db = db;
             _ = LoadItems();
+            CommandSetup();
+            WeakReferenceMessenger.Default.Register<Purchase_ItemsDTO, string>(this,"update", async (sender, p) =>
+            {
+                if(p.Purchase is PurchasesDTO purchase)
+                    await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(p));
+            });
+        }
+        #endregion
+        private void CommandSetup()
+        {
             DoubleClickCommand = new Command(On_DoubleClick);
             OpenCommand = new Command(On_Open);
             DeleteCommand = new Command(On_Delete);
@@ -63,36 +77,24 @@ namespace PurchaseManagement.MVVM.ViewModels
             EditCommand = new Command(On_Edit);
             GetMapCommand = new Command(On_GetMap);
         }
-        private async Task _savePurchaseItemAndStatDb(Purchases purchase)
-        {
-            Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(SelectedItem);
-            purchase.Purchase_Items.Add(m_purchase_item);
-            await _db.SavePurchaseAsync(purchase);
+        //private async Task _savePurchaseItemAndStatDb(Purchases purchase)
+        //{
+        //    Purchase_Items m_purchase_item = mapper.Map<Purchase_Items>(SelectedItem);
+        //    purchase.Purchase_Items.Add(m_purchase_item);
+        //    await _db.SavePurchaseAsync(purchase);
 
-            // Update UI
-            purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
-        }
-        private void UpdateById(PurchasesDTO newObj)
-        {
-            foreach(PurchasesDTO p in ViewModelLocator.MainViewModel.GetItems())
-            {
-                if(p.Purchase_Id == newObj.Purchase_Id)
-                {
-                    p.Purchase_Items = newObj.Purchase_Items;
-                    p.PurchaseStatistics = newObj.PurchaseStatistics;
-                    break;
-                }
-            }
-            //ViewModelLocator.MainViewModel.Reorder();
-        }
+        //    // Update UI
+        //    purchase = await _db.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+        //    ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
+        //}
+        
         private async void On_GetMap(object parameter)
         {
-            //ShowProgressBar();
+            ShowActivity();
             if (IsSelected)
             {
                 Location location = await GetCurrentLocation();
-                if (await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases)
+                if (await _db.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases)
                 {
                     var loc = mapper.Map<MarketLocation>(location);
                     SelectedItem.Location = mapper.Map<MarketLocationDTO>(loc);
@@ -101,14 +103,14 @@ namespace PurchaseManagement.MVVM.ViewModels
                     SelectedItem.IsLocation = SelectedItem.Location != null;
                     await _db.SaveAndUpdateLocationAsync(loc);
                     
-                    var purchase = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    var purchase = await _db.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
                     ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
                 }
                 
             }
             else
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
-            //HideProgressBar();
+            HideActivity();
         }
         private async void On_Edit(object parameter)
         {
@@ -145,7 +147,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
                     await _db.DeletePurchaseItemAsync(mapper.Map<Purchase_Items>(SelectedItem));
-                    var p = await _db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    var p = await _db.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
 
                     ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(p));
                     DeleteItem(SelectedItem);
@@ -154,11 +156,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
         }
-        
-        //protected override void OnShow()
-        //{
-        //    IsSavebtnEnabled = !Show;
-        //}
+
         private async void On_Open(object parameter)
         {
             await Task.Delay(1);
@@ -192,9 +190,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             try
             {
                 GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-
                 CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
-
                 Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
                 return location;
             }
@@ -204,7 +200,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Debug.Write(ex.Message);
                 return null;
             }
-            
         }
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
@@ -216,10 +211,10 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public override async Task LoadItems()
         {
-            //ShowProgressBar();
+            ShowActivity();
             await Task.Delay(1);
-            SetItems(Purchases.Purchase_Items);
-            //HideProgressBar();
+            //SetItems(Purchases.Purchase_Items);
+            HideActivity();
         }
         
     }

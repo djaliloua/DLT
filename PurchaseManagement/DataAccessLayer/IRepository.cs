@@ -11,7 +11,8 @@ namespace PurchaseManagement.DataAccessLayer
         Task<IList<Purchase_Items>> GetAllPurchaseItemById(int purchase_id);
         Task<Purchases> SavePurchaseAsync(Purchases purchase);
         Task<Purchase_Items> SavePurchaseItemAsync(Purchase_Items purchase_item);
-        Task<Purchases> GetPurchasesByDate(DateTime dt);
+        Task<Purchases> GetFullPurchaseByDate(DateTime dt);
+        Task<Purchases> GetPurchaseByDate(DateTime dt);
         Task<PurchaseStatistics> SavePurchaseStatisticsItemAsyn(Purchases purchase, PurchaseStatistics purchaseStatistics);
         Task<double> GetTotalValue(Purchases purchases, string colname);
         Task<PurchaseStatistics> GetPurchaseStatistics(int id);

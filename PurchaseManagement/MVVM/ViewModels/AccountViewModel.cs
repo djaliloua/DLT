@@ -13,6 +13,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         #region Private methods
         private readonly IAccountRepository accountRepository;
+        private readonly IAccountRepositoryAPI accountRepositoryAPI;
         private Mapper mapper = MapperConfig.InitializeAutomapper();
         #endregion
 
@@ -57,9 +58,10 @@ namespace PurchaseManagement.MVVM.ViewModels
 
 
         #region Constructor
-        public AccountViewModel(IAccountRepository _accountRepository)
+        public AccountViewModel(IAccountRepository _accountRepository, IAccountRepositoryAPI _accountRepositoryAPI)
         {
             accountRepository = _accountRepository;
+            accountRepositoryAPI = _accountRepositoryAPI;
             Init();
             SetupComands();
         }
@@ -125,10 +127,16 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         public override async Task LoadItems()
         {
-            var data = await accountRepository.GetAllAsync();
+            ShowActivity();
+            var data = await accountRepositoryAPI.GetAccounts();
             var dt = data.Select(mapper.Map<AccountDTO>).ToList();
             SetItems(dt);
+            HideActivity();
 
+        }
+        private async Task PostData(Account account)
+        {
+            await accountRepositoryAPI.PostAccount(account);
         }
         #endregion
 
@@ -140,7 +148,9 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if(await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    await accountRepository.DeleteAsync(mapper.Map<Account>(SelectedItem));
+                    var acount = mapper.Map<Account>(SelectedItem);
+                    await accountRepository.DeleteAsync(acount);
+                    await accountRepositoryAPI.DeleteAccount(acount.Id);
                     DeleteItem(SelectedItem);
                 }
             }
@@ -158,7 +168,9 @@ namespace PurchaseManagement.MVVM.ViewModels
                 if (!string.IsNullOrEmpty(tempVal))
                 {
                     Account account = new Account(SelectedDate, double.Parse(Money.ToString()));
+                    var y = await accountRepositoryAPI.PostAccount(account);
                     var x = await accountRepository.SaveOrUpdateAsync(account);
+                    
                     Money = 0;
                     AddItem(mapper.Map<AccountDTO>(x));
                 }
@@ -170,8 +182,5 @@ namespace PurchaseManagement.MVVM.ViewModels
             
         }
         #endregion
-        
-
-        
     }
 }

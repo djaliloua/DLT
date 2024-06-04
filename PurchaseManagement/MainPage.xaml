@@ -9,7 +9,6 @@
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              x:Name="main"
-             IsEnabled="{Binding IsSavebtnEnabled}"
              BackgroundColor="LightBlue"
              BindingContext="{x:Static service:ViewModelLocator.MainViewModel}"
              >
@@ -29,10 +28,11 @@
             <!--<RowDefinition Height="auto" />-->
             <RowDefinition />
         </Grid.RowDefinitions>
-        <HorizontalStackLayout Spacing="120"
+        <HorizontalStackLayout Spacing="100"
                                HorizontalOptions="Center">
             <material:DatePickerField Date="{Binding SelectedDate}"
                                       VerticalOptions="End"
+                                      WidthRequest="150"
                                       Title="Date" />
 
             <Button HorizontalOptions="Center"
@@ -47,21 +47,44 @@
                 </Button.ImageSource>
             </Button>
         </HorizontalStackLayout>
-        <!--<ActivityIndicator IsRunning="{Binding Show}"
+        <ActivityIndicator IsRunning="{Binding IsActivity}"
                            Color="Blue"
                            Grid.Row="1"
-                           IsVisible="{Binding Show}"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            HeightRequest="80"
                            WidthRequest="80"
                            x:Name="activity"
-                           ZIndex="10" />-->
+                           ZIndex="10">
+            <ActivityIndicator.Triggers>
+                <DataTrigger TargetType="ActivityIndicator" Binding="{Binding IsActivity}" Value="True">
+                    <Setter Property="IsVisible"
+                            Value="Visible" />
+                </DataTrigger>
+                <DataTrigger TargetType="ActivityIndicator" Binding="{Binding IsActivity}"
+                             Value="False">
+                    <Setter Property="IsVisible"
+                            Value="Hidden" />
+                </DataTrigger>
+            </ActivityIndicator.Triggers>
+        </ActivityIndicator>
         <ListView ItemsSource="{Binding Items}"
                   RowHeight="150"
                   Grid.Row="1"
                   VerticalScrollBarVisibility="Never"
                   SelectedItem="{Binding SelectedItem}">
+            <ListView.Triggers>
+                <DataTrigger TargetType="ListView" Binding="{Binding IsActivity}"
+                             Value="True">
+                    <Setter Property="IsVisible"
+                            Value="Hidden" />
+                </DataTrigger>
+                <DataTrigger TargetType="ListView" Binding="{Binding IsActivity}"
+                             Value="False">
+                    <Setter Property="IsVisible"
+                            Value="Visible" />
+                </DataTrigger>
+            </ListView.Triggers>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

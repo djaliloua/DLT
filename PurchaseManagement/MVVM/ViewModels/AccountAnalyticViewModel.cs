@@ -27,14 +27,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             Values = ViewModelLocator.AccountViewModel.GetItems(),
             DataLabelsFormatter = point => $"{point.Model?.Money} CFA",
             DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
-            TooltipLabelFormatter = point => $"{point.Model?.DateTime:D}",
+            XToolTipLabelFormatter = point => $"{point.Model?.DateTime:D}",
             DataLabelsPosition = DataLabelsPosition.Top,
             Fill = null,
-            Mapping = (point, index) =>
-                {
-                    index.PrimaryValue = point.Money/10000;
-                    index.SecondaryValue = index.Context.Index;
-                }
+            Mapping = (point, index) => new(point.Money/10000, index)  
         }
     };
         public LabelVisual Title { get; set; } =
@@ -72,7 +68,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 DataLabelsFormatter = point => $"{point.Model?.Day}",
                 DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
                 DataLabelsPosition = DataLabelsPosition.Top,
-                TooltipLabelFormatter = point => $"{point.Model?.CountMoney}",
+                XToolTipLabelFormatter = point => $"{point.Model?.CountMoney}",
                 // Defines the distance between every bars in the series
                 Padding = 5,
                 Rx = 50,
@@ -81,11 +77,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 // Defines the max width a bar can have
                 MaxBarWidth = double.PositiveInfinity,
                 //Mapping
-                Mapping = (stat, index) =>
-                {
-                    index.PrimaryValue = stat.AvgMoney / 10000;
-                    index.SecondaryValue = index.Context.Index;
-                }
+                Mapping = (stat, index) => new(stat.AvgMoney/1000, index)
             };
             
             BarSeries = new ISeries[] { col };

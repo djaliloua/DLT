@@ -9,7 +9,6 @@
              BackgroundColor="LightBlue"
              x:Name="page"
              BindingContext="{x:Static local:ViewModelLocator.AccountViewModel}"
-             IsEnabled="{Binding IsSavebtnEnabled}"
              Title="Account">
     <ContentPage.Triggers>
         <DataTrigger TargetType="ContentPage"
@@ -73,16 +72,30 @@
                 </Button.ImageSource>
             </Button>
         </Grid>
-        <ActivityIndicator IsRunning="{Binding Show}"
+        <ActivityIndicator IsRunning="{Binding IsActivity}"
                            Color="Blue"
                            Grid.Row="1"
-                           IsVisible="{Binding Show}"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            HeightRequest="80"
                            WidthRequest="80"
                            x:Name="activity"
-                           ZIndex="10" />
+                           ZIndex="10">
+            <ActivityIndicator.Triggers>
+                <DataTrigger TargetType="ActivityIndicator"
+                             Binding="{Binding IsActivity}"
+                             Value="True">
+                    <Setter Property="IsVisible"
+                            Value="Visible" />
+                </DataTrigger>
+                <DataTrigger TargetType="ActivityIndicator"
+                             Binding="{Binding IsActivity}"
+                             Value="False">
+                    <Setter Property="IsVisible"
+                            Value="Hidden" />
+                </DataTrigger>
+            </ActivityIndicator.Triggers>
+        </ActivityIndicator>
         <ListView ItemsSource="{Binding Items}"
                   Margin="0,20,0,0"
                   x:Name="listview"
@@ -91,6 +104,20 @@
                   VerticalOptions="Start"
                   Grid.Row="1"
                   SelectedItem="{Binding SelectedItem}">
+            <ListView.Triggers>
+                <DataTrigger TargetType="ListView"
+                             Binding="{Binding IsActivity}"
+                             Value="True">
+                    <Setter Property="IsVisible"
+                            Value="Hidden" />
+                </DataTrigger>
+                <DataTrigger TargetType="ListView"
+                             Binding="{Binding IsActivity}"
+                             Value="False">
+                    <Setter Property="IsVisible"
+                            Value="Visible" />
+                </DataTrigger>
+            </ListView.Triggers>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
