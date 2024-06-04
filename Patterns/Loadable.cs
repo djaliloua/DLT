@@ -4,6 +4,12 @@ using System.Runtime.CompilerServices;
 
 namespace Patterns
 {
+    public interface IActivity
+    {
+        bool IsActivity { get; set; }
+        void ShowActivity();
+        void HideActivity();
+    }
     public interface ILoadable<TItem>
     {
         ObservableCollection<TItem> Items { get; set; }
@@ -21,8 +27,9 @@ namespace Patterns
         void DeleteAllItems();
         void SelectedItemCallBack(TItem item);
         void ItemsCallBack(IList<TItem> item);
+        bool IsContains(TItem item);
     }
-    public abstract class Loadable<TItem> : ILoadable<TItem>, INotifyPropertyChanged
+    public abstract class Loadable<TItem> : ILoadable<TItem>, INotifyPropertyChanged, IActivity where TItem : class
     {
         public abstract Task LoadItems();
         protected abstract void Reorder();
@@ -48,6 +55,12 @@ namespace Patterns
             get => _numberOfItems;
             set => UpdateObservable(ref _numberOfItems, value);
         }
+        private bool _isActivity;
+        public bool IsActivity 
+        {
+            get => _isActivity;
+            set => UpdateObservable(ref _isActivity, value);
+        }
 
         #region Public Methods
         public virtual void SelectedItemCallBack(TItem item)
@@ -57,6 +70,10 @@ namespace Patterns
         public virtual void ItemsCallBack(IList<TItem> item)
         {
 
+        }
+        public virtual bool IsContains(TItem item)
+        {
+            return _items.Contains(item);
         }
         public void SetItems(IList<TItem> items)
         {
@@ -86,10 +103,13 @@ namespace Patterns
             Items.Add(item);
             Reorder();
         }
-
+        public virtual int Index(TItem item)
+        {
+            return Items.IndexOf(item);
+        }
         public virtual void UpdateItem(TItem item)
         {
-            int index = Items.IndexOf(item);
+            int index = Index(item);
             if (index >= 0)
             {
                 Items.RemoveAt(index);
@@ -128,6 +148,16 @@ namespace Patterns
             oldValue = newValue;
             OnPropertyChanged(propertyName);
             callback();
+        }
+
+        public void ShowActivity()
+        {
+            IsActivity = true;
+        }
+
+        public void HideActivity()
+        {
+            IsActivity = false;
         }
         #endregion
     }

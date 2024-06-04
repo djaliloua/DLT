@@ -1,5 +1,8 @@
 ﻿using PurchaseManagement.MVVM.Models;
 using SQLite;
+using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
 
 namespace PurchaseManagement.DataAccessLayer
 {
@@ -108,6 +111,140 @@ namespace PurchaseManagement.DataAccessLayer
         Task<IList<Statistics>> GetStatisticsAsync();
         Task<IList<MaxMin>> GetMaxAsync();
         Task<IList<MaxMin>> GetMinAsync();
+
+    }
+
+    public class AccountRepositoryAPI : IAccountRepositoryAPI
+    {
+        readonly HttpClient _client;
+        readonly JsonSerializerOptions _serializerOptions;
+        public List<Account> Items { get; private set; }
+
+        public AccountRepositoryAPI()
+        {
+            _client = new HttpClient();
+            _serializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+
+        }
+        public async Task DeleteAccount(int id)
+        {
+            Uri uri = new Uri(Constants.GetRestUrl(id.ToString()));
+
+            try
+            {
+                HttpResponseMessage response = await _client.DeleteAsync(uri);
+                if (response.IsSuccessStatusCode)
+                    Debug.WriteLine(@"\tTodoItem successfully deleted.");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+        }
+
+        public Task<Account> GetAccount(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IList<Account>> GetAccounts()
+        {
+            Items = new List<Account>();
+
+            Uri uri = new Uri(Constants.GetRestUrl(null));
+            try
+            {
+                HttpResponseMessage response = await _client.GetAsync(uri);
+                if (response.IsSuccessStatusCode)
+                {
+                    string content = await response.Content.ReadAsStringAsync();
+                    Items = JsonSerializer.Deserialize<List<Account>>(content, _serializerOptions);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+
+            return Items;
+        }
+
+        public Task<IList<MaxMin>> GetMaxAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<MaxMin>> GetMinAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<Statistics>> GetStatisticsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Account> PostAccount(Account account)
+        {
+            Uri uri = new Uri(Constants.GetRestUrl(null));
+            try
+            {
+                string json = JsonSerializer.Serialize(account, _serializerOptions);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = null;
+                response = await _client.PostAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                    Debug.WriteLine(@"\tConfigModel successfully saved.");
+                
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+            return account;
+        }
+
+        public async Task<Account> PutAccount(int id, Account account)
+        {
+            Uri uri = new Uri(Constants.GetRestUrl(null));
+            try
+            {
+                string json = JsonSerializer.Serialize<Account>(account, _serializerOptions);
+                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = null;
+                response = await _client.PutAsync(uri, content);
+                if (response.IsSuccessStatusCode)
+                    Debug.WriteLine(@"\tConfigModel successfully saved.");
+
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+            return account;
+        }
+        public Task<bool> AccountExists(int id)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public interface IAccountRepositoryAPI
+    {
+        Task<IList<Account>> GetAccounts();
+        Task<Account> GetAccount(int id);
+        Task DeleteAccount(int id);
+        Task<Account> PutAccount(int id, Account account);
+        Task<Account> PostAccount(Account account);
+        Task<IList<Statistics>> GetStatisticsAsync();
+        Task<IList<MaxMin>> GetMaxAsync();
+        Task<IList<MaxMin>> GetMinAsync();
+        Task<bool> AccountExists(int id);
 
     }
 }

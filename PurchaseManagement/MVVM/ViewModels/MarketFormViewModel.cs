@@ -33,15 +33,25 @@ namespace PurchaseManagement.MVVM.ViewModels
             set => UpdateObservable(ref _isSavebtnEnabled, value);
         }
         public int Counter = 0;
-        Mapper mapper;
+        Mapper mapper = MapperConfig.InitializeAutomapper();
+
+        #region Commands
         public ICommand CancelCommand { get; private set; }
         public ICommand SaveCommand { get; private set; }
         public ICommand UpdateCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
+        #endregion
+
+        #region Constructor
         public MarketFormViewModel(IRepository _db)
         {
             db = _db;
-            mapper = MapperConfig.InitializeAutomapper();
+            CommandSetup();
+            
+        }
+        #endregion
+        private void CommandSetup()
+        {
             CancelCommand = new Command(On_Cancel);
             SaveCommand = new Command(On_Save);
             BackCommand = new Command(On_Back);
@@ -71,9 +81,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Update(object parameter)
         {
 
-            if (await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
+            if (ViewModelLocator.PurchaseItemsViewModel.IsSelected)
             {
-                await _update(purchases);
+                await _update(mapper.Map<Purchases>(ViewModelLocator.PurchaseItemsViewModel.Purchases));
             }
             await Shell.Current.GoToAsync("..");
         }
@@ -81,11 +91,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             ShowProgressBar();
             Purchases purchase = new Purchases("test", ViewModelLocator.MainViewModel.SelectedDate);
-            if (await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
+            if (await db.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchases purchases)
             {
                 await _savePurchaseItemAndStatDb(purchases);
-                // Update UI
-                
             }
             else
             {
@@ -109,7 +117,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             _ = await db.SavePurchaseAsync(purchase);
 
             // Update UI
-            var p = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            var p = await db.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             Update(mapper.Map<PurchasesDTO>(p));
         }
        
@@ -124,12 +132,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             var s = await db.SavePurchaseStatisticsItemAsyn(purchase, stat);
             purchase.Purchase_Stats_Id = s.Id;
             await db.SavePurchaseAsync(purchase);
+
             // UI
-            purchase = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            purchase = await db.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             var p_DTO = mapper.Map<PurchasesDTO>(purchase);
-            ViewModelLocator.PurchaseItemsViewModel.SetItems(p_DTO.Purchase_Items);
-            //ViewModelLocator.PurchaseItemsViewModel.Reorder();
-            p_DTO.Purchase_Items = ViewModelLocator.PurchaseItemsViewModel.GetItems();
             Update(p_DTO);
 
         }
@@ -137,7 +143,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         private void Update(PurchasesDTO newObj)
         {
             ViewModelLocator.MainViewModel.UpdateItem(newObj);
-            ViewModelLocator.PurchaseItemsViewModel.Purchases = newObj;
         }
         private async Task _saveDb(Purchases purchase)
         {
@@ -152,7 +157,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             
             await db.SavePurchaseItemAsync(m_purchase_item);
             //
-            var p = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            var p = await db.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             ViewModelLocator.MainViewModel.AddItem(mapper.Map<PurchasesDTO>(p));
             
         }

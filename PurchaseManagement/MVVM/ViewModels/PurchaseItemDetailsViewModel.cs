@@ -1,6 +1,5 @@
 ﻿using MVVM;
 using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 
 namespace PurchaseManagement.MVVM.ViewModels

@@ -10,22 +10,9 @@ namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchasesDTO
     {
-        public TItem GetItemByDate(DateTime date)
+        public override int Index(TItem item)
         {
-            TItem item = GetItems().FirstOrDefault(p => p.Purchase_Date.Equals($"{date:yyyy-MM-dd}"));
-            return item;
-        }
-        public DateTime DateTime { get; set; }
-        public override void UpdateItem(TItem item)
-        {
-            TItem item1 = GetItemByDate(DateTime);
-            if (item1 != null)
-            {
-                item1.Purchase_Items = item.Purchase_Items;
-                item1.PurchaseStatistics = item.PurchaseStatistics;
-                item1.Purchase_Stats_Id = item.Purchase_Stats_Id;
-            }
-            
+            return Items.ToList().FindIndex(i => i.Purchase_Id == item.Purchase_Id);
         }
         protected override void Reorder()
         {
@@ -40,10 +27,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public DateTime SelectedDate
         {
             get => _selectedDate;
-            set => UpdateObservable(ref _selectedDate, value, () =>
-            {
-                DateTime = value;
-            });
+            set => UpdateObservable(ref _selectedDate, value);
         }
         private Mapper mapper = MapperConfig.InitializeAutomapper();
         private bool _isSavebtnEnabled;
@@ -84,7 +68,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Add(object sender)
         {
             Purchase_ItemsDTO purchase_proxy_item;
-            Purchases purchase = await _db.GetPurchasesByDate(SelectedDate);
+            Purchases purchase = await _db.GetFullPurchaseByDate(SelectedDate);
             if(purchase != null)
             {
                 PurchaseStatistics stat = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
@@ -112,11 +96,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         public override async Task LoadItems()
         {
-            //ShowProgressBar();
+            ShowActivity();
             IList<Purchases> _purchases = await _db.GetAllPurchases();
             var data = _purchases.Select(mapper.Map<PurchasesDTO>).ToList();
             SetItems(data); 
-            //HideProgressBar();
+            HideActivity();
         }
         
     }

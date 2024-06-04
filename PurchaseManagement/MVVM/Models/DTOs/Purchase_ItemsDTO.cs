@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using MVVM;
-using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.ServiceLocator;
-using Microsoft.Maui.ApplicationModel;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
@@ -38,17 +36,9 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         public bool IsPurchased
         {
             get => _isPurchased;
-            set => UpdateObservable(ref _isPurchased, value, async () =>
+            set => UpdateObservable(ref _isPurchased, value, () =>
             {
-                //PurchaseStatistics purchaseStatistics;
-                var db = new Repository();
-                var mapper = MapperConfig.InitializeAutomapper();
-                Purchases purchases = await db.GetPurchasesByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                if (purchases != null)
-                {
-                    //Purchase = mapper.Map<PurchasesDTO>(purchases);
-                    await db.SavePurchaseItemAsync(mapper.Map<Purchase_Items>(this));
-                }
+                WeakReferenceMessenger.Default.Send(this, "update");
             });
         }
         public int Counter { get; set; }

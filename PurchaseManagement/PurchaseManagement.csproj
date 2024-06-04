@@ -1,4 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFrameworks>net8.0;net8.0-maccatalyst;net8.0-ios;net8.0-android</TargetFrameworks>
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
@@ -25,6 +26,23 @@
     <NeutralLanguage>en-US</NeutralLanguage>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+    <TrimMode>link</TrimMode>
+    <AndroidKeyStore>False</AndroidKeyStore>
+    <AndroidSigningStorePass>Chakira2002</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>purchasemanagement</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>chk</AndroidSigningKeyPass>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
+    <TrimMode>link</TrimMode>
+    <AndroidKeyStore>False</AndroidKeyStore>
+    <AndroidSigningStorePass>Chakira2002</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>purchasemanagement</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>chk</AndroidSigningKeyPass>
+  </PropertyGroup>
   <ItemGroup>
     <!-- App Icon -->
     <MauiIcon Include="Resources\AppIcon\project_management.png" ForegroundFile="Resources\AppIcon\appiconfg.svg" BaseSize="64,64" Color="#FFEBEEFF" />
@@ -45,8 +63,12 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="CommunityToolkit.Maui" Version="6.0.0" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-beta.701" />
+    <PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-rc2" />
+    <PackageReference Include="Microsoft.AppCenter" Version="5.0.4" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.4" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.4" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />

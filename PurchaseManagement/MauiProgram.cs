@@ -6,6 +6,10 @@ using UraniumUI;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using Microsoft.Maui.LifecycleEvents;
 using Microsoft.Extensions.Logging;
+using Microsoft.AppCenter;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
+using PurchaseManagement.MVVM.ViewModels.AccountPage;
 
 namespace PurchaseManagement
 {
@@ -23,6 +27,7 @@ namespace PurchaseManagement
         {
             mauiAppBuilder.Services.AddSingleton<IRepository, Repository>();
             mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
+            mauiAppBuilder.Services.AddSingleton<IAccountRepositoryAPI, AccountRepositoryAPI>();
             mauiAppBuilder.Services.AddMemoryCache();
             return mauiAppBuilder;
         }
@@ -31,11 +36,14 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddScoped<AboutViewModel>();
             mauiAppBuilder.Services.AddScoped<SettingsViewModel>();
             mauiAppBuilder.Services.AddSingleton<AccountAnalyticViewModel>();
-            mauiAppBuilder.Services.AddScoped<AccountViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountListViewViewModel>();
             mauiAppBuilder.Services.AddSingleton<MainViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemsViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
             mauiAppBuilder.Services.AddTransient<MarketFormViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountPageViewModel>();
+            mauiAppBuilder.Services.AddScoped<IAccountListViewMethods, AccountListViewViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountHeaderViewModel>();
             return mauiAppBuilder;
         }
         public static MauiApp CreateMauiApp()
@@ -63,11 +71,15 @@ namespace PurchaseManagement
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddMaterialIconFonts();
                 });
-            
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-
+            AppCenter.Start("android=98c12bc0-8ce8-4fd0-a772-8ed0fa474323;" +
+                  "windowsdesktop=ef285771-ff13-4590-91c2-8b78ffa2ffeb;" +
+                  "ios={};" +
+                  "macos={Your macOS App secret here};",
+                  typeof(Analytics), typeof(Crashes));
             return builder.Build();
         }
     }

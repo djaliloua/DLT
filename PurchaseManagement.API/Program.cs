@@ -1,42 +1,40 @@
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.OpenApi;
+using Microsoft.EntityFrameworkCore;
+using PurchaseManagement.API.DataAccessLayer;
 
 var builder = WebApplication.CreateBuilder(args);
+string connectionString = builder.Configuration["ConnectionStrings:chaki"];
+//ConnectionStrings:chaki
+// Add services to the container.
 
-builder.Services.ConfigureHttpJsonOptions(options =>
+builder.Services.AddControllers();
+
+// Seetings
+
+
+builder.Services.AddSqlServer<AccountContext>(connectionString, option =>
 {
-    options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+    option.EnableRetryOnFailure();
 });
+
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+
 var app = builder.Build();
+
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-var sampleTodos = new Todo[] {
-    new(1, "Walk the dog"),
-    new(2, "Do the dishes", DateOnly.FromDateTime(DateTime.Now)),
-    new(3, "Do the laundry", DateOnly.FromDateTime(DateTime.Now.AddDays(1))),
-    new(4, "Clean the bathroom"),
-    new(5, "Clean the car", DateOnly.FromDateTime(DateTime.Now.AddDays(2)))
-};
+app.UseHttpsRedirection();
 
-var todosApi = app.MapGroup("/todos");
-todosApi.MapGet("/", () => sampleTodos);
-todosApi.MapGet("/{id}", (int id) =>
-    sampleTodos.FirstOrDefault(a => a.Id == id) is { } todo
-        ? Results.Ok(todo)
-        : Results.NotFound());
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
-
-public record Todo(int Id, string? Title, DateOnly? DueBy = null, bool IsComplete = false);
-
-[JsonSerializable(typeof(Todo[]))]
-internal partial class AppJsonSerializerContext : JsonSerializerContext
-{
-
-}
