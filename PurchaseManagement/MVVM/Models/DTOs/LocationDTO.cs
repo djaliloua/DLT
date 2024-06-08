@@ -1,27 +1,14 @@
 ﻿using MVVM;
-using Microsoft.Maui.Devices.Sensors;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
-    public class MarketLocationDTO:BaseViewModel
+    public class LocationDTO:BaseViewModel
     {
-        private int _location_id;
-        public int Location_Id
+        private int _id;
+        public int Id
         {
-            get => _location_id;
-            set => UpdateObservable(ref _location_id, value);
-        }
-        private int _purchase_Item_Id;
-        public int Purchase_Item_Id
-        {
-            get => _purchase_Item_Id;
-            set => UpdateObservable(ref _purchase_Item_Id, value);
-        }
-        private int _purchase_Id;
-        public int Purchase_Id
-        {
-            get => _purchase_Id;
-            set => UpdateObservable(ref _purchase_Id, value);
+            get => _id;
+            set => UpdateObservable(ref _id, value);
         }
         private double? _course;
         public double? Course
@@ -82,6 +69,18 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         {
             get => _isFromMockProvider;
             set => UpdateObservable(ref _isFromMockProvider, value);
+        }
+        private int _productId;
+        public int ProductId
+        {
+            get => _productId;
+            set => UpdateObservable(ref _productId, value);
+        }
+        private ProductDto _product;
+        public ProductDto Product
+        {
+            get => _product;
+            set => UpdateObservable(ref _product, value);
         }
     }
 }

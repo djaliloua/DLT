@@ -117,7 +117,7 @@
                                                                  Glyph="{x:Static m:MaterialRound.Countertops}" />
                                             </Image.Source>
                                         </Image>
-                                        <Label Text="{Binding PurchaseStatistics.PurchaseCount}"
+                                        <Label Text="{Binding ProductCount}"
                                                VerticalOptions="Center" />
                                     </HorizontalStackLayout>
                                     <HorizontalStackLayout Spacing="10">
@@ -128,7 +128,7 @@
                                                                  Glyph="{x:Static m:MaterialRound.Attach_money}" />
                                             </Image.Source>
                                         </Image>
-                                        <Label Text="{Binding PurchaseStatistics.TotalPrice, StringFormat='{0:C2}'}"
+                                        <Label Text="{Binding TotalProductsPrice, StringFormat='{0:C2}'}"
                                                VerticalOptions="Center" />
 
                                     </HorizontalStackLayout>

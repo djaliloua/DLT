@@ -1,15 +1,8 @@
-﻿using SQLite;
-using Microsoft.Maui.Devices.Sensors;
-
-namespace PurchaseManagement.MVVM.Models
+﻿namespace PurchaseManagement.MVVM.Models
 {
-    [Table("Location")]
-    public class MarketLocation
+    public class Location
     {
-        [PrimaryKey, AutoIncrement]
-        public int Location_Id { get; set; }
-        public int Purchase_Item_Id { get; set; }
-        public int Purchase_Id { get; set; }
+        public int Id { get; set; }
         public double? Course { get; set; }
         public double? Speed { get; set; }
         public bool ReducedAccuracy { get; set; }
@@ -20,5 +13,11 @@ namespace PurchaseManagement.MVVM.Models
         public double Latitude { get; set; }
         public AltitudeReferenceSystem AltitudeReferenceSystem { get; set; }
         public bool IsFromMockProvider { get; set; }
+        public int ProductId { get; set; }
+        public Product Product { get; set; }
+        public Location()
+        {
+            
+        }
     }
 }

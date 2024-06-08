@@ -10,6 +10,9 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using PurchaseManagement.MVVM.ViewModels.AccountPage;
+using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.DataAccessLayer.Repository;
+using Location = PurchaseManagement.MVVM.Models.Location;
 
 namespace PurchaseManagement
 {
@@ -25,7 +28,9 @@ namespace PurchaseManagement
         }
         public static MauiAppBuilder DbContextExtension(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<IRepository, Repository>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<Purchase>, PurchaseRepository>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<Location>, LocationRepository>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<Product>, ProductRepository>();
             mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
             mauiAppBuilder.Services.AddSingleton<IAccountRepositoryAPI, AccountRepositoryAPI>();
             mauiAppBuilder.Services.AddMemoryCache();
@@ -42,7 +47,6 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
             mauiAppBuilder.Services.AddTransient<MarketFormViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountPageViewModel>();
-            mauiAppBuilder.Services.AddScoped<IAccountListViewMethods, AccountListViewViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountHeaderViewModel>();
             return mauiAppBuilder;
         }
@@ -53,7 +57,10 @@ namespace PurchaseManagement
                 .PagesExtensions()
                 .DbContextExtension()
                 .ViewModelsExtension()
-                .UseMauiCommunityToolkit()
+                .UseMauiCommunityToolkit(options =>
+                {
+                    //options.SetShouldEnableSnackbarOnWindows(true);
+                })
                 .UseMauiApp<App>()
                 .UseUraniumUI()
                 .UseSkiaSharp(true)

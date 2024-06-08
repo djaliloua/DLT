@@ -3,8 +3,7 @@ using PurchaseManagement.API.DataAccessLayer;
 
 var builder = WebApplication.CreateBuilder(args);
 string connectionString = builder.Configuration["ConnectionStrings:chaki"];
-//ConnectionStrings:chaki
-// Add services to the container.
+
 
 builder.Services.AddControllers();
 

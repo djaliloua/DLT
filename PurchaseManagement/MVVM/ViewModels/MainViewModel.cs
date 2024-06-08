@@ -4,15 +4,17 @@ using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
+using PurchaseManagement.Commons;
 using Patterns;
+using PurchaseManagement.DataAccessLayer.Repository;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchasesDTO
+    public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseDto
     {
         public override int Index(TItem item)
         {
-            return Items.ToList().FindIndex(i => i.Purchase_Id == item.Purchase_Id);
+            return Items.ToList().FindIndex(i => i.Id == item.Id);
         }
         protected override void Reorder()
         {
@@ -21,8 +23,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
 
     }
-    public class MainViewModel: LaodableMainViewModel<PurchasesDTO>
+    public class MainViewModel: LaodableMainViewModel<PurchaseDto>
     {
+        private readonly IGenericRepository<Purchase> _purchaseDB;
         private DateTime _selectedDate;
         public DateTime SelectedDate
         {
@@ -37,14 +40,16 @@ namespace PurchaseManagement.MVVM.ViewModels
             set => UpdateObservable(ref _isSavebtnEnabled, value);
         }
         private readonly IRepository _db;
+        INotication notication;
         public ICommand AddCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
-        public MainViewModel(IRepository db)
+        public MainViewModel(IGenericRepository<Purchase> purchaseDB)
         {
-            _db = db;
+            _purchaseDB = purchaseDB;
             IsSavebtnEnabled = true;
-            _ = Load();
+            _ = LoadItems();
             SetupCommands();
+            
         }
         private void SetupCommands()
         {
@@ -67,41 +72,40 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         private async void On_Add(object sender)
         {
-            Purchase_ItemsDTO purchase_proxy_item;
-            Purchases purchase = await _db.GetFullPurchaseByDate(SelectedDate);
-            if(purchase != null)
-            {
-                PurchaseStatistics stat = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
-                purchase_proxy_item = stat == null ? new Purchase_ItemsDTO(0) : new Purchase_ItemsDTO(stat.PurchaseCount);
-            }
-            else
-            {
-                purchase_proxy_item = new Purchase_ItemsDTO(0);
-            }
+            //ProductDto purchase_proxy_item;
+            //Purchase purchase = await _db.GetFullPurchaseByDate(SelectedDate);
+            //if(purchase != null)
+            //{
+            //    PurchaseStatistics stat = await _db.GetPurchaseStatistics(purchase.Id);
+            //    purchase_proxy_item = stat == null ? new ProductDto(0) : new ProductDto(stat.PurchaseCount);
+            //}
+            //else
+            //{
+            //    purchase_proxy_item = new ProductDto(0);
+            //}
 
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", true },
-                            { "Purchase_ItemsDTO", purchase_proxy_item }
+                            { "Purchase_ItemsDTO", new ProductDto(0) }
                 };
             await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }
-        public async Task Load()
-        {
-            if (_db != null)
-            {
-                await LoadItems();
-            }
-        }
+        
         
         public override async Task LoadItems()
         {
             ShowActivity();
-            IList<Purchases> _purchases = await _db.GetAllPurchases();
-            var data = _purchases.Select(mapper.Map<PurchasesDTO>).ToList();
+            IEnumerable<Purchase> _purchases = await _purchaseDB.GetAll();
+            var data = _purchases.Select(mapper.Map<PurchaseDto>).ToList();
             SetItems(data); 
             HideActivity();
         }
+        //private List<PurchaseDto> TestLoad()
+        //{
+        //    List<PurchaseDto> p = [new("Hello", SelectedDate), new("Hello", SelectedDate), new("Hello", SelectedDate), new("Hello", SelectedDate)];
+        //    return p;
+        //}
         
     }
 }

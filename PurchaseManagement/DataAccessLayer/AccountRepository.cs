@@ -132,7 +132,7 @@ namespace PurchaseManagement.DataAccessLayer
         }
         public async Task DeleteAccount(int id)
         {
-            Uri uri = new Uri(Constants.GetRestUrl(id.ToString()));
+            Uri uri = new Uri(Constants.GetRestUrl(id.ToString(), "Accounts"));
 
             try
             {
@@ -155,7 +155,7 @@ namespace PurchaseManagement.DataAccessLayer
         {
             Items = new List<Account>();
 
-            Uri uri = new Uri(Constants.GetRestUrl(null));
+            Uri uri = new Uri(Constants.GetRestUrl(null, "Accounts"));
             try
             {
                 HttpResponseMessage response = await _client.GetAsync(uri);
@@ -190,7 +190,7 @@ namespace PurchaseManagement.DataAccessLayer
 
         public async Task<Account> PostAccount(Account account)
         {
-            Uri uri = new Uri(Constants.GetRestUrl(null));
+            Uri uri = new Uri(Constants.GetRestUrl(null, "Accounts"));
             try
             {
                 string json = JsonSerializer.Serialize(account, _serializerOptions);
@@ -211,7 +211,7 @@ namespace PurchaseManagement.DataAccessLayer
 
         public async Task<Account> PutAccount(int id, Account account)
         {
-            Uri uri = new Uri(Constants.GetRestUrl(null));
+            Uri uri = new Uri(Constants.GetRestUrl(null, "Accounts"));
             try
             {
                 string json = JsonSerializer.Serialize<Account>(account, _serializerOptions);

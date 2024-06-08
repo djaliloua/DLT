@@ -12,14 +12,14 @@ namespace PurchaseManagement
             SQLite.SQLiteOpenFlags.SharedCache;
         public static string DatabasePurchase =>
             Path.Combine(FileSystem.AppDataDirectory, "Purchase.db3");
-        public static string GetRestUrl(string id)
+        public static string GetRestUrl(string id, string parameter)
         {
-            string baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5116" : "http://localhost:5116";
+            string baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5156" : "http://localhost:5156";
             string baseUrl;
             if (id == null)
-                baseUrl = $"{baseAddress}/api/Accounts";
+                baseUrl = $"{baseAddress}/api/{parameter}";
             else
-                baseUrl = $"{baseAddress}/api/Accounts/{id}";
+                baseUrl = $"{baseAddress}/api/{parameter}/{id}";
             
             return baseUrl;
         }

@@ -10,27 +10,27 @@ namespace PurchaseManagement
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Purchase_Items,Purchase_ItemsDTO>();
-                cfg.CreateMap<Purchase_ItemsDTO, Purchase_Items>();
+                cfg.CreateMap<Product,ProductDto>();
+                cfg.CreateMap<ProductDto, Product>();
                 //
-                cfg.CreateMap<Location, MarketLocation>();
-                cfg.CreateMap<MarketLocation, Location>();
+                cfg.CreateMap<MVVM.Models.Location, Microsoft.Maui.Devices.Sensors.Location>();
+                cfg.CreateMap<Microsoft.Maui.Devices.Sensors.Location, MVVM.Models.Location>();
                 //
-                cfg.CreateMap<Location, MarketLocationDTO>();
-                cfg.CreateMap<MarketLocationDTO, Location>();
+                cfg.CreateMap<Microsoft.Maui.Devices.Sensors.Location, LocationDTO>();
+                cfg.CreateMap<LocationDTO, Microsoft.Maui.Devices.Sensors.Location>();
 
                 //
-                cfg.CreateMap<MarketLocation, MarketLocationDTO>();
-                cfg.CreateMap<MarketLocationDTO, MarketLocation>();
+                cfg.CreateMap<MVVM.Models.Location, LocationDTO>();
+                cfg.CreateMap<LocationDTO, MVVM.Models.Location>();
                 //
                 cfg.CreateMap<Account, AccountDTO>();
                 cfg.CreateMap<AccountDTO, Account>();
                 //
-                cfg.CreateMap<Purchases, PurchasesDTO>();
-                cfg.CreateMap<PurchasesDTO, Purchases>();
+                cfg.CreateMap<Purchase, PurchaseDto>();
+                cfg.CreateMap<PurchaseDto, Purchase>();
                 //
-                cfg.CreateMap<PurchaseStatistics, PurchaseStatisticsDTO>();
-                cfg.CreateMap<PurchaseStatisticsDTO, PurchaseStatistics>();
+                cfg.CreateMap<PurchaseStatistics, ProductStatisticsDto>();
+                cfg.CreateMap<ProductStatisticsDto, PurchaseStatistics>();
                 //
 
             });

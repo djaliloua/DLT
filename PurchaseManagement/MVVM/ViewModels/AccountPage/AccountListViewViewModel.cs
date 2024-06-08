@@ -17,16 +17,10 @@ using PurchaseManagement.MVVM;
 using PurchaseManagement.MVVM.ViewModels;
 using PurchaseManagement.MVVM.ViewModels.AccountPage;
 */
-using PurchaseManagement.ServiceLocator;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
-    public interface IAccountListViewMethods
-    {
-        void AddAccount(AccountDTO account);
-        void DeleteAccount(AccountDTO account);
-    }
-    public class AccountListViewViewModel : Loadable<AccountDTO>, IAccountListViewMethods
+    public class AccountListViewViewModel : Loadable<AccountDTO>
     {
         #region Private methods
         private readonly IAccountRepository accountRepository;
@@ -59,7 +53,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Private methods
-        public override bool IsContains(AccountDTO newAccount)
+        public override bool ItemExist(AccountDTO newAccount)
         {
             foreach (AccountDTO account in Items)
             {
@@ -129,30 +123,20 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             SetItems(dt);
             HideActivity();
         }
-        #endregion
-
-        #region Handlers
-
-        private void On_Delete(object parameter)
+        public override async void AddItem(AccountDTO account)
         {
-            DeleteAccount(SelectedItem);
-        }
-
-        public async void AddAccount(AccountDTO account)
-        {
-            if (!IsContains(account))
+            if (!ItemExist(account))
             {
                 var y = await accountRepositoryAPI.PostAccount(mapper.Map<Account>(account));
                 var x = await accountRepository.SaveOrUpdateAsync(mapper.Map<Account>(account));
-                AddItem(mapper.Map<AccountDTO>(x));
+                base.AddItem(mapper.Map<AccountDTO>(x));
             }
             else
             {
                 await Shell.Current.DisplayAlert("Message", "Item already present", "Cancel");
             }
         }
-
-        public async void DeleteAccount(AccountDTO account)
+        public override async void DeleteItem(AccountDTO account)
         {
             if (IsSelected)
             {
@@ -161,7 +145,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                     var acount = mapper.Map<Account>(account);
                     await accountRepository.DeleteAsync(acount);
                     await accountRepositoryAPI.DeleteAccount(acount.Id);
-                    DeleteItem(account);
+                    base.DeleteItem(account);
                 }
             }
             else
@@ -169,8 +153,21 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
             }
         }
+        #endregion
 
+        #region Handlers
 
+        private void On_Delete(object parameter)
+        {
+            DeleteItem(SelectedItem);
+        }
+
+        public async void AddAccount(AccountDTO account)
+        {
+            
+        }
+
+        
 
         #endregion
     }
