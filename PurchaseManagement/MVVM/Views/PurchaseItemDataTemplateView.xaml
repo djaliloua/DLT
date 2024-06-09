@@ -207,8 +207,26 @@
                 <Switch VerticalOptions="Start"
                         IsToggled="{Binding IsPurchased}"
                         ToolTipProperties.Text="IsPurchased" />
-                <Switch VerticalOptions="Start"
-                        IsToggled="{Binding IsLocation}" ToolTipProperties.Text="Location"/>
+                <!--<Switch VerticalOptions="Start"
+                        IsToggled="{Binding IsLocation}"
+                        ToolTipProperties.Text="Location" />-->
+
+                <Ellipse ToolTipProperties.Text="Location"
+                         WidthRequest="30"
+                         HeightRequest="30"
+                         HorizontalOptions="Start">
+                    <Ellipse.Triggers>
+                        <DataTrigger TargetType="Ellipse" Binding="{Binding IsLocation}" Value="true">
+                            <Setter Property="Fill"
+                                    Value="Green" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Ellipse" Binding="{Binding IsLocation}"
+                                     Value="false">
+                            <Setter Property="Fill"
+                                    Value="OrangeRed" />
+                        </DataTrigger>
+                    </Ellipse.Triggers>
+                </Ellipse>
             </VerticalStackLayout>
 
         </Grid>
