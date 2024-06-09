@@ -118,6 +118,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             {
                 var newAccount = await accountRepository.SaveOrUpdateItem(mapper.Map<Account>(item));
                 base.AddItem(mapper.Map<AccountDTO>(newAccount));
+                await _toastNotification.ShowNotification($"{newAccount.Money} added");
             }
             else
             {
