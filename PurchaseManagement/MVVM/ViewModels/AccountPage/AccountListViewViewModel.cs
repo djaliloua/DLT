@@ -30,7 +30,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
     {
         #region Private methods
         private readonly IAccountRepository accountRepository;
-        private readonly IAccountRepositoryAPI accountRepositoryAPI;
+        //private readonly IAccountRepositoryAPI accountRepositoryAPI;
         private Mapper mapper = MapperConfig.InitializeAutomapper();
         #endregion
 
@@ -49,17 +49,17 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository _accountRepository, IAccountRepositoryAPI _accountRepositoryAPI)
+        public AccountListViewViewModel(IAccountRepository _accountRepository)
         {
             accountRepository = _accountRepository;
-            accountRepositoryAPI = _accountRepositoryAPI;
+            //accountRepositoryAPI = _accountRepositoryAPI;
             Init();
             SetupComands();
         }
         #endregion
 
         #region Private methods
-        public override bool IsContains(AccountDTO newAccount)
+        public override bool ItemExist(AccountDTO newAccount)
         {
             foreach (AccountDTO account in Items)
             {
@@ -124,7 +124,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         public override async Task LoadItems()
         {
             ShowActivity();
-            var data = await accountRepositoryAPI.GetAccounts();
+            var data = await accountRepository.GetAllAsync();
             var dt = data.Select(mapper.Map<AccountDTO>).OrderByDescending(a => a.DateTime).ToList();
             SetItems(dt);
             HideActivity();
@@ -140,11 +140,11 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         public async void AddAccount(AccountDTO account)
         {
-            if (!IsContains(account))
+            if (!ItemExist(account))
             {
-                var y = await accountRepositoryAPI.PostAccount(mapper.Map<Account>(account));
-                var x = await accountRepository.SaveOrUpdateAsync(mapper.Map<Account>(account));
-                AddItem(mapper.Map<AccountDTO>(x));
+                //var y = await accountRepositoryAPI.PostAccount(mapper.Map<Account>(account));
+                var newAccount = await accountRepository.SaveOrUpdateAsync(mapper.Map<Account>(account));
+                AddItem(mapper.Map<AccountDTO>(newAccount));
             }
             else
             {
@@ -160,7 +160,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 {
                     var acount = mapper.Map<Account>(account);
                     await accountRepository.DeleteAsync(acount);
-                    await accountRepositoryAPI.DeleteAccount(acount.Id);
+                    //await accountRepositoryAPI.DeleteAccount(acount.Id);
                     DeleteItem(account);
                 }
             }

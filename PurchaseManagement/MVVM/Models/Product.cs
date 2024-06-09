@@ -1,38 +1,37 @@
 ﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
-using Microsoft.Maui.Devices.Sensors;
 
 namespace PurchaseManagement.MVVM.Models
 {
     [Table("Purchase_Items")]
-    public class Purchase_Items
+    public class Product
     {
         [PrimaryKey, AutoIncrement]
         public int Item_Id { get; set; }
-        [ForeignKey(typeof(Purchases))]
-        public int Purchase_Id { get; set; }
+        [ForeignKey(typeof(Purchase))]
+        public int PurchaseId { get; set; }
         public string Item_Name { get; set; }
         public long Item_Price { get; set; }
         public long Item_Quantity { get; set;}
         public string Item_Description { get; set; }
         public bool IsPurchased { get; set; }
 
-        [ForeignKey(typeof(MarketLocation))]
+        [ForeignKey(typeof(Location))]
         public int Location_Id { get; set; }
         [OneToOne]
-        public MarketLocation Location { get; set; }
+        public Location Location { get; set; }
         [ManyToOne]
-        public Purchases Purchase { get; set; }
-        public Purchase_Items(int p_id, string item_name, long item_price, long item_quantity, string item_desc)
+        public Purchase Purchase { get; set; }
+        public Product(int p_id, string item_name, long item_price, long item_quantity, string item_desc)
         {
-            Purchase_Id = p_id;
+            PurchaseId = p_id;
             Item_Name = item_name;
             Item_Price = item_price;
             Item_Quantity = item_quantity;
             Item_Description = item_desc;
         }
         public bool IsLocation => Location != null;
-        public Purchase_Items()
+        public Product()
         {
             
         }

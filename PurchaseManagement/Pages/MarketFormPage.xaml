@@ -43,10 +43,10 @@
                                 Text="{Binding PurchaseItem.Item_Description}" />
             <material:CheckBox IsChecked="{Binding PurchaseItem.IsPurchased}"/>
         </VerticalStackLayout>
-        <ActivityIndicator IsRunning="{Binding Show}"
+        <ActivityIndicator IsRunning="{Binding IsActivity}"
                            Color="Blue"
                            Grid.Row="{x:OnPlatform Android=0, Default=0}"
-                           IsVisible="{Binding Show}"
+                           IsVisible="{Binding IsActivity}"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            HeightRequest="80"

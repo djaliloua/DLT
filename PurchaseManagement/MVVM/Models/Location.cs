@@ -4,7 +4,7 @@ using Microsoft.Maui.Devices.Sensors;
 namespace PurchaseManagement.MVVM.Models
 {
     [Table("Location")]
-    public class MarketLocation
+    public class Location
     {
         [PrimaryKey, AutoIncrement]
         public int Location_Id { get; set; }

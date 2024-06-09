@@ -7,7 +7,7 @@ namespace PurchaseManagement
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(PurchaseItemsPage), typeof(PurchaseItemsPage));
+            Routing.RegisterRoute(nameof(ProductsPage), typeof(ProductsPage));
             Routing.RegisterRoute(nameof(PurchaseItemDetails), typeof(PurchaseItemDetails));
             Routing.RegisterRoute(nameof(MarketFormPage), typeof(MarketFormPage));
         }

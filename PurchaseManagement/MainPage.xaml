@@ -106,7 +106,7 @@
                                                                  Glyph="{x:Static m:MaterialRound.Date_range}" />
                                             </Image.Source>
                                         </Image>
-                                        <Label Text="{Binding Purchase_Date}"
+                                        <Label Text="{Binding PurchaseDate}"
                                                VerticalOptions="Center" />
                                     </HorizontalStackLayout>
                                     <HorizontalStackLayout Spacing="10">

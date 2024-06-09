@@ -1,9 +1,8 @@
 ﻿using MVVM;
-using Microsoft.Maui.Devices.Sensors;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
-    public class MarketLocationDTO:BaseViewModel
+    public class LocationDto:BaseViewModel
     {
         private int _location_id;
         public int Location_Id

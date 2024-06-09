@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PurchaseManagement.Pages.PurchaseItemsPage"
+             x:Class="PurchaseManagement.Pages.ProductsPage"
              xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:models="clr-namespace:PurchaseManagement.MVVM.Models"
@@ -9,7 +9,7 @@
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              x:Name="main"
              NavigationPage.BackButtonTitle="Back"
-             BindingContext="{x:Static service:ViewModelLocator.PurchaseItemsViewModel}"
+             BindingContext="{x:Static service:ViewModelLocator.ProductItemsViewModel}"
              BackgroundColor="LightBlue"
              Title="Purchases"
              >
@@ -80,7 +80,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <ViewCell.ContextActions>
+                        <!--<ViewCell.ContextActions>
                             <MenuItem Text="Update"
                                       BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                       Command="{Binding EditCommand}">
@@ -117,7 +117,7 @@
                                                      Glyph="{x:Static m:MaterialRound.Map}" />
                                 </MenuItem.IconImageSource>
                             </MenuItem>
-                        </ViewCell.ContextActions>
+                        </ViewCell.ContextActions>-->
                         <SwipeView>
                             <SwipeView.LeftItems >
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"

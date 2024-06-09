@@ -4,7 +4,13 @@ using System.Runtime.CompilerServices;
 
 namespace MVVM
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public interface IActivity
+    {
+        bool IsActivity { get; set; }
+        void ShowActivity();
+        void HideActivity();
+    }
+    public class BaseViewModel : INotifyPropertyChanged, IActivity
     {
 
         protected virtual void OnShow()
@@ -13,14 +19,14 @@ namespace MVVM
         }
         public BaseViewModel()
         {
-            Show = false;
+            IsActivity = false;
         }
-        //public abstract Task Load();
-        private bool show;
-        public bool Show
+        
+        private bool _isActivity;
+        public bool IsActivity
         {
-            get => show;
-            set => UpdateObservable(ref show, value, OnShow);
+            get => _isActivity;
+            set => UpdateObservable(ref _isActivity, value);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,14 +39,7 @@ namespace MVVM
         }
 
         //public event EventHandler OnLoad;
-        public void ShowProgressBar()
-        {
-            Show = true;
-        }
-        public void HideProgressBar()
-        {
-            Show = false;
-        }
+        
         public void UpdateObservable<T>(ref T oldValue, T newValue, [CallerMemberName] string propertyName = "")
         {
             oldValue = newValue;
@@ -51,6 +50,18 @@ namespace MVVM
             oldValue = newValue;
             OnPropertyChanged(propertyName);
             callback();
+        }
+
+        public void ShowActivity()
+        {
+            IsActivity = true;
+            OnShow();
+        }
+
+        public void HideActivity()
+        {
+            IsActivity = false;
+            OnShow();
         }
     }
 }

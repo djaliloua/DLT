@@ -19,13 +19,13 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             set => UpdateObservable(ref _title, value);
         }
         private string _purchase_Date;
-        public string Purchase_Date
+        public string PurchaseDate
         {
             get => _purchase_Date;
             set => UpdateObservable(ref _purchase_Date, value);
         }
-        private IList<Purchase_ItemsDTO> _purchase_Items;
-        public IList<Purchase_ItemsDTO> Purchase_Items
+        private IList<ProductDto> _purchase_Items;
+        public IList<ProductDto> Products
         {
             get => _purchase_Items;
             set => UpdateObservable(ref _purchase_Items, value);
@@ -36,8 +36,8 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => purchase_Stat_Id;
             set => UpdateObservable(ref purchase_Stat_Id, value);
         }
-        private PurchaseStatisticsDTO _purchaseSatistics;
-        public PurchaseStatisticsDTO PurchaseStatistics
+        private ProductStatisticsDto _purchaseSatistics;
+        public ProductStatisticsDto PurchaseStatistics
         {
             get => _purchaseSatistics;
             set => UpdateObservable(ref _purchaseSatistics, value);

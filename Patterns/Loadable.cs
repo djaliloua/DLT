@@ -19,17 +19,21 @@ namespace Patterns
         int Counter { get; }
         int NumberOfItems { get; set; }
         void SetItems(IList<TItem> items);
-        void DeleteItem(TItem item);
-        void AddItem(TItem item);
-        void UpdateItem(TItem item);
         ObservableCollection<TItem> GetItems();
         void AddOrUpdateItem(TItem item);
         void DeleteAllItems();
         void SelectedItemCallBack(TItem item);
         void ItemsCallBack(IList<TItem> item);
-        bool IsContains(TItem item);
+        bool ItemExist(TItem item);
     }
-    public abstract class Loadable<TItem> : ILoadable<TItem>, INotifyPropertyChanged, IActivity where TItem : class
+    public interface ILoadableService<TItem>
+    {
+        void DeleteItem(TItem item);
+        void AddItem(TItem item);
+        void UpdateItem(TItem item);
+        Task LoadItems();
+    }
+    public abstract class Loadable<TItem> : ILoadable<TItem>, ILoadableService<TItem>, INotifyPropertyChanged, IActivity where TItem : class
     {
         public abstract Task LoadItems();
         protected abstract void Reorder();
@@ -56,7 +60,7 @@ namespace Patterns
             set => UpdateObservable(ref _numberOfItems, value);
         }
         private bool _isActivity;
-        public bool IsActivity 
+        public bool IsActivity
         {
             get => _isActivity;
             set => UpdateObservable(ref _isActivity, value);
@@ -71,7 +75,7 @@ namespace Patterns
         {
 
         }
-        public virtual bool IsContains(TItem item)
+        public virtual bool ItemExist(TItem item)
         {
             return _items.Contains(item);
         }
@@ -161,5 +165,5 @@ namespace Patterns
         }
         #endregion
     }
-    
+
 }

@@ -5,18 +5,18 @@ namespace PurchaseManagement.DataAccessLayer
     
     public interface IRepository
     {
-        Task<MarketLocation> GetMarketLocationAsync(int purchase_id, int purchase_item_id);
-        Task<int> SaveAndUpdateLocationAsync(MarketLocation location);
-        Task<IList<Purchases>> GetAllPurchases();
-        Task<IList<Purchase_Items>> GetAllPurchaseItemById(int purchase_id);
-        Task<Purchases> SavePurchaseAsync(Purchases purchase);
-        Task<Purchase_Items> SavePurchaseItemAsync(Purchase_Items purchase_item);
-        Task<Purchases> GetFullPurchaseByDate(DateTime dt);
-        Task<Purchases> GetPurchaseByDate(DateTime dt);
-        Task<PurchaseStatistics> SavePurchaseStatisticsItemAsyn(Purchases purchase, PurchaseStatistics purchaseStatistics);
-        Task<double> GetTotalValue(Purchases purchases, string colname);
+        Task<MVVM.Models.Location> GetMarketLocationAsync(int purchase_id, int purchase_item_id);
+        Task<int> SaveAndUpdateLocationAsync(MVVM.Models.Location location);
+        Task<IList<Purchase>> GetAllPurchases();
+        Task<IList<Product>> GetAllPurchaseItemById(int purchase_id);
+        Task<Purchase> SavePurchaseAsync(Purchase purchase);
+        Task<Product> SavePurchaseItemAsync(Product purchase_item);
+        Task<Purchase> GetPurchasesByDate(DateTime dt);
+        Task<Purchase> GetFullPurchaseByDate(DateTime dt);
+        Task<PurchaseStatistics> SavePurchaseStatisticsItemAsyn(Purchase purchase, PurchaseStatistics purchaseStatistics);
+        Task<double> GetTotalValue(Purchase purchases, string colname);
         Task<PurchaseStatistics> GetPurchaseStatistics(int id);
         Task<int> CountPurchaseItems(int purchase_id);
-        Task<int> DeletePurchaseItemAsync(Purchase_Items purchase);
+        Task<int> DeletePurchaseItemAsync(Product purchase);
     }
 }

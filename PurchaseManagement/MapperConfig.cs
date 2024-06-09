@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.ViewModels;
+using Loc = PurchaseManagement.MVVM.Models;
+using Location = Microsoft.Maui.Devices.Sensors.Location;
+
 
 namespace PurchaseManagement
 {
@@ -10,27 +14,27 @@ namespace PurchaseManagement
         {
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Purchase_Items,Purchase_ItemsDTO>();
-                cfg.CreateMap<Purchase_ItemsDTO, Purchase_Items>();
+                cfg.CreateMap<Product,ProductDto>();
+                cfg.CreateMap<ProductDto, Product>();
                 //
-                cfg.CreateMap<Location, MarketLocation>();
-                cfg.CreateMap<MarketLocation, Location>();
+                cfg.CreateMap<Loc.Location, Location>();
+                cfg.CreateMap<Location, Loc.Location>();
                 //
-                cfg.CreateMap<Location, MarketLocationDTO>();
-                cfg.CreateMap<MarketLocationDTO, Location>();
+                cfg.CreateMap<Location, LocationDto>();
+                cfg.CreateMap<LocationDto, Location>();
 
                 //
-                cfg.CreateMap<MarketLocation, MarketLocationDTO>();
-                cfg.CreateMap<MarketLocationDTO, MarketLocation>();
+                cfg.CreateMap<MVVM.Models.Location, LocationDto>();
+                cfg.CreateMap<LocationDto, MVVM.Models.Location>();
                 //
                 cfg.CreateMap<Account, AccountDTO>();
                 cfg.CreateMap<AccountDTO, Account>();
                 //
-                cfg.CreateMap<Purchases, PurchasesDTO>();
-                cfg.CreateMap<PurchasesDTO, Purchases>();
+                cfg.CreateMap<Purchase, PurchasesDTO>();
+                cfg.CreateMap<PurchasesDTO, Purchase>();
                 //
-                cfg.CreateMap<PurchaseStatistics, PurchaseStatisticsDTO>();
-                cfg.CreateMap<PurchaseStatisticsDTO, PurchaseStatistics>();
+                cfg.CreateMap<PurchaseStatistics, ProductStatisticsDto>();
+                cfg.CreateMap<ProductStatisticsDto, PurchaseStatistics>();
                 //
 
             });

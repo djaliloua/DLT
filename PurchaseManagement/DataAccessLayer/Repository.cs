@@ -1,6 +1,5 @@
 ﻿using PurchaseManagement.MVVM.Models;
 using SQLite;
-using System.Data.SqlTypes;
 using System.Diagnostics;
 
 namespace PurchaseManagement.DataAccessLayer
@@ -12,27 +11,27 @@ namespace PurchaseManagement.DataAccessLayer
     public class Repository : IRepository
     {
         public static string folderName;
-        public async Task<MarketLocation> GetMarketLocationAsync(int purchase_id, int purchase_item_id)
+        public async Task<MVVM.Models.Location> GetMarketLocationAsync(int purchase_id, int purchase_item_id)
         {
-            MarketLocation location = null;
+            MVVM.Models.Location location = null;
             await Task.Delay(1);
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<Purchases>();
+                connection.CreateTable<Purchase>();
                 connection.CreateTable<PurchaseStatistics>();
-                connection.CreateTable<MarketLocation>();
+                connection.CreateTable<MVVM.Models.Location>();
                 connection.EnableWriteAheadLogging();
-                location = connection.Table<MarketLocation>().FirstOrDefault(loc => loc.Purchase_Id == purchase_id && loc.Purchase_Item_Id == purchase_item_id);
+                location = connection.Table<MVVM.Models.Location>().FirstOrDefault(loc => loc.Purchase_Id == purchase_id && loc.Purchase_Item_Id == purchase_item_id);
             }
             return location;
         }
-        public async Task<int> SaveAndUpdateLocationAsync(MarketLocation location)
+        public async Task<int> SaveAndUpdateLocationAsync(MVVM.Models.Location location)
         {
             int res = 0;
             await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<MarketLocation>();
+                connection.CreateTable<MVVM.Models.Location>();
                 connection.EnableWriteAheadLogging();
                 if (location.Location_Id != 0)
                     res = connection.Update(location);
@@ -41,54 +40,58 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return res;
         }
-        public async Task<IList<Purchases>> GetAllPurchases()
+        public async Task<IList<Purchase>> GetAllPurchases()
         {
-            string sqlComd = $"select *\r\nfrom Purchases P\r\nOrder by P.Purchase_Date desc\r\n;";
-            List<Purchases> purchases = null;
+            string sqlComd = $"select *\r\nfrom Purchases P\r\nOrder by P.PurchaseDate desc\r\n;";
+            List<Purchase> purchases = null;
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<Purchases>();
+                connection.CreateTable<Purchase>();
+                connection.CreateTable<PurchaseStatistics>();
+                connection.CreateTable<Product>();
                 connection.EnableWriteAheadLogging();
-                purchases = connection.Query<Purchases>(sqlComd);
+                purchases = connection.Query<Purchase>(sqlComd);
                 //purchases = connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Date).ToList();
                 for (int i = 0; i < purchases.Count; i++)
                 {
                     purchases[i].PurchaseStatistics = await GetPurchaseStatistics(purchases[i].Purchase_Id);
-                    //IList<Purchase_Items> purchase_items = await GetAllPurchaseItemById(purchases[i].Purchase_Id);
-                    foreach (Purchase_Items purchase_item in await GetAllPurchaseItemById(purchases[i].Purchase_Id))
+                    IList<Product> purchase_items = await GetAllPurchaseItemById(purchases[i].Purchase_Id);
+                    foreach (Product purchase_item in purchase_items)
                     {
                         purchase_item.Purchase = purchases[i];
                         purchase_item.Location = await GetMarketLocationAsync(purchases[i].Purchase_Id, purchase_item.Item_Id);
-                        purchases[i].Purchase_Items.Add(purchase_item);
+                        purchases[i].Products.Add(purchase_item);
                     }
                 }
             }
             return purchases;
         }
-        public async Task<IList<Purchase_Items>> GetAllPurchaseItemById(int purchaseId)
+        public async Task<IList<Product>> GetAllPurchaseItemById(int purchaseId)
         {
-            string sqlCmd = $"select *\r\nfrom Purchase_items P\r\nwhere P.Purchase_Id = {purchaseId}\r\norder by P.Item_id desc;";
-            List<Purchase_Items> purchase_items = null;
+            string sqlCmd = $"select *\r\nfrom Purchase_items P\r\nwhere P.PurchaseId = {purchaseId}\r\norder by P.Item_id desc;";
+            List<Product> purchase_items = null;
             await Task.Delay(1);
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<Purchase_Items>();
+                connection.CreateTable<Product>();
                 connection.EnableWriteAheadLogging();
-                purchase_items = connection.Query<Purchase_Items>(sqlCmd);
+                purchase_items = connection.Query<Product>(sqlCmd);
 
                 //purchase_items = connection.Table<Purchase_Items>().Where(p => p.Purchase_Id == purchaseId).OrderByDescending(x => x.Item_Id).ToList();
             }
             return purchase_items;
         }
 
-        public async Task<Purchases> SavePurchaseAsync(Purchases purchase)
+        public async Task<Purchase> SavePurchaseAsync(Purchase purchase)
         {
             int res = 0;
             await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<Purchases>();
-                
+                connection.CreateTable<Purchase>();
+                connection.CreateTable<PurchaseStatistics>();
+                connection.CreateTable<Product>();
+                connection.CreateTable<MVVM.Models.Location>();
                 connection.EnableWriteAheadLogging();
 
                 try
@@ -106,58 +109,50 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return purchase;
         }
-        public async Task<Purchases> GetPurchaseByDate(DateTime dt)
+        public async Task<Purchase> GetPurchasesByDate(DateTime dt)
         {
-            await Task.Delay(1);
-            Purchases purchases = null;
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
-            {
-                connection.CreateTable<Purchases>();
-                foreach (var purchase in connection.Table<Purchases>())
-                {
-                    if(purchase.Purchase_Date == $"{dt:yyyy-MM-dd}")
-                    {
-                        purchases = purchase;
-                        break;
-                    }
-                    
-                }
-            }
+            var d = await GetAllPurchases();
+            Purchase purchases = d.FirstOrDefault(p => p.PurchaseDate.Contains($"{dt:yyyy-MM-dd}"));
+
             return purchases;
         }
-        public async Task<Purchases> GetFullPurchaseByDate(DateTime dt)
+        public async Task<Purchase> GetFullPurchaseByDate(DateTime dt)
         {
-            string sqlCmd = $"select *\r\nfrom Purchases P\r\nwhere P.Purchase_Date= '{dt:yyyy-MM-dd}';";
-            Purchases purchases = null;
+            string sqlCmd = $"select *\r\nfrom Purchases P\r\nwhere P.PurchaseDate= '{dt:yyyy-MM-dd}';";
+            Purchase purchases = null;
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<Purchases>();
-                var p = connection.Query<Purchases>(sqlCmd);
+                connection.CreateTable<Purchase>();
+                connection.CreateTable<PurchaseStatistics>();
+                connection.CreateTable<Product>();
+                connection.CreateTable<MVVM.Models.Location>();
+                var p = connection.Query<Purchase>(sqlCmd);
                 if (p != null && p.Count > 0)
                 {
                     purchases = p[0];
                     purchases.PurchaseStatistics = await GetPurchaseStatistics(purchases.Purchase_Id);
                     var data = await GetAllPurchaseItemById(purchases.Purchase_Id);
-                    for (int i = 0; i < data.Count; i++)
+                    for (int i = 1; i < data.Count; i++)
                     {
                         data[i].Purchase = purchases;
                         data[i].Location = await GetMarketLocationAsync(purchases.Purchase_Id, data[i].Location_Id);
-                        purchases.Purchase_Items.Add(data[i]);
                     }
+                    purchases.Products = data;
+
                 }
             }
             return purchases;
         }
-        public async Task<Purchase_Items> SavePurchaseItemAsync(Purchase_Items purchase_item)
+        public async Task<Product> SavePurchaseItemAsync(Product purchase_item)
         {
             int res = 0;
             await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                //connection.CreateTable<Purchases>();
-                //connection.CreateTable<PurchaseStatistics>();
-                connection.CreateTable<Purchase_Items>();
-                connection.CreateTable<MarketLocation>();
+                connection.CreateTable<Purchase>();
+                connection.CreateTable<PurchaseStatistics>();
+                connection.CreateTable<Product>();
+                connection.CreateTable<MVVM.Models.Location>();
                 connection.EnableWriteAheadLogging();
                 if (purchase_item.Item_Id != 0)
                     res = connection.Update(purchase_item);
@@ -176,29 +171,23 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return purchase_item;
         }
-        public async Task<PurchaseStatistics> SavePurchaseStatisticsItemAsyn(Purchases purchase, PurchaseStatistics purchaseStatistics)
+        public async Task<PurchaseStatistics> SavePurchaseStatisticsItemAsyn(Purchase purchase, PurchaseStatistics purchaseStatistics)
         {
             int res = 0;
             await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                //connection.CreateTable<Purchases>();
+                connection.CreateTable<Purchase>();
                 connection.CreateTable<PurchaseStatistics>();
-                //connection.CreateTable<Purchase_Items>();
-                //connection.CreateTable<MarketLocation>();
+                connection.CreateTable<Product>();
+                connection.CreateTable<MVVM.Models.Location>();
                 connection.EnableWriteAheadLogging();
                 purchaseStatistics ??= new();
                 purchaseStatistics.Purchase_Id = purchase.Purchase_Id;
                 purchaseStatistics.PurchaseCount = await CountPurchaseItems(purchase.Purchase_Id);
                 purchaseStatistics.TotalPrice = await GetTotalValue(purchase, "Price");
                 purchaseStatistics.TotalQuantity = await GetTotalValue(purchase, "Quantity");
-                //purchase.PurchaseStatistics = purchaseStatistics;
-
-                //if (purchase.PurchaseStatistics.Id != 0)
-                //    res = connection.Update(purchase.PurchaseStatistics);
-                //else
-                //    res = connection.Insert(purchase.PurchaseStatistics);
-
+                
                 if (purchaseStatistics.Id != 0)
                     res = connection.Update(purchaseStatistics);
                 else
@@ -206,7 +195,7 @@ namespace PurchaseManagement.DataAccessLayer
             }
             return purchaseStatistics;
         }
-        public async Task<double> GetTotalValue(Purchases purchases, string colname)
+        public async Task<double> GetTotalValue(Purchase purchases, string colname)
         {
             var d = await GetAllPurchaseItemById(purchases.Purchase_Id);
             double result = 0;
@@ -222,9 +211,9 @@ namespace PurchaseManagement.DataAccessLayer
             PurchaseStatistics p;
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                //connection.CreateTable<Purchases>();
+                connection.CreateTable<Purchase>();
                 connection.CreateTable<PurchaseStatistics>();
-                //connection.CreateTable<Purchase_Items>();
+                connection.CreateTable<Product>();
                 connection.EnableWriteAheadLogging();
                 p = connection.Table<PurchaseStatistics>().FirstOrDefault(s => s.Purchase_Id == id);
             }
@@ -232,10 +221,10 @@ namespace PurchaseManagement.DataAccessLayer
         }
         public async Task<int> CountPurchaseItems(int purchase_id)
         {
-            IList<Purchase_Items> items = await GetAllPurchaseItemById(purchase_id);
+            IList<Product> items = await GetAllPurchaseItemById(purchase_id);
             return items.Count();
         }
-        public async Task<int> DeletePurchaseItemAsync(Purchase_Items purchase)
+        public async Task<int> DeletePurchaseItemAsync(Product purchase)
         {
             int res = 0;
             await Task.Delay(1);
@@ -243,14 +232,15 @@ namespace PurchaseManagement.DataAccessLayer
             {
                 connection.EnableWriteAheadLogging();
                 res = connection.Delete(purchase);
-                PurchaseStatistics purchaseStatistics = await GetPurchaseStatistics(purchase.Purchase_Id);
+                PurchaseStatistics purchaseStatistics = await GetPurchaseStatistics(purchase.PurchaseId);
                 await SavePurchaseStatisticsItemAsyn(purchase.Purchase, purchaseStatistics);
-                MarketLocation loc = await GetMarketLocationAsync(purchase.Purchase.Purchase_Id, purchase.Item_Id);
+                MVVM.Models.Location loc = await GetMarketLocationAsync(purchase.Purchase.Purchase_Id, purchase.Item_Id);
                 if (loc != null)
                     res = connection.Delete(loc);
             }
             return res;
         }
 
+       
     }
 }

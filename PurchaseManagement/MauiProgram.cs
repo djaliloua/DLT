@@ -10,6 +10,9 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using PurchaseManagement.MVVM.ViewModels.AccountPage;
+using PurchaseManagement.DataAccessLayer.RepositoryTest;
+using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.Commons;
 
 namespace PurchaseManagement
 {
@@ -27,7 +30,11 @@ namespace PurchaseManagement
         {
             mauiAppBuilder.Services.AddSingleton<IRepository, Repository>();
             mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
-            mauiAppBuilder.Services.AddSingleton<IAccountRepositoryAPI, AccountRepositoryAPI>();
+            mauiAppBuilder.Services.AddSingleton<IProductRepository, ProductRepository>();
+            mauiAppBuilder.Services.AddSingleton<IPurchaseRepository, PurchaseRepository>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<MVVM.Models.Location>, LocationRepository>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<PurchaseStatistics>, StatisticsRepository>();
+            mauiAppBuilder.Services.AddScoped<INotification, ToastNotification>();
             mauiAppBuilder.Services.AddMemoryCache();
             return mauiAppBuilder;
         }
@@ -38,7 +45,7 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddSingleton<AccountAnalyticViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountListViewViewModel>();
             mauiAppBuilder.Services.AddSingleton<MainViewModel>();
-            mauiAppBuilder.Services.AddSingleton<PurchaseItemsViewModel>();
+            mauiAppBuilder.Services.AddSingleton<ProductItemsViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
             mauiAppBuilder.Services.AddTransient<MarketFormViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountPageViewModel>();

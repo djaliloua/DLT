@@ -1,57 +1,92 @@
 ﻿using AutoMapper;
-using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
 using Patterns;
+using PurchaseManagement.DataAccessLayer.RepositoryTest;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchasesDTO
     {
-        public override int Index(TItem item)
+        public TItem GetItemByDate(DateTime date)
         {
-            return Items.ToList().FindIndex(i => i.Purchase_Id == item.Purchase_Id);
+            TItem item = GetItems().FirstOrDefault(p => p.PurchaseDate.Equals($"{date:yyyy-MM-dd}"));
+            return item;
+        }
+        public DateTime DateTime { get; set; }
+        public override void UpdateItem(TItem item)
+        {
+            TItem item1 = GetItemByDate(DateTime);
+            if (item1 != null)
+            {
+                item1.Products = item.Products;
+                item1.PurchaseStatistics = item.PurchaseStatistics;
+                item1.Purchase_Stats_Id = item.Purchase_Stats_Id;
+            }
+            
         }
         protected override void Reorder()
         {
-            var data = GetItems().OrderByDescending(a => a.Purchase_Date).ToList();
+            var data = GetItems().OrderByDescending(a => a.PurchaseDate).ToList();
             SetItems(data);
         }
 
     }
     public class MainViewModel: LaodableMainViewModel<PurchasesDTO>
     {
+        #region Private Properties
+        private readonly IPurchaseRepository _purchaseDB;
+        private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
+        #endregion
+
+        #region Public Properites
         private DateTime _selectedDate;
         public DateTime SelectedDate
         {
             get => _selectedDate;
-            set => UpdateObservable(ref _selectedDate, value);
+            set => UpdateObservable(ref _selectedDate, value, () =>
+            {
+                DateTime = value;
+            });
         }
-        private Mapper mapper = MapperConfig.InitializeAutomapper();
+        private Mapper mapper;
         private bool _isSavebtnEnabled;
         public bool IsSavebtnEnabled
         {
             get => _isSavebtnEnabled;
             set => UpdateObservable(ref _isSavebtnEnabled, value);
         }
-        private readonly IRepository _db;
+        #endregion
+
+        #region Commands
         public ICommand AddCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
-        public MainViewModel(IRepository db)
+        #endregion
+
+        #region Constructor
+        public MainViewModel(IPurchaseRepository db, IGenericRepository<PurchaseStatistics> statisticsDB)
         {
-            _db = db;
+            _purchaseDB = db;   
+            _statisticsDB = statisticsDB;
+            mapper = MapperConfig.InitializeAutomapper();
             IsSavebtnEnabled = true;
-            _ = Load();
-            SetupCommands();
+            _ = LoadItems();
+            CommandSetup();
         }
-        private void SetupCommands()
+        #endregion
+
+        #region Private Methods
+        private void CommandSetup()
         {
             AddCommand = new Command(On_Add);
             DoubleClickCommand = new Command(On_DoubleClick);
         }
-        
+        #endregion
+
+        #region Handlers
+
         private async void On_DoubleClick(object sender)
         {
             if(IsSelected)
@@ -60,23 +95,23 @@ namespace PurchaseManagement.MVVM.ViewModels
                         {
                             { "purchase", SelectedItem }
                         };
-                SelectedDate = DateTime.Parse(SelectedItem.Purchase_Date);
-                await Shell.Current.GoToAsync(nameof(PurchaseItemsPage), navigationParameter);
+                SelectedDate = DateTime.Parse(SelectedItem.PurchaseDate);
+                await Shell.Current.GoToAsync(nameof(ProductsPage), navigationParameter);
             }
         }
         
         private async void On_Add(object sender)
         {
-            Purchase_ItemsDTO purchase_proxy_item;
-            Purchases purchase = await _db.GetFullPurchaseByDate(SelectedDate);
+            ProductDto purchase_proxy_item;
+            Purchase purchase = await _purchaseDB.GetPurchaseByDate(SelectedDate);
             if(purchase != null)
             {
-                PurchaseStatistics stat = await _db.GetPurchaseStatistics(purchase.Purchase_Id);
-                purchase_proxy_item = stat == null ? new Purchase_ItemsDTO(0) : new Purchase_ItemsDTO(stat.PurchaseCount);
+                PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
+                purchase_proxy_item = stat == null ? new ProductDto(0) : new ProductDto(stat.PurchaseCount);
             }
             else
             {
-                purchase_proxy_item = new Purchase_ItemsDTO(0);
+                purchase_proxy_item = new ProductDto(0);
             }
 
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
@@ -86,22 +121,18 @@ namespace PurchaseManagement.MVVM.ViewModels
                 };
             await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }
-        public async Task Load()
-        {
-            if (_db != null)
-            {
-                await LoadItems();
-            }
-        }
-        
+        #endregion
+
+        #region public Overriden methods
         public override async Task LoadItems()
         {
             ShowActivity();
-            IList<Purchases> _purchases = await _db.GetAllPurchases();
+            IEnumerable<Purchase> _purchases = await _purchaseDB.GetAllItems();
             var data = _purchases.Select(mapper.Map<PurchasesDTO>).ToList();
             SetItems(data); 
             HideActivity();
         }
-        
+        #endregion
+
     }
 }

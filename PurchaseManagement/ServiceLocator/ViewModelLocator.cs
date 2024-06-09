@@ -15,8 +15,8 @@ namespace PurchaseManagement.ServiceLocator
         public static AccountListViewViewModel AccountListViewViewModel => GetService<AccountListViewViewModel>();
         public static AccountPageViewModel AccountPageViewModel => GetService<AccountPageViewModel>();
         public static MainViewModel MainViewModel => GetService<MainViewModel>();
-        public static PurchaseItemsViewModel GetPurchaseItemsViewModel() => GetService<PurchaseItemsViewModel>();
-        public static PurchaseItemsViewModel PurchaseItemsViewModel => GetService<PurchaseItemsViewModel>();
+        public static ProductItemsViewModel GetPurchaseItemsViewModel() => GetService<ProductItemsViewModel>();
+        public static ProductItemsViewModel ProductItemsViewModel => GetService<ProductItemsViewModel>();
         public static PurchaseItemDetailsViewModel GetPurchaseItemDetailsViewModel() => GetService<PurchaseItemDetailsViewModel>();
         public static PurchaseItemDetailsViewModel PurchaseItemDetailsViewModel => GetService<PurchaseItemDetailsViewModel>();
         public static MarketFormViewModel MarketFormViewModel => GetService<MarketFormViewModel>();

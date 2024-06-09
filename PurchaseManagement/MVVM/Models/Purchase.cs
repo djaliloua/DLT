@@ -4,34 +4,34 @@ using SQLiteNetExtensions.Attributes;
 namespace PurchaseManagement.MVVM.Models
 {
     [Table("Purchases")]
-    public class Purchases
+    public class Purchase
     {
         [PrimaryKey, AutoIncrement]
         public int Purchase_Id { get; set; }
         public string Title { get; set; }
-        public string Purchase_Date { get; set; }
+        public string PurchaseDate { get; set; }
         
-        private IList<Purchase_Items> _purchase_Items = new List<Purchase_Items>();
+        private IList<Product> _products = new List<Product>();
         [OneToMany(nameof(Purchase_Id))]
-        public IList<Purchase_Items> Purchase_Items
+        public IList<Product> Products
         {
-            get => _purchase_Items;
-            set => _purchase_Items = value; 
+            get => _products;
+            set => _products = value; 
         }
 
         [ForeignKey(typeof(PurchaseStatistics))]
         public int Purchase_Stats_Id { get; set; }
         [OneToOne]
         public PurchaseStatistics PurchaseStatistics { get; set; }
-        public Purchases(string title, DateTime dt)
+        public Purchase(string title, DateTime dt)
         {
             Title = title;
-            Purchase_Date = dt.ToString("yyyy-MM-dd");
+            PurchaseDate = dt.ToString("yyyy-MM-dd");
         }
-        public Purchases()
+        public Purchase()
         {
             
         }
-        public Purchases Clone() => MemberwiseClone() as Purchases;
+        public Purchase Clone() => MemberwiseClone() as Purchase;
     }
 }
