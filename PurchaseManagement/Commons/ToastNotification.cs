@@ -17,11 +17,10 @@ namespace PurchaseManagement.Commons
             this.duration = duration;
             this.textSize = textSize;
         }
-        public async void ShowNotification(string message)
+        public async Task ShowNotification(string message)
         {
             string text = $"{message} ";
             var toast = Toast.Make(text, duration, textSize);
-
             await toast.Show(cancellationTokenSource.Token);
         }
     }

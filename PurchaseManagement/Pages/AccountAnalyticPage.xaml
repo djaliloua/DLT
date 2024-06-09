@@ -10,7 +10,7 @@
     <Grid Margin="20" RowSpacing="30">
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition />
+            <!--<RowDefinition />-->
         </Grid.RowDefinitions>
         <ActivityIndicator IsRunning="{Binding Show}"
                            Color="Blue"
@@ -22,9 +22,9 @@
                            WidthRequest="80"
                            x:Name="activity"
                            ZIndex="10" />
-        <lvc:CartesianChart Series="{Binding LineSeries}"
+        <!--<lvc:CartesianChart Series="{Binding LineSeries}"
                             Grid.Row="0"
-                            Title="{Binding Title}" />
-        <lvc:CartesianChart Series="{Binding BarSeries}" Grid.Row="1"></lvc:CartesianChart>
+                            Title="{Binding Title}" />-->
+        <lvc:CartesianChart Series="{Binding BarSeries}" Grid.Row="0"></lvc:CartesianChart>
     </Grid>
 </ContentPage>

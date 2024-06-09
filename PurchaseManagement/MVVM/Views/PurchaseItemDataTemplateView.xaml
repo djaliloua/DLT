@@ -37,7 +37,7 @@
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
                              Value="E">
                     <Setter Property="Background"
-                            Value="azure" />
+                            Value="MediumOrchid" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"

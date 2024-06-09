@@ -2,6 +2,6 @@
 {
     public interface INotification
     {
-        void ShowNotification(string message);
+        Task ShowNotification(string message);
     }
 }

@@ -64,7 +64,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #region Handlers
         private void OnAdd(object parameter)
         {
-            ViewModelLocator.AccountListViewViewModel.AddAccount(new AccountDTO(SelectedDate, Money));
+            ViewModelLocator.AccountListViewViewModel.AddItem(new AccountDTO(SelectedDate, Money));
             Money = 0;
         }
         #endregion

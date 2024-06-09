@@ -50,7 +50,6 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
             mauiAppBuilder.Services.AddTransient<MarketFormViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountPageViewModel>();
-            mauiAppBuilder.Services.AddScoped<IAccountListViewMethods, AccountListViewViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountHeaderViewModel>();
             return mauiAppBuilder;
         }

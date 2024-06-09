@@ -8,16 +8,17 @@ using PurchaseManagement.Commons;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
-    public interface IAccountListViewMethods
-    {
-        void AddAccount(AccountDTO account);
-        void DeleteAccount(AccountDTO account);
-    }
-    public class AccountListViewViewModel : Loadable<AccountDTO>, IAccountListViewMethods
+    //public interface IAccountListViewMethods
+    //{
+    //    void AddAccount(AccountDTO account);
+    //    void DeleteAccount(AccountDTO account);
+    //}
+    public class AccountListViewViewModel : Loadable<AccountDTO>
     {
         #region Private methods
         private readonly IAccountRepository accountRepository;
-        private readonly INotification _notification;
+        private INotification _notification;
+        private INotification _messageBox;
         private Mapper mapper = MapperConfig.InitializeAutomapper();
         #endregion
 
@@ -40,6 +41,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         {
             accountRepository = _accountRepository;
             _notification = new ToastNotification();
+            _messageBox = new MessageBoxNotification();
             Init();
             SetupComands();
         }
@@ -60,11 +62,11 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         {
             await LoadItems();
             await GetMax()
-                .ContinueWith( (t) =>
+                .ContinueWith( async (t) =>
                 {
                     if (!IsEmpty)
                     {
-                        _notification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                        await _notification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
                     }
                 }
                 );
@@ -105,43 +107,42 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         private void On_Delete(object parameter)
         {
-            DeleteAccount(SelectedItem);
+            DeleteItem(SelectedItem);
         }
-
-        public async void AddAccount(AccountDTO account)
+        public override async void AddItem(AccountDTO item)
         {
-            if (!ItemExist(account))
+            
+            if (!ItemExist(item))
             {
-                //var y = await accountRepositoryAPI.PostAccount(mapper.Map<Account>(account));
-                var newAccount = await accountRepository.SaveOrUpdateItem(mapper.Map<Account>(account));
-                AddItem(mapper.Map<AccountDTO>(newAccount));
+                var newAccount = await accountRepository.SaveOrUpdateItem(mapper.Map<Account>(item));
+                base.AddItem(mapper.Map<AccountDTO>(newAccount));
             }
             else
             {
-                await Shell.Current.DisplayAlert("Message", "Item already present", "Cancel");
+                await _messageBox.ShowNotification("Item already present");
             }
         }
-
-        public async void DeleteAccount(AccountDTO account)
+        
+        public async override void DeleteItem(AccountDTO item)
         {
+            
             if (IsSelected)
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    var acount = mapper.Map<Account>(account);
+                    var acount = mapper.Map<Account>(item);
                     await accountRepository.DeleteItem(acount);
-                    //await accountRepositoryAPI.DeleteAccount(acount.Id);
-                    DeleteItem(account);
+                    base.DeleteItem(item);
+                    await _notification.ShowNotification($"{item.Money} deleted");
+
                 }
             }
             else
             {
-                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
+                await _messageBox.ShowNotification("Please select the item first");
             }
         }
-
-
-
+        
         #endregion
     }
     

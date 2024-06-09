@@ -5,7 +5,7 @@ namespace PurchaseManagement.Commons
 {
     public class SnackBarNotification : INotification
     {
-        public async void ShowNotification(string message)
+        public async Task ShowNotification(string message)
         {
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 

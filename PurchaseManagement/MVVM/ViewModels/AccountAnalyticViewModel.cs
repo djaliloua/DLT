@@ -10,6 +10,7 @@ using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.DataAccessLayer.Repository;
 using SkiaSharp;
 using System.Collections.ObjectModel;
+using LiveChartsCore.ConditionalDraw;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -21,6 +22,13 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class AccountAnalyticViewModel : BaseViewModel
     {
         private readonly IAccountRepository accountRepository;
+        SolidColorPaint[] paints = new SolidColorPaint[]
+        {
+            new(SKColors.Red),
+            new(SKColors.Green),
+            new(SKColors.Blue),
+            new(SKColors.Yellow)
+        };
         public ISeries[] LineSeries { get; set; } =
     {
         new LineSeries<AccountDTO>
@@ -55,14 +63,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             accountRepository = _accountRepository;
             Statistics = new ObservableCollection<Statistics>();
             _ = Load();
-            //DateTime.Now.ToString("")
-            var paints = new SolidColorPaint[]
-        {
-            new(SKColors.Red),
-            new(SKColors.Green),
-            new(SKColors.Blue),
-            new(SKColors.Yellow)
-        };
             col = new ColumnSeries<Statistics>
             {
                 Values = Statistics,
@@ -81,8 +81,18 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Mapping = (stat, index) => new(index, stat.AvgMoney / 10000)
 
             };
+            col
+                .OnPointMeasured(point =>
+                {
+                    if (point.Visual is null) return;
+
+                    // get a paint from the array
+                    var paint = paints[point.Index % paints.Length];
+                    // set the paint to the visual
+                    point.Visual.Fill = paint;
+                });
+            BarSeries = [col];
             
-            BarSeries = new ISeries[] { col };
             HideActivity();
         }
 
