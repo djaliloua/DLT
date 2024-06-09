@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using PurchaseManagement.DataAccessLayer.RepositoryTest;
+using SQLite;
 using SQLiteNetExtensions.Attributes;
 
 namespace PurchaseManagement.MVVM.Models
@@ -11,7 +12,7 @@ namespace PurchaseManagement.MVVM.Models
         public string Title { get; set; }
         public string PurchaseDate { get; set; }
         
-        private IList<Product> _products = new List<Product>();
+        private IList<Product> _products;
         [OneToMany(nameof(Purchase_Id))]
         public IList<Product> Products
         {
@@ -31,6 +32,26 @@ namespace PurchaseManagement.MVVM.Models
         public Purchase()
         {
             
+        }
+        public async Task LoadPurchaseStatistics(IGenericRepository<PurchaseStatistics> repository)
+        {
+            if(PurchaseStatistics  == null)
+            {
+                PurchaseStatistics = await repository.GetItemById(Purchase_Id);
+            }
+        }
+        public async Task LoadProducts(IProductRepository productRepository, IGenericRepository<Models.Location> locationRepository)
+        {
+            if(Products == null)
+            {
+                Products ??= new List<Product>();
+                foreach(var item in await productRepository.GetAllItemById(Purchase_Id))
+                {
+                    item.Purchase = this;
+                    await item.LoadLoacation(locationRepository);
+                    Products.Add(item);
+                }
+            }
         }
         public Purchase Clone() => MemberwiseClone() as Purchase;
     }

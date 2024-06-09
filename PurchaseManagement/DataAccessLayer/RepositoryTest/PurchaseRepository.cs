@@ -33,21 +33,12 @@ namespace PurchaseManagement.DataAccessLayer.RepositoryTest
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase>();
-                connection.CreateTable<PurchaseStatistics>();
-                connection.CreateTable<Product>();
                 connection.EnableWriteAheadLogging();
                 purchases = connection.Query<Purchase>(sqlComd);
-                //purchases = connection.Table<Purchases>().OrderByDescending(p => p.Purchase_Date).ToList();
                 for (int i = 0; i < purchases.Count; i++)
                 {
-                    purchases[i].PurchaseStatistics = await _statisticsRepository.GetItemById(purchases[i].Purchase_Id);
-                    IList<Product> purchase_items = await _productRepository.GetAllItemById(purchases[i].Purchase_Id);
-                    foreach (Product purchase_item in purchase_items)
-                    {
-                        purchase_item.Purchase = purchases[i];
-                        purchase_item.Location = await _locationRepository.GetItemById(purchase_item.Location_Id);
-                        purchases[i].Products.Add(purchase_item);
-                    }
+                    await purchases[i].LoadPurchaseStatistics(_statisticsRepository);
+                    await purchases[i].LoadProducts(_productRepository, _locationRepository);
                 }
             }
             return purchases;
@@ -63,7 +54,7 @@ namespace PurchaseManagement.DataAccessLayer.RepositoryTest
                 if (p != null && p.Count > 0)
                 {
                     purchase = p[0];
-                    purchase.PurchaseStatistics = await _statisticsRepository.GetItemById(purchase.Purchase_Id);
+                    await purchase.LoadPurchaseStatistics(_statisticsRepository);
                 }
             }
             return purchase;
@@ -72,35 +63,33 @@ namespace PurchaseManagement.DataAccessLayer.RepositoryTest
         public async Task<Purchase> GetFullPurchaseByDate(DateTime date)
         {
             string sqlCmd = $"select *\r\nfrom Purchases P\r\nwhere P.PurchaseDate= '{date:yyyy-MM-dd}';";
-            Purchase purchases = null;
+            Purchase purchase = null;
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase>();
                 var p = connection.Query<Purchase>(sqlCmd);
                 if (p != null && p.Count > 0)
                 {
-                    purchases = p[0];
-                    purchases.PurchaseStatistics = await _statisticsRepository.GetItemById(purchases.Purchase_Id);
-                    var data = await _productRepository.GetAllItemById(purchases.Purchase_Id);
-
-                    for (int i = 0; i < data.Count; i++)
-                    {
-                        data[i].Purchase = purchases;
-                        data[i].Location = await _locationRepository.GetItemById(data[i].Location_Id);
-                        purchases.Products.Add(data[i]);
-                    }
-
+                    purchase = p[0];
+                    await purchase.LoadPurchaseStatistics(_statisticsRepository);
+                    await purchase.LoadProducts(_productRepository, _locationRepository);
                 }
             }
-            return purchases;
+            return purchase;
         }
 
-        public Task<Purchase> GetItemById(int id)
+        public async Task<Purchase> GetItemById(int id)
         {
-            throw new NotImplementedException();
+            await Task.Delay(1);
+            Purchase purchase;
+            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            {
+                connection.CreateTable<Purchase>();
+                connection.EnableWriteAheadLogging();
+                purchase = connection.Table<Purchase>().FirstOrDefault(p => p.Purchase_Id == id);
+            }
+            return purchase;
         }
-
-        
 
         public async Task<Purchase> SaveOrUpdateItem(Purchase item)
         {

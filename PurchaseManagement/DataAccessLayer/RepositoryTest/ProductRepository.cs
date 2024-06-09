@@ -9,14 +9,7 @@ namespace PurchaseManagement.DataAccessLayer.RepositoryTest
     }
     public class ProductRepository : IProductRepository
     {
-        //private readonly IGenericRepository<PurchaseStatistics> _statisticsRepository;
-        //private readonly IGenericRepository<MVVM.Models.Location> _locationRepository;
-        //public ProductRepository(IGenericRepository<PurchaseStatistics> statisticsRepository, 
-        //    IGenericRepository<MVVM.Models.Location> locationRepository)
-        //{
-        //    _statisticsRepository = statisticsRepository;
-        //    _locationRepository = locationRepository;
-        //}
+        
         public async Task<IList<Product>> GetAllItemById(int id)
         {
             string sqlCmd = $"select *\r\nfrom Purchase_items P\r\nwhere P.PurchaseId = {id}\r\norder by P.Item_id desc;";
@@ -27,8 +20,6 @@ namespace PurchaseManagement.DataAccessLayer.RepositoryTest
                 connection.CreateTable<Product>();
                 connection.EnableWriteAheadLogging();
                 purchase_items = connection.Query<Product>(sqlCmd);
-
-                //purchase_items = connection.Table<Purchase_Items>().Where(p => p.Purchase_Id == purchaseId).OrderByDescending(x => x.Item_Id).ToList();
             }
             return purchase_items;
         }

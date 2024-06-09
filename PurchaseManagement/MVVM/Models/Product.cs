@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using PurchaseManagement.DataAccessLayer.RepositoryTest;
+using SQLite;
 using SQLiteNetExtensions.Attributes;
 
 namespace PurchaseManagement.MVVM.Models
@@ -34,6 +35,20 @@ namespace PurchaseManagement.MVVM.Models
         public Product()
         {
             
+        }
+        public async Task LoadPurchase(IPurchaseRepository purchaseRepository, Purchase purchase)
+        {
+            if(PurchaseId != 0 && Purchase == null)
+            {
+                Purchase = await purchaseRepository.GetItemById(PurchaseId);
+            }
+        }
+        public async Task LoadLoacation(IGenericRepository<Models.Location> locationRepository)
+        {
+            if(Location_Id != 0 && Location == null)
+            {
+                Location = await locationRepository.GetItemById(Location_Id);
+            }
         }
     }
 }
