@@ -1,7 +1,8 @@
-﻿using PurchaseManagement.MVVM.Models;
+﻿using PurchaseManagement.MVVM.Models.MarketModels;
+using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using SQLite;
 
-namespace PurchaseManagement.DataAccessLayer.RepositoryTest
+namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public class StatisticsRepository : IGenericRepository<PurchaseStatistics>
     {

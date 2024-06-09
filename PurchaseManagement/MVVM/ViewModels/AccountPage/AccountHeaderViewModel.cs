@@ -12,8 +12,8 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Properties
-        private long _money;
-        public long Money
+        private double _money;
+        public double Money
         {
             get => _money;
             set => UpdateObservable(ref _money, value);
@@ -65,6 +65,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         private void OnAdd(object parameter)
         {
             ViewModelLocator.AccountListViewViewModel.AddAccount(new AccountDTO(SelectedDate, Money));
+            Money = 0;
         }
         #endregion
     }

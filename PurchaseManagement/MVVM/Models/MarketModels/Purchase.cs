@@ -1,8 +1,8 @@
-﻿using PurchaseManagement.DataAccessLayer.RepositoryTest;
+﻿using PurchaseManagement.DataAccessLayer.Repository;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 
-namespace PurchaseManagement.MVVM.Models
+namespace PurchaseManagement.MVVM.Models.MarketModels
 {
     [Table("Purchases")]
     public class Purchase
@@ -11,13 +11,12 @@ namespace PurchaseManagement.MVVM.Models
         public int Purchase_Id { get; set; }
         public string Title { get; set; }
         public string PurchaseDate { get; set; }
-        
         private IList<Product> _products;
         [OneToMany(nameof(Purchase_Id))]
         public IList<Product> Products
         {
             get => _products;
-            set => _products = value; 
+            set => _products = value;
         }
 
         [ForeignKey(typeof(PurchaseStatistics))]
@@ -31,21 +30,21 @@ namespace PurchaseManagement.MVVM.Models
         }
         public Purchase()
         {
-            
+
         }
         public async Task LoadPurchaseStatistics(IGenericRepository<PurchaseStatistics> repository)
         {
-            if(PurchaseStatistics  == null)
+            if (PurchaseStatistics == null)
             {
                 PurchaseStatistics = await repository.GetItemById(Purchase_Id);
             }
         }
-        public async Task LoadProducts(IProductRepository productRepository, IGenericRepository<Models.Location> locationRepository)
+        public async Task LoadProducts(IProductRepository productRepository, IGenericRepository<MarketModels.Location> locationRepository)
         {
-            if(Products == null)
+            if (Products == null)
             {
                 Products ??= new List<Product>();
-                foreach(var item in await productRepository.GetAllItemById(Purchase_Id))
+                foreach (var item in await productRepository.GetAllItemById(Purchase_Id))
                 {
                     item.Purchase = this;
                     await item.LoadLoacation(locationRepository);

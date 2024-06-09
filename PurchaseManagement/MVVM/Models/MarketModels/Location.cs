@@ -1,7 +1,6 @@
 ﻿using SQLite;
-using Microsoft.Maui.Devices.Sensors;
 
-namespace PurchaseManagement.MVVM.Models
+namespace PurchaseManagement.MVVM.Models.MarketModels
 {
     [Table("Location")]
     public class Location

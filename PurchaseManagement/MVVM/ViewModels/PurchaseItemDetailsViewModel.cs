@@ -7,16 +7,14 @@ namespace PurchaseManagement.MVVM.ViewModels
 {
     public class PurchaseItemDetailsViewModel:BaseViewModel, IQueryAttributable
     {
-        private readonly IRepository _db;
         private ProductDto _purchaseDetails;
         public ProductDto PurchaseDetails
         {
             get => _purchaseDetails;
             set => UpdateObservable(ref _purchaseDetails, value);
         }
-        public PurchaseItemDetailsViewModel(IRepository _db)
+        public PurchaseItemDetailsViewModel()
         {
-            this._db = _db;
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)

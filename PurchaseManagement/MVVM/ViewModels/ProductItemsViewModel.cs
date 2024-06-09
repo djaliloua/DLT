@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
@@ -8,8 +6,10 @@ using System.Diagnostics;
 using System.Windows.Input;
 using Patterns;
 using CommunityToolkit.Mvvm.Messaging;
-using PurchaseManagement.DataAccessLayer.RepositoryTest;
+using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.Commons;
+using PurchaseManagement.MVVM.Models.MarketModels;
+using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -28,7 +28,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         private readonly IPurchaseRepository _purchaseDB;
         private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
-        private readonly IGenericRepository<MVVM.Models.Location> _locationRepository;
+        private readonly IGenericRepository<MarketModels.Location> _locationRepository;
         private readonly IProductRepository _productRepository;
         private readonly INotification _notification;
         private bool _isLocAvailable;
@@ -54,7 +54,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             IGenericRepository<PurchaseStatistics> statisticsDB,
             IPurchaseRepository purchaseDB,
             INotification notification,
-            IGenericRepository<MVVM.Models.Location> locationRepository)
+            IGenericRepository<MarketModels.Location> locationRepository)
         {
             _productRepository = productRepository;
             _statisticsDB = statisticsDB;
@@ -91,7 +91,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase)
                 {
                     // Update Product with its corresponding location
-                    var loc = mapper.Map<Models.Location>(location);
+                    var loc = mapper.Map<MarketModels.Location>(location);
                     SelectedItem.Location = mapper.Map<LocationDto>(loc);
                     loc.Purchase_Id = SelectedItem.PurchaseId;
                     loc.Purchase_Item_Id = SelectedItem.Item_Id;
@@ -156,7 +156,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                     //
                     if(SelectedItem.Location_Id != 0)
                     {
-                        Models.Location loc = await _locationRepository.GetItemById(SelectedItem.Location_Id);
+                        MarketModels.Location loc = await _locationRepository.GetItemById(SelectedItem.Location_Id);
                         if (loc != null)
                             await _locationRepository.DeleteItem(loc);
                     }

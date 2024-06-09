@@ -41,61 +41,61 @@
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="E">
+                             Value="F">
                     <Setter Property="Background"
                             Value="lightblue" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="F">
+                             Value="G">
                     <Setter Property="Background"
                             Value="indigo" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="G">
+                             Value="H">
                     <Setter Property="Background"
                             Value="darkgreen" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="H">
+                             Value="I">
                     <Setter Property="Background"
                             Value="limegreen" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="I">
+                             Value="J">
                     <Setter Property="Background"
                             Value="salmon" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="J">
+                             Value="K">
                     <Setter Property="Background"
                             Value="tan" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="K">
+                             Value="L">
                     <Setter Property="Background"
                             Value="SeaGreen" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="L">
+                             Value="M">
                     <Setter Property="Background"
                             Value="gold" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="M">
+                             Value="N">
                     <Setter Property="Background"
                             Value="hotpink" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="N">
+                             Value="Q">
                     <Setter Property="Background"
                             Value="SeaGreen" />
                 </DataTrigger>
@@ -114,7 +114,7 @@
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
-                             Value="Q">
+                             Value="Y">
                     <Setter Property="Background"
                             Value="olive" />
                 </DataTrigger>
@@ -142,6 +142,12 @@
                              Value="W">
                     <Setter Property="Background"
                             Value="LightBlue" />
+                </DataTrigger>
+                <DataTrigger TargetType="Border"
+                             Binding="{Binding Source={x:Reference txt},Path=Text}"
+                             Value="V">
+                    <Setter Property="Background"
+                            Value="BurlyWood" />
                 </DataTrigger>
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"

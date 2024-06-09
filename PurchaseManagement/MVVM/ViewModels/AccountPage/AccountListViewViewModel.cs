@@ -1,23 +1,10 @@
 ﻿using AutoMapper;
-using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
-using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;
-
-/* Unmerged change from project 'PurchaseManagement (net8.0)'
-Before:
-using PurchaseManagement.ServiceLocator;
-After:
-using PurchaseManagement.ServiceLocator;
-using PurchaseManagement;
-using PurchaseManagement.MVVM;
-using PurchaseManagement.MVVM.ViewModels;
-using PurchaseManagement.MVVM.ViewModels.AccountPage;
-*/
-using PurchaseManagement.ServiceLocator;
+using PurchaseManagement.MVVM.Models.Accounts;
+using PurchaseManagement.Commons;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
@@ -30,7 +17,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
     {
         #region Private methods
         private readonly IAccountRepository accountRepository;
-        //private readonly IAccountRepositoryAPI accountRepositoryAPI;
+        private readonly INotification _notification;
         private Mapper mapper = MapperConfig.InitializeAutomapper();
         #endregion
 
@@ -49,10 +36,10 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository _accountRepository)
+        public AccountListViewViewModel(IAccountRepository _accountRepository, INotification notification)
         {
             accountRepository = _accountRepository;
-            //accountRepositoryAPI = _accountRepositoryAPI;
+            _notification = notification;
             Init();
             SetupComands();
         }
@@ -69,32 +56,15 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             return false;
         }
 
-        private async Task MakeSnackBarAsync(string msg)
-        {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            var snackbarOptions = new SnackbarOptions
-            {
-                BackgroundColor = Colors.LightBlue,
-                TextColor = Colors.Black,
-                ActionButtonTextColor = Colors.Yellow,
-                CornerRadius = new CornerRadius(10),
-                CharacterSpacing = 0.5
-            };
-            string text = msg;
-            TimeSpan duration = TimeSpan.FromSeconds(5);
-            var snackbar = Snackbar.Make(text, duration: duration, visualOptions: snackbarOptions);
-            await snackbar.Show(cancellationTokenSource.Token);
-        }
         private async void Init()
         {
             await LoadItems();
             await GetMax()
-                .ContinueWith(async (t) =>
+                .ContinueWith( (t) =>
                 {
                     if (!IsEmpty)
                     {
-                        await MakeSnackBarAsync($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                        _notification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
                     }
                 }
                 );
@@ -124,7 +94,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         public override async Task LoadItems()
         {
             ShowActivity();
-            var data = await accountRepository.GetAllAsync();
+            var data = await accountRepository.GetAllItems();
             var dt = data.Select(mapper.Map<AccountDTO>).OrderByDescending(a => a.DateTime).ToList();
             SetItems(dt);
             HideActivity();
@@ -143,7 +113,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             if (!ItemExist(account))
             {
                 //var y = await accountRepositoryAPI.PostAccount(mapper.Map<Account>(account));
-                var newAccount = await accountRepository.SaveOrUpdateAsync(mapper.Map<Account>(account));
+                var newAccount = await accountRepository.SaveOrUpdateItem(mapper.Map<Account>(account));
                 AddItem(mapper.Map<AccountDTO>(newAccount));
             }
             else
@@ -159,7 +129,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
                     var acount = mapper.Map<Account>(account);
-                    await accountRepository.DeleteAsync(acount);
+                    await accountRepository.DeleteItem(acount);
                     //await accountRepositoryAPI.DeleteAccount(acount.Id);
                     DeleteItem(account);
                 }

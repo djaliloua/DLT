@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
 using Patterns;
-using PurchaseManagement.DataAccessLayer.RepositoryTest;
-
+using PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.DataAccessLayer.Repository;
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchasesDTO
@@ -25,6 +24,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 item1.PurchaseStatistics = item.PurchaseStatistics;
                 item1.Purchase_Stats_Id = item.Purchase_Stats_Id;
             }
+            OnPropertyChanged(nameof(Items));
             
         }
         protected override void Reorder()

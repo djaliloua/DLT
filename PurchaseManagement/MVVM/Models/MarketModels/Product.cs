@@ -1,8 +1,10 @@
-﻿using PurchaseManagement.DataAccessLayer.RepositoryTest;
+﻿using PurchaseManagement.DataAccessLayer.Repository;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 
-namespace PurchaseManagement.MVVM.Models
+
+
+namespace PurchaseManagement.MVVM.Models.MarketModels
 {
     [Table("Purchase_Items")]
     public class Product
@@ -13,7 +15,7 @@ namespace PurchaseManagement.MVVM.Models
         public int PurchaseId { get; set; }
         public string Item_Name { get; set; }
         public long Item_Price { get; set; }
-        public long Item_Quantity { get; set;}
+        public long Item_Quantity { get; set; }
         public string Item_Description { get; set; }
         public bool IsPurchased { get; set; }
 
@@ -34,18 +36,18 @@ namespace PurchaseManagement.MVVM.Models
         public bool IsLocation => Location != null;
         public Product()
         {
-            
+
         }
         public async Task LoadPurchase(IPurchaseRepository purchaseRepository, Purchase purchase)
         {
-            if(PurchaseId != 0 && Purchase == null)
+            if (PurchaseId != 0 && Purchase == null)
             {
                 Purchase = await purchaseRepository.GetItemById(PurchaseId);
             }
         }
-        public async Task LoadLoacation(IGenericRepository<Models.Location> locationRepository)
+        public async Task LoadLoacation(IGenericRepository<MarketModels.Location> locationRepository)
         {
-            if(Location_Id != 0 && Location == null)
+            if (Location_Id != 0 && Location == null)
             {
                 Location = await locationRepository.GetItemById(Location_Id);
             }

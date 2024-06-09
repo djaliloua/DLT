@@ -4,9 +4,10 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using MVVM;
+using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.MVVM.Models.DTOs;
-using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.ServiceLocator;
+using PurchaseManagement.DataAccessLayer.Repository;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 

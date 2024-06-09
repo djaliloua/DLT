@@ -62,8 +62,8 @@
                   Grid.Row="0"
                   VerticalScrollBarVisibility="Never"
                   CachingStrategy="RecycleElementAndDataTemplate"
-                  ItemsSource="{Binding Items}">
-            <ListView.Triggers>
+                  ItemsSource="{Binding Items, Mode=TwoWay}">
+            <!--<ListView.Triggers>
                 <DataTrigger TargetType="ListView"
                              Binding="{Binding IsActivity}"
                              Value="True">
@@ -76,7 +76,7 @@
                     <Setter Property="IsVisible"
                             Value="Visible" />
                 </DataTrigger>
-            </ListView.Triggers>
+            </ListView.Triggers>-->
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>

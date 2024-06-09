@@ -1,11 +1,11 @@
 ﻿using MVVM;
-using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 using AutoMapper;
-using PurchaseManagement.DataAccessLayer.RepositoryTest;
+using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.Commons;
+using PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -116,20 +116,14 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         #endregion
 
-
-
         #region Private Methods
         private async Task UpdateProductItem(Purchase purchase)
         {
             Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
             PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
-            purchase.PurchaseStatistics = stat;
-            m_purchase_item.Purchase = purchase;
-            m_purchase_item.PurchaseId = purchase.Purchase_Id;
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
-            var s = await _statisticsDB.SaveOrUpdateItem(stat);
-            purchase.Purchase_Stats_Id = s.Id;
-            _ = await _purchaseDB.SaveOrUpdateItem(purchase);
+            await _statisticsDB.SaveOrUpdateItem(stat);
+            
 
             // Update UI
             UpdateUI();
@@ -139,13 +133,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
             PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
-            purchase.PurchaseStatistics = stat;
-            m_purchase_item.Purchase = purchase;
             m_purchase_item.PurchaseId = purchase.Purchase_Id;
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
-            var s = await _statisticsDB.SaveOrUpdateItem(stat);
-            purchase.Purchase_Stats_Id = s.Id;
-            await _purchaseDB.SaveOrUpdateItem(purchase);
+            await _statisticsDB.SaveOrUpdateItem(stat);
+            
 
             // UI
             UpdateUI();
@@ -166,11 +157,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             PurchaseStatistics m_purchaseStatistics = new(purchase.Purchase_Id, 1, PurchaseItem.Item_Price, PurchaseItem.Item_Quantity);
             Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
 
-            //
+            m_purchase_item.PurchaseId = purchase.Purchase_Id;
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
             //
-            m_purchase_item.PurchaseId = purchase.Purchase_Id;
-            m_purchase_item.Purchase = purchase;
+            
             m_purchaseStatistics = await _statisticsDB.SaveOrUpdateItem(m_purchaseStatistics);
 
             

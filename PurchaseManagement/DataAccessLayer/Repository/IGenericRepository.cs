@@ -1,4 +1,4 @@
-﻿namespace PurchaseManagement.DataAccessLayer.RepositoryTest
+﻿namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public interface IGenericRepository<TItem> where TItem : class
     {

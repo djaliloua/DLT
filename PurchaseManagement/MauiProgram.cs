@@ -1,6 +1,5 @@
 ﻿using PurchaseManagement.MVVM.ViewModels;
 using PurchaseManagement.Pages;
-using PurchaseManagement.DataAccessLayer;
 using CommunityToolkit.Maui;
 using UraniumUI;
 using SkiaSharp.Views.Maui.Controls.Hosting;
@@ -10,9 +9,11 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using PurchaseManagement.MVVM.ViewModels.AccountPage;
-using PurchaseManagement.DataAccessLayer.RepositoryTest;
-using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.MVVM.Models.MarketModels;
+using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Commons;
+
 
 namespace PurchaseManagement
 {
@@ -28,13 +29,13 @@ namespace PurchaseManagement
         }
         public static MauiAppBuilder DbContextExtension(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<IRepository, Repository>();
             mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
             mauiAppBuilder.Services.AddSingleton<IProductRepository, ProductRepository>();
             mauiAppBuilder.Services.AddSingleton<IPurchaseRepository, PurchaseRepository>();
-            mauiAppBuilder.Services.AddSingleton<IGenericRepository<MVVM.Models.Location>, LocationRepository>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<MarketModels.Location>, LocationRepository>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<PurchaseStatistics>, StatisticsRepository>();
             mauiAppBuilder.Services.AddScoped<INotification, ToastNotification>();
+            mauiAppBuilder.Services.AddScoped<INotification, SnackBarNotification>();
             mauiAppBuilder.Services.AddMemoryCache();
             return mauiAppBuilder;
         }

@@ -1,7 +1,8 @@
-﻿using PurchaseManagement.MVVM.Models;
-using SQLite;
+﻿using SQLite;
+using PurchaseManagement.MVVM.Models.MarketModels;
+using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 
-namespace PurchaseManagement.DataAccessLayer.RepositoryTest
+namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public interface IPurchaseRepository : IGenericRepository<Purchase>
     {
@@ -12,10 +13,10 @@ namespace PurchaseManagement.DataAccessLayer.RepositoryTest
     {
         private readonly IGenericRepository<PurchaseStatistics> _statisticsRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IGenericRepository<MVVM.Models.Location> _locationRepository;
+        private readonly IGenericRepository<MarketModels.Location> _locationRepository;
         public PurchaseRepository(IGenericRepository<PurchaseStatistics> statisticsRepository, 
             IProductRepository productRepository,
-            IGenericRepository<MVVM.Models.Location> locationRepository)
+            IGenericRepository<MarketModels.Location> locationRepository)
         {
             _statisticsRepository = statisticsRepository;
             _productRepository = productRepository;

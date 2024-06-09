@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using PurchaseManagement.MVVM.Models;
+using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.MVVM.Models.DTOs;
-using PurchaseManagement.MVVM.ViewModels;
-using Loc = PurchaseManagement.MVVM.Models;
+using PurchaseManagement.MVVM.Models.MarketModels;
+using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using Location = Microsoft.Maui.Devices.Sensors.Location;
 
 
@@ -17,15 +17,15 @@ namespace PurchaseManagement
                 cfg.CreateMap<Product,ProductDto>();
                 cfg.CreateMap<ProductDto, Product>();
                 //
-                cfg.CreateMap<Loc.Location, Location>();
-                cfg.CreateMap<Location, Loc.Location>();
+                cfg.CreateMap<MarketModels.Location, Location>();
+                cfg.CreateMap<Location, MarketModels.Location>();
                 //
                 cfg.CreateMap<Location, LocationDto>();
                 cfg.CreateMap<LocationDto, Location>();
 
                 //
-                cfg.CreateMap<MVVM.Models.Location, LocationDto>();
-                cfg.CreateMap<LocationDto, MVVM.Models.Location>();
+                cfg.CreateMap<MarketModels.Location, LocationDto>();
+                cfg.CreateMap<LocationDto, MarketModels.Location>();
                 //
                 cfg.CreateMap<Account, AccountDTO>();
                 cfg.CreateMap<AccountDTO, Account>();

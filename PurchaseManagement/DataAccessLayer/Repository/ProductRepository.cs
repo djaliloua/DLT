@@ -1,7 +1,7 @@
-﻿using PurchaseManagement.MVVM.Models;
+﻿using PurchaseManagement.MVVM.Models.MarketModels;
 using SQLite;
 
-namespace PurchaseManagement.DataAccessLayer.RepositoryTest
+namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public interface IProductRepository: IGenericRepository<Product>
     {

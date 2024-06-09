@@ -1,6 +1,6 @@
 ﻿using SQLite;
 
-namespace PurchaseManagement.MVVM.Models
+namespace PurchaseManagement.MVVM.Models.MarketModels
 {
     [Table("PurchaseStatistics")]
     public class PurchaseStatistics
@@ -20,7 +20,7 @@ namespace PurchaseManagement.MVVM.Models
         }
         public PurchaseStatistics()
         {
-            
+
         }
     }
 }

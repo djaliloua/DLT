@@ -1,52 +1,54 @@
 ﻿using SQLite;
+using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 
-namespace PurchaseManagement.DataAccessLayer.RepositoryTest
+namespace PurchaseManagement.DataAccessLayer.Repository
 {
-    public class LocationRepository : IGenericRepository<MVVM.Models.Location>
+
+    public class LocationRepository : IGenericRepository<MarketModels.Location>
     {
-        public async Task DeleteItem(MVVM.Models.Location item)
+
+        public async Task DeleteItem(MarketModels.Location item)
         {
             await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<MVVM.Models.Location>();
+                connection.CreateTable<MarketModels.Location>();
                 connection.EnableWriteAheadLogging();
                 connection.Delete(item);
             }
         }
-
-        public async Task<IEnumerable<MVVM.Models.Location>> GetAllItems()
+        public async Task<IEnumerable<MarketModels.Location>> GetAllItems()
         {
             await Task.Delay(1);
-            List<MVVM.Models.Location> items;
+            List<MarketModels.Location> items;
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<MVVM.Models.Location>();
+                connection.CreateTable<MarketModels.Location>();
                 connection.EnableWriteAheadLogging();
-                items = connection.Table<MVVM.Models.Location>().ToList();
+                items = connection.Table<MarketModels.Location>().ToList();
             }
             return items;
         }
-
-        public async Task<MVVM.Models.Location> GetItemById(int id)
+        public async Task<MarketModels.Location> GetItemById(int id)
         {
             await Task.Delay(1);
-            MVVM.Models.Location loc = new();
+            MarketModels.Location loc = new();
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<MVVM.Models.Location>();
+                connection.CreateTable<MarketModels.Location>();
                 connection.EnableWriteAheadLogging();
-                loc = connection.Table<MVVM.Models.Location>().FirstOrDefault(s => s.Location_Id == id);
+                loc = connection.Table<MarketModels.Location>().FirstOrDefault(s => s.Location_Id == id);
             }
             return loc;
         }
-        public async Task<MVVM.Models.Location> SaveOrUpdateItem(MVVM.Models.Location item)
+
+        public async Task<MarketModels.Location> SaveOrUpdateItem(MarketModels.Location item)
         {
             int res = 0;
             await Task.Delay(1);
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
-                connection.CreateTable<MVVM.Models.Location>();
+                connection.CreateTable<MarketModels.Location>();
                 connection.EnableWriteAheadLogging();
                 if (item.Location_Id != 0)
                     res = connection.Update(item);

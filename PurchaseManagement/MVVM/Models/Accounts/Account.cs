@@ -1,6 +1,6 @@
 ﻿using SQLite;
 
-namespace PurchaseManagement.MVVM.Models
+namespace PurchaseManagement.MVVM.Models.Accounts
 {
     public class Account
     {
@@ -23,7 +23,7 @@ namespace PurchaseManagement.MVVM.Models
         }
         public Account()
         {
-            
+
         }
     }
 }
