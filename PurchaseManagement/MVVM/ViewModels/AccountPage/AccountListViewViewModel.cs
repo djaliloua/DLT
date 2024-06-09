@@ -8,16 +8,13 @@ using PurchaseManagement.Commons;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
-    //public interface IAccountListViewMethods
-    //{
-    //    void AddAccount(AccountDTO account);
-    //    void DeleteAccount(AccountDTO account);
-    //}
+    
     public class AccountListViewViewModel : Loadable<AccountDTO>
     {
         #region Private methods
         private readonly IAccountRepository accountRepository;
-        private INotification _notification;
+        private INotification _snackBarNotification;
+        private INotification _toastNotification;
         private INotification _messageBox;
         private Mapper mapper = MapperConfig.InitializeAutomapper();
         #endregion
@@ -40,8 +37,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         public AccountListViewViewModel(IAccountRepository _accountRepository)
         {
             accountRepository = _accountRepository;
-            _notification = new ToastNotification();
-            _messageBox = new MessageBoxNotification();
+            SetupNotification();
             Init();
             SetupComands();
         }
@@ -58,6 +54,12 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             return false;
         }
 
+        private void SetupNotification()
+        {
+            _snackBarNotification = new SnackBarNotification();
+            _messageBox = new MessageBoxNotification();
+            _toastNotification = new ToastNotification();
+        }
         private async void Init()
         {
             await LoadItems();
@@ -66,7 +68,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 {
                     if (!IsEmpty)
                     {
-                        await _notification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                        await _snackBarNotification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
                     }
                 }
                 );
@@ -133,7 +135,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                     var acount = mapper.Map<Account>(item);
                     await accountRepository.DeleteItem(acount);
                     base.DeleteItem(item);
-                    await _notification.ShowNotification($"{item.Money} deleted");
+                    await _toastNotification.ShowNotification($"{item.Money} deleted");
 
                 }
             }
