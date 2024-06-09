@@ -31,6 +31,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private readonly IGenericRepository<MarketModels.Location> _locationRepository;
         private readonly IProductRepository _productRepository;
         private readonly INotification _notification;
+        private readonly INotification _messageBox;
         private bool _isLocAvailable;
         public bool IsLocAvailable
         {
@@ -53,15 +54,21 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ProductItemsViewModel(IProductRepository productRepository,
             IGenericRepository<PurchaseStatistics> statisticsDB,
             IPurchaseRepository purchaseDB,
-            INotification notification,
             IGenericRepository<MarketModels.Location> locationRepository)
         {
             _productRepository = productRepository;
             _statisticsDB = statisticsDB;
             _purchaseDB = purchaseDB;
             _locationRepository = locationRepository;
-            _notification = notification;
+            _notification = new ToastNotification();
+            _messageBox = new MessageBoxNotification();
+            RegisterToMessage();
             CommandSetup();
+            
+            
+        }
+        private void RegisterToMessage()
+        {
             WeakReferenceMessenger.Default.Register<ProductDto, string>(this, "update", async (sender, p) =>
             {
                 if (p.Purchase is PurchasesDTO purchase)
@@ -71,7 +78,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                     await _productRepository.SaveOrUpdateItem(x);
                 }
             });
-            
         }
         private void CommandSetup()
         {
@@ -99,14 +105,14 @@ namespace PurchaseManagement.MVVM.ViewModels
                     loc = await _locationRepository.SaveOrUpdateItem(loc);
                     SelectedItem.Location_Id = loc.Location_Id;
                     await _productRepository.SaveOrUpdateItem(mapper.Map<Product>(SelectedItem));
-
+                    _notification.ShowNotification("Got location");
                     // Update UI
                     UpdateUI();
                 }
-                
+
             }
             else
-                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
+                _messageBox.ShowNotification("Please select the item first");
             HideActivity();
         }
         private async void UpdateUI()
@@ -128,7 +134,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
             }
             else
-                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
+                _messageBox.ShowNotification("Please select the item first");
         }
         private async void On_OpenMap(object parameter)
         {
@@ -140,7 +146,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                     await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
             }
             else
-                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
+                _messageBox.ShowNotification("Please select the item first");
         }
         private async void On_Delete(object parameter)
         {
@@ -163,17 +169,16 @@ namespace PurchaseManagement.MVVM.ViewModels
                     
                     // Update UI
                     ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(p));
+                    _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
+                    
                 }
             }
             else
-                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
+                _messageBox.ShowNotification("Please select the item first");
         }
         
-        //protected override void OnShow()
-        //{
-        //    IsSavebtnEnabled = !Show;
-        //}
+       
         private async void On_Open(object parameter)
         {
             await Task.Delay(1);

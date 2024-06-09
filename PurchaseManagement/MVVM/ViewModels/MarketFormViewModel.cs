@@ -38,7 +38,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private readonly IPurchaseRepository _purchaseDB;
         private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
         private readonly IProductRepository _productRepository;
-        private readonly INotification _notification;
+        private readonly INotification _toastNotification;
         #endregion
 
         #region Commands
@@ -51,13 +51,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Constructor
         public MarketFormViewModel(IPurchaseRepository db,
             IGenericRepository<PurchaseStatistics> statisticsDB,
-            INotification notification,
             IProductRepository productRepository)
         {
             _purchaseDB = db;
             _statisticsDB = statisticsDB;
             _productRepository = productRepository;
-            _notification = notification;
+            _toastNotification = new ToastNotification();
             IsSavebtnEnabled = true;
             CommandSetup();
             
@@ -111,7 +110,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await SavePurchaseAndProductItem(purchase);
             }
             Counter++;
-            _notification.ShowNotification($"{Counter}");
+            _toastNotification.ShowNotification($"{Counter}");
             HideActivity();
         }
         #endregion

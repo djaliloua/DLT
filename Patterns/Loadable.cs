@@ -107,7 +107,7 @@ namespace Patterns
             Items.Add(item);
             Reorder();
         }
-        public virtual int Index(TItem item)
+        protected virtual int Index(TItem item)
         {
             return Items.IndexOf(item);
         }

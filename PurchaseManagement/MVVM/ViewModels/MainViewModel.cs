@@ -15,18 +15,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             return item;
         }
         public DateTime DateTime { get; set; }
-        public override void UpdateItem(TItem item)
+        protected override int Index(TItem item)
         {
             TItem item1 = GetItemByDate(DateTime);
-            if (item1 != null)
-            {
-                item1.Products = item.Products;
-                item1.PurchaseStatistics = item.PurchaseStatistics;
-                item1.Purchase_Stats_Id = item.Purchase_Stats_Id;
-            }
-            OnPropertyChanged(nameof(Items));
-            
+            return base.Index(item1);
         }
+        
         protected override void Reorder()
         {
             var data = GetItems().OrderByDescending(a => a.PurchaseDate).ToList();

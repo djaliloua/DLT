@@ -34,8 +34,8 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddSingleton<IPurchaseRepository, PurchaseRepository>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<MarketModels.Location>, LocationRepository>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<PurchaseStatistics>, StatisticsRepository>();
-            mauiAppBuilder.Services.AddScoped<INotification, ToastNotification>();
-            mauiAppBuilder.Services.AddScoped<INotification, SnackBarNotification>();
+            //mauiAppBuilder.Services.AddScoped<INotification, ToastNotification>();
+            //mauiAppBuilder.Services.AddScoped<INotification, SnackBarNotification>();
             mauiAppBuilder.Services.AddMemoryCache();
             return mauiAppBuilder;
         }

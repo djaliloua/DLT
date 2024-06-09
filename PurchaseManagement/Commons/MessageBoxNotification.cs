@@ -4,7 +4,7 @@
     {
         public async void ShowNotification(string message)
         {
-            await Shell.Current.DisplayAlert(message, "Please select the item first", "Cancel");
+            await Shell.Current.DisplayAlert("Message", message, "Cancel");
         }
     }
 }

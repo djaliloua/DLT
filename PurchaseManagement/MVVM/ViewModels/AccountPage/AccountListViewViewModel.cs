@@ -36,10 +36,10 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository _accountRepository, INotification notification)
+        public AccountListViewViewModel(IAccountRepository _accountRepository)
         {
             accountRepository = _accountRepository;
-            _notification = notification;
+            _notification = new ToastNotification();
             Init();
             SetupComands();
         }
@@ -95,7 +95,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         {
             ShowActivity();
             var data = await accountRepository.GetAllItems();
-            var dt = data.Select(mapper.Map<AccountDTO>).OrderByDescending(a => a.DateTime).ToList();
+            var dt = data.Select(mapper.Map<AccountDTO>).ToList();
             SetItems(dt);
             HideActivity();
         }
