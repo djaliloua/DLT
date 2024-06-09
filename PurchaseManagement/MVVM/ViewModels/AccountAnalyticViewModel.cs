@@ -28,10 +28,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             Values = ViewModelLocator.AccountListViewViewModel.GetItems(),
             DataLabelsFormatter = point => $"{point.Model?.Money} CFA",
             DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
-            XToolTipLabelFormatter = point => $"{point.Model?.DateTime:D}",
+            YToolTipLabelFormatter = point => $"{point.Model?.DateTime:D}",
             DataLabelsPosition = DataLabelsPosition.Top,
             Fill = null,
-            Mapping = (point, index) => new(point.Money/10000, index)  
+            Mapping = (point, index) => new(index, point.Money/10000)  
         }
     };
         public LabelVisual Title { get; set; } =
@@ -69,7 +69,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 DataLabelsFormatter = point => $"{point.Model?.Day}",
                 DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
                 DataLabelsPosition = DataLabelsPosition.Top,
-                XToolTipLabelFormatter = point => $"{point.Model?.CountMoney}",
+                YToolTipLabelFormatter = point => $"{point.Model?.CountMoney}",
                 // Defines the distance between every bars in the series
                 Padding = 5,
                 Rx = 50,
@@ -78,7 +78,8 @@ namespace PurchaseManagement.MVVM.ViewModels
                 // Defines the max width a bar can have
                 MaxBarWidth = double.PositiveInfinity,
                 //Mapping
-                Mapping = (stat, index) => new(stat.AvgMoney/1000, index)
+                Mapping = (stat, index) => new(index, stat.AvgMoney / 10000)
+
             };
             
             BarSeries = new ISeries[] { col };
