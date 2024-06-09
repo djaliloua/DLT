@@ -66,7 +66,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             col = new ColumnSeries<Statistics>
             {
                 Values = Statistics,
-                DataLabelsFormatter = point => $"{point.Model?.Day}",
+                DataLabelsFormatter = point => $"{point.Model?.DateTime:ddd}",
                 DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
                 DataLabelsPosition = DataLabelsPosition.Top,
                 YToolTipLabelFormatter = point => $"{point.Model?.CountMoney}",

@@ -49,7 +49,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public async Task<IList<Statistics>> GetStatisticsAsync()
         {
-            string sql = "select AC.Day, avg(AC.Money) AvgMoney, sum(AC.Money) TotalMoney, count(AC.Money) CountMoney\r\nfrom Account AC\r\ngroup by AC.Day\r\nOrder by AC.Day desc\r\n;";
+            string sql = "select AC.DateTime, avg(AC.Money) AvgMoney, sum(AC.Money) TotalMoney, count(AC.Money) CountMoney\r\nfrom Account AC\r\ngroup by AC.Day\r\nOrder by AC.Day desc\r\n;";
             await Task.Delay(1);
             IList<Statistics> statistics = new List<Statistics>();
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
