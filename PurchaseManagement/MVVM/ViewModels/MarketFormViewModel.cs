@@ -94,8 +94,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
                 await UpdateProductItem(mapper.Map<Purchase>(ViewModelLocator.ProductItemsViewModel.Purchases));
+
             }
             await Shell.Current.GoToAsync("..");
+            await _toastNotification.ShowNotification($"Updated");
         }
         private async void On_Save(object sender)
         {
@@ -110,7 +112,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await SavePurchaseAndProductItem(purchase);
             }
             Counter++;
-            _toastNotification.ShowNotification($"{Counter}");
+            await _toastNotification.ShowNotification($"{Counter}");
             HideActivity();
         }
         #endregion
@@ -119,9 +121,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async Task UpdateProductItem(Purchase purchase)
         {
             Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
-            PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
-            await _statisticsDB.SaveOrUpdateItem(stat);
+            await _statisticsDB.SaveOrUpdateItem(purchase.PurchaseStatistics);
             
 
             // Update UI
@@ -130,12 +131,11 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         private async Task AddNewProducts(Purchase purchase)
         {
+            // Update DB
             Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
-            PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
             m_purchase_item.PurchaseId = purchase.Purchase_Id;
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
-            await _statisticsDB.SaveOrUpdateItem(stat);
-            
+            await _statisticsDB.SaveOrUpdateItem(purchase.PurchaseStatistics);
 
             // UI
             UpdateUI();
