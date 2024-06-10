@@ -77,7 +77,14 @@ namespace PurchaseManagement
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddMaterialIconFonts();
-                });
+                })
+                .ConfigureMauiHandlers(handler =>
+                {
+#if ANDROID
+handler.AddHandler<Shell, TabBarBadgeRender>();
+#endif
+                })
+                ;
 
 #if DEBUG
             builder.Logging.AddDebug();

@@ -4,6 +4,7 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;
 using PurchaseManagement.MVVM.Models.Accounts;
+using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.Commons;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
@@ -41,7 +42,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             Init();
             SetupComands();
         }
-        #endregion
+#endregion
 
         #region Private methods
         public override bool ItemExist(AccountDTO newAccount)
@@ -64,7 +65,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         {
             await LoadItems();
             await GetMax()
-                .ContinueWith( async (t) =>
+                .ContinueWith(async (t) =>
                 {
                     if (!IsEmpty)
                     {
@@ -102,6 +103,9 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             var dt = data.Select(mapper.Map<AccountDTO>).ToList();
             SetItems(dt);
             HideActivity();
+#if ANDROID
+BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
+#endif
         }
         #endregion
 

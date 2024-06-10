@@ -105,14 +105,14 @@ namespace PurchaseManagement.MVVM.ViewModels
                     loc = await _locationRepository.SaveOrUpdateItem(loc);
                     SelectedItem.Location_Id = loc.Location_Id;
                     await _productRepository.SaveOrUpdateItem(mapper.Map<Product>(SelectedItem));
-                    _notification.ShowNotification("Got location");
+                    await _notification.ShowNotification("Got location");
                     // Update UI
                     UpdateUI();
                 }
 
             }
             else
-                _messageBox.ShowNotification("Please select the item first");
+                await _messageBox.ShowNotification("Please select the item first");
             HideActivity();
         }
         private async void UpdateUI()
@@ -134,7 +134,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
             }
             else
-                _messageBox.ShowNotification("Please select the item first");
+                await _messageBox.ShowNotification("Please select the item first");
         }
         private async void On_OpenMap(object parameter)
         {
@@ -146,7 +146,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                     await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
             }
             else
-                _messageBox.ShowNotification("Please select the item first");
+                await _messageBox.ShowNotification("Please select the item first");
         }
         private async void On_Delete(object parameter)
         {
@@ -169,13 +169,13 @@ namespace PurchaseManagement.MVVM.ViewModels
                     
                     // Update UI
                     ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(p));
-                    _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
+                    await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
                     
                 }
             }
             else
-                _messageBox.ShowNotification("Please select the item first");
+                await _messageBox.ShowNotification("Please select the item first");
         }
         
        
