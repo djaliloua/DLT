@@ -25,11 +25,12 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         public async Task<IEnumerable<Account>> GetAllItems()
         {
             await Task.Delay(1);
+            string sqlCmd = "select *\r\nfrom account acc\r\norder by acc.Day;";
             IList<Account> accounts = new List<Account>();
             using (var conn = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 conn.CreateTable<Account>();
-                accounts = conn.Table<Account>().OrderByDescending(a => a.DateTime).ToList();
+                accounts = conn.Query<Account>(sqlCmd);
             }
             return accounts;
         }
