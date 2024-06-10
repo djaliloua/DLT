@@ -97,7 +97,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
             }
             await Shell.Current.GoToAsync("..");
-            await _toastNotification.ShowNotification($"Updated");
+            await _toastNotification.ShowNotification($"{ViewModelLocator.ProductItemsViewModel.SelectedItem.Item_Name} updated");
         }
         private async void On_Save(object sender)
         {
