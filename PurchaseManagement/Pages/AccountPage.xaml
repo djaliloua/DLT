@@ -10,6 +10,24 @@
              x:Name="page"
              BindingContext="{x:Static local:ViewModelLocator.AccountPageViewModel}"
              Title="Account">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Export PDF"
+                     Order="Primary">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="AliceBlue"
+                                 Glyph="{x:Static m:MaterialRound.Picture_as_pdf}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="Export Excel"
+                     Order="Secondary">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="AliceBlue"
+                                 Glyph="{x:Static m:MaterialRound.Picture_as_pdf}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
     <ContentPage.Triggers>
         <DataTrigger TargetType="ContentPage"
                      Binding="{Binding Source={x:Reference page}, Path=IsEnabled}"
