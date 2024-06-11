@@ -13,6 +13,7 @@ using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Commons;
+using Mapster;
 
 
 namespace PurchaseManagement
@@ -37,6 +38,7 @@ namespace PurchaseManagement
             //mauiAppBuilder.Services.AddScoped<INotification, ToastNotification>();
             //mauiAppBuilder.Services.AddScoped<INotification, SnackBarNotification>();
             mauiAppBuilder.Services.AddMemoryCache();
+            mauiAppBuilder.Services.AddMapster();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder ViewModelsExtension(this MauiAppBuilder mauiAppBuilder)

@@ -15,8 +15,6 @@ namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: ProductDto
     {
-        public PurchasesDTO Purchases;
-        
         protected override void Reorder()
         {
             var data = Items.OrderByDescending(item => item.Item_Id).ToList();
@@ -32,6 +30,19 @@ namespace PurchaseManagement.MVVM.ViewModels
         private readonly IProductRepository _productRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
+        private PurchasesDTO _puchases;
+        public PurchasesDTO Purchases
+        {
+            get => _puchases;
+            set
+            {
+                _puchases = value;
+                if (value != null)
+                {
+                    _ = LoadItems();
+                }
+            }
+        }
         private bool _isLocAvailable;
         public bool IsLocAvailable
         {
@@ -158,7 +169,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                     // Update Stat
                     PurchaseStatistics purchaseStatistics = await _statisticsDB.GetItemById(SelectedItem.PurchaseId);
                     await _statisticsDB.SaveOrUpdateItem(purchaseStatistics);
-                    var p = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
                     //
                     if(SelectedItem.Location_Id != 0)
                     {
@@ -166,8 +176,9 @@ namespace PurchaseManagement.MVVM.ViewModels
                         if (loc != null)
                             await _locationRepository.DeleteItem(loc);
                     }
-                    
+
                     // Update UI
+                    var p = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
                     ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(p));
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
@@ -232,10 +243,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             if(query.Count > 0)
             {
                 Purchases = query["purchase"] as PurchasesDTO;
-                if(Purchases  != null)
-                {
-                    SetItems(Purchases.Products);
-                }
             }
         }
 

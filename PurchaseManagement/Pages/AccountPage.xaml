@@ -118,12 +118,13 @@
                         </DataTrigger>
                     </ActivityIndicator.Triggers>
                 </ActivityIndicator>
-                <ListView ItemsSource="{Binding Items}"
+                <ListView ItemsSource="{Binding Items, Mode=TwoWay}"
                           Margin="0,20,0,0"
                           x:Name="listview"
                           RowHeight="150"
                           VerticalScrollBarVisibility="Never"
                           VerticalOptions="Start"
+                          CachingStrategy="RecycleElementAndDataTemplate"
                           SelectedItem="{Binding SelectedItem}">
                     <ListView.Triggers>
                         <DataTrigger TargetType="ListView"

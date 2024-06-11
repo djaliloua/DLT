@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
@@ -6,6 +6,8 @@ using Patterns;
 using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.Commons;
+using Mapster;
+using MapsterMapper;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
@@ -17,7 +19,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         private INotification _snackBarNotification;
         private INotification _toastNotification;
         private INotification _messageBox;
-        private Mapper mapper = MapperConfig.InitializeAutomapper();
+        private IMapper mapper;
         #endregion
 
         #region Properties
@@ -35,9 +37,10 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository _accountRepository)
+        public AccountListViewViewModel(IAccountRepository _accountRepository, IMapper _mapper)
         {
             accountRepository = _accountRepository;
+            mapper = _mapper;
             SetupNotification();
             Init();
             SetupComands();
@@ -99,8 +102,8 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         public override async Task LoadItems()
         {
             ShowActivity();
-            var data = await accountRepository.GetAllItems();
-            var dt = data.Select(mapper.Map<AccountDTO>).ToList();
+            IEnumerable<Account> data = await accountRepository.GetAllItems();
+            var dt = data.Adapt<List<AccountDTO>>();
             SetItems(dt);
             HideActivity();
 #if ANDROID
@@ -120,9 +123,12 @@ BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
             
             if (!ItemExist(item))
             {
-                var newAccount = await accountRepository.SaveOrUpdateItem(mapper.Map<Account>(item));
-                base.AddItem(mapper.Map<AccountDTO>(newAccount));
+                var newAccount = await accountRepository.SaveOrUpdateItem(item.Adapt<Account>());
+                base.AddItem(newAccount.Adapt<AccountDTO>());
                 await _toastNotification.ShowNotification($"{newAccount.Money} added");
+#if ANDROID
+BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
+#endif
             }
             else
             {
@@ -137,11 +143,13 @@ BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    var acount = mapper.Map<Account>(item);
+                    var acount = item.Adapt<Account>();
                     await accountRepository.DeleteItem(acount);
                     base.DeleteItem(item);
                     await _toastNotification.ShowNotification($"{item.Money} deleted");
-
+#if ANDROID
+BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
+#endif
                 }
             }
             else

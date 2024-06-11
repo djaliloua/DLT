@@ -12,7 +12,7 @@ namespace Patterns
     }
     public interface ILoadable<TItem>
     {
-        ObservableCollection<TItem> Items { get; set; }
+        ObservableCollection<TItem> Items { get; protected set; }
         TItem SelectedItem { get; set; }
         bool IsEmpty { get; }
         bool IsSelected { get; }
