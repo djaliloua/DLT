@@ -10,6 +10,7 @@ using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
+using System.Xml.Serialization;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -24,12 +25,18 @@ namespace PurchaseManagement.MVVM.ViewModels
     }
     public class ProductItemsViewModel: PurchaseItemsViewModelLoadable<ProductDto>, IQueryAttributable
     {
+        #region Private properties
         private readonly IPurchaseRepository _purchaseDB;
         private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
         private readonly IGenericRepository<MarketModels.Location> _locationRepository;
         private readonly IProductRepository _productRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
+        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private ExportContext<ProductDto> exportContext;
+        #endregion
+
+        #region Public Properties
         private PurchasesDTO _puchases;
         public PurchasesDTO Purchases
         {
@@ -55,49 +62,41 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _isSavebtnEnabled;
             set => UpdateObservable(ref _isSavebtnEnabled, value);
         }
-        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        #endregion
+
+        #region Commands
+        public ICommand ExportToPdfCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand OpenMapCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
         public ICommand EditCommand { get; private set; }
         public ICommand GetMapCommand { get; private set; }
+        #endregion
+
+        #region Constructor
         public ProductItemsViewModel(IProductRepository productRepository,
             IGenericRepository<PurchaseStatistics> statisticsDB,
             IPurchaseRepository purchaseDB,
+            ExportContext<ProductDto> context,
             IGenericRepository<MarketModels.Location> locationRepository)
         {
             _productRepository = productRepository;
             _statisticsDB = statisticsDB;
             _purchaseDB = purchaseDB;
+            exportContext = context;
             _locationRepository = locationRepository;
             _notification = new ToastNotification();
             _messageBox = new MessageBoxNotification();
             RegisterToMessage();
             CommandSetup();
-            
-            
         }
-        private void RegisterToMessage()
+        #endregion
+
+        #region Handlers
+        private void OnExportToPdfCommand(object parameter)
         {
-            WeakReferenceMessenger.Default.Register<ProductDto, string>(this, "update", async (sender, p) =>
-            {
-                if (p.Purchase is PurchasesDTO purchase)
-                {
-                    p.PurchaseId = purchase.Purchase_Id;
-                    var x = mapper.Map<Product>(p);
-                    await _productRepository.SaveOrUpdateItem(x);
-                }
-            });
-        }
-        private void CommandSetup()
-        {
-            DoubleClickCommand = new Command(On_DoubleClick);
-            OpenCommand = new Command(On_Open);
-            DeleteCommand = new Command(On_Delete);
-            OpenMapCommand = new Command(On_OpenMap);
-            EditCommand = new Command(On_Edit);
-            GetMapCommand = new Command(On_GetMap);
+            exportContext.ExportTo("", GetItems());
         }
         private async void On_GetMap(object parameter)
         {
@@ -125,11 +124,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
                 await _messageBox.ShowNotification("Please select the item first");
             HideActivity();
-        }
-        private async void UpdateUI()
-        {
-            var purchase = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
         }
         private async void On_Edit(object parameter)
         {
@@ -188,11 +182,50 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
                 await _messageBox.ShowNotification("Please select the item first");
         }
-        
-       
         private async void On_Open(object parameter)
         {
             await Task.Delay(1);
+        }
+        private async void On_DoubleClick(object parameter)
+        {
+            if (IsSelected)
+            {
+                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "details", SelectedItem }
+                        };
+                await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), navigationParameter);
+            }
+        }
+        #endregion
+
+        #region Private Methods
+        private void RegisterToMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ProductDto, string>(this, "update", async (sender, p) =>
+            {
+                if (p.Purchase is PurchasesDTO purchase)
+                {
+                    p.PurchaseId = purchase.Purchase_Id;
+                    var x = mapper.Map<Product>(p);
+                    await _productRepository.SaveOrUpdateItem(x);
+                }
+            });
+        }
+        private void CommandSetup()
+        {
+            DoubleClickCommand = new Command(On_DoubleClick);
+            OpenCommand = new Command(On_Open);
+            DeleteCommand = new Command(On_Delete);
+            OpenMapCommand = new Command(On_OpenMap);
+            EditCommand = new Command(On_Edit);
+            GetMapCommand = new Command(On_GetMap);
+            ExportToPdfCommand = new Command(OnExportToPdfCommand);
+        }
+        private async void UpdateUI()
+        {
+            var purchase = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
         }
         private async Task NavigateToBuilding25(Microsoft.Maui.Devices.Sensors.Location location)
         {
@@ -205,19 +238,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Debug.WriteLine(ex.Message);
             }
         }
-
-        private async void On_DoubleClick(object parameter)
-        {
-            if (IsSelected)
-            {
-                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
-                        {
-                            { "details", SelectedItem }
-                        };
-                await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), navigationParameter);
-            }
-        }
-       
        
         private async Task<Microsoft.Maui.Devices.Sensors.Location> GetCurrentLocation()
         {
@@ -238,6 +258,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             }
             
         }
+        #endregion
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if(query.Count > 0)

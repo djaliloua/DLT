@@ -13,6 +13,7 @@
              Title="Purchases">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Export PDF"
+                     Command="{Binding ExportToPdfCommand}"
                      Order="Primary">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialRegular"

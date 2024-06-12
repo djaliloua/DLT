@@ -13,7 +13,9 @@ using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Commons;
+using PurchaseManagement.MVVM.Models.DTOs;
 using Mapster;
+using CommunityToolkit.Maui.Storage;
 
 
 namespace PurchaseManagement
@@ -25,7 +27,11 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddSingleton<MainPage>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetails>();
             mauiAppBuilder.Services.AddScoped<AccountAnalyticPage>();
-            
+            mauiAppBuilder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
+            mauiAppBuilder.Services.AddScoped<ExportContext<AccountDTO>>();
+            mauiAppBuilder.Services.AddScoped<IExportStrategy<AccountDTO>, AccountTxtStrategy>();
+            mauiAppBuilder.Services.AddScoped<ExportContext<ProductDto>>();
+            mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductDto>, ProductTxtStrategy>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder DbContextExtension(this MauiAppBuilder mauiAppBuilder)
