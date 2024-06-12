@@ -90,11 +90,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         private async void On_Update(object parameter)
         {
-
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
-                await UpdateProductItem(mapper.Map<Purchase>(ViewModelLocator.ProductItemsViewModel.Purchases));
-
+                UpdateProductItem(mapper.Map<Purchase>(ViewModelLocator.ProductItemsViewModel.Purchases));
             }
             await Shell.Current.GoToAsync("..");
             await _toastNotification.ShowNotification($"{ViewModelLocator.ProductItemsViewModel.SelectedItem.Item_Name} updated");
@@ -105,11 +103,11 @@ namespace PurchaseManagement.MVVM.ViewModels
             Purchase purchase = new Purchase("test", ViewModelLocator.MainViewModel.SelectedDate);
             if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purchases)
             {
-                await AddNewProducts(purchases);
+                AddNewProducts(purchases);
             }
             else
             {
-                await SavePurchaseAndProductItem(purchase);
+                SavePurchaseAndProductItem(purchase);
             }
             Counter++;
             await _toastNotification.ShowNotification($"{Counter}");
@@ -118,7 +116,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Private Methods
-        private async Task UpdateProductItem(Purchase purchase)
+        private async void UpdateProductItem(Purchase purchase)
         {
             Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
@@ -129,7 +127,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             UpdateUI();
         }
 
-        private async Task AddNewProducts(Purchase purchase)
+        private async void AddNewProducts(Purchase purchase)
         {
             // Update DB
             Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
@@ -150,7 +148,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             ViewModelLocator.MainViewModel.UpdateItem(newObj);
         }
-        private async Task SavePurchaseAndProductItem(Purchase purchase)
+        private async void SavePurchaseAndProductItem(Purchase purchase)
         {
             purchase = await _purchaseDB.SaveOrUpdateItem(purchase);
             PurchaseStatistics m_purchaseStatistics = new(purchase.Purchase_Id, 1, PurchaseItem.Item_Price, PurchaseItem.Item_Quantity);
