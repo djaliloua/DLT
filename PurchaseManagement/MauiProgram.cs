@@ -88,9 +88,9 @@ namespace PurchaseManagement
                 })
                 .ConfigureMauiHandlers(handler =>
                 {
-#if ANDROID
-handler.AddHandler<Shell, TabBarBadgeRender>();
-#endif
+//#if ANDROID
+//handler.AddHandler<Shell, TabBarBadgeRender>();
+//#endif
                 })
                 ;
 
