@@ -37,6 +37,20 @@ namespace Patterns
     {
         public abstract Task LoadItems();
         protected abstract void Reorder();
+        protected Loadable()
+        {
+            Items.CollectionChanged += Items_CollectionChanged;
+        }
+
+        private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            ItemsCollectionChanged(e);
+        }
+        protected virtual void ItemsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Counter = Items.Count;
+        }
+
         private TItem _selectedItem;
         public TItem SelectedItem
         {
@@ -46,11 +60,16 @@ namespace Patterns
         private ObservableCollection<TItem> _items;
         public ObservableCollection<TItem> Items
         {
-            get => _items;
+            get => _items ?? new ObservableCollection<TItem>();
             set => UpdateObservable(ref _items, value, () => ItemsCallBack(value));
         }
         public bool IsSelected => SelectedItem != null;
-        public int Counter => Items.Count;
+        private int _counter;
+        public int Counter
+        {
+            get => _counter;
+            set => UpdateObservable(ref _counter, value);
+        }
         public bool IsEmpty => Counter == 0;
 
         private int _numberOfItems;
@@ -73,7 +92,7 @@ namespace Patterns
         }
         public virtual void ItemsCallBack(IList<TItem> item)
         {
-
+            Counter = item.Count;
         }
         public virtual bool ItemExist(TItem item)
         {
@@ -95,16 +114,19 @@ namespace Patterns
         public void DeleteAllItems()
         {
             Items.Clear();
+            Counter = Items.Count;
             Notify();
         }
         public virtual void DeleteItem(TItem item)
         {
             Items.Remove(item);
+            Counter = Items.Count;
         }
 
         public virtual void AddItem(TItem item)
         {
             Items.Add(item);
+            Counter = Items.Count;
             Reorder();
         }
         protected virtual int Index(TItem item)
