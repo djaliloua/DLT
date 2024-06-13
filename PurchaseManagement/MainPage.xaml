@@ -47,14 +47,15 @@
             <!--<RowDefinition Height="auto" />-->
             <RowDefinition />
         </Grid.RowDefinitions>
-        <HorizontalStackLayout Spacing="100"
+        <HorizontalStackLayout Spacing="60"
+                               Margin="10"
                                HorizontalOptions="Center">
             <material:DatePickerField Date="{Binding SelectedDate}"
                                       VerticalOptions="End"
                                       WidthRequest="150"
                                       Title="Date" />
 
-            <Button HorizontalOptions="Center"
+            <Button HorizontalOptions="Start"
                     VerticalOptions="End"
                     Margin="0,5,0,0"
                     Command="{Binding AddCommand}"
