@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PurchaseManagement.Pages.AccountPage"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:validation="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:local="clr-namespace:PurchaseManagement.ServiceLocator"
@@ -67,8 +68,9 @@
                                 VerticalOptions="End"
                                 Text="{Binding Money}"
                                 Keyboard="Numeric"
-                                CornerRadius="10"
-                                 />
+                                CornerRadius="10">
+                <validation:RequiredValidation />
+            </material:TextField>
             <Button FontAttributes="Bold"
                     HorizontalOptions="CenterAndExpand"
                     VerticalOptions="Center"

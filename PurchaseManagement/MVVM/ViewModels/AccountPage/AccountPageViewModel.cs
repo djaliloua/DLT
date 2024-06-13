@@ -5,6 +5,8 @@ using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Xml.Serialization;
 using CommunityToolkit.Maui.Storage;
+using System.Globalization;
+using System.Diagnostics;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
