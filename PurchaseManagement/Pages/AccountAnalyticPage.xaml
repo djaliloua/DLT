@@ -11,12 +11,12 @@
              BackgroundColor="{StaticResource Surface}"
              >
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Export PDF"
-                     Order="Primary">
+        <ToolbarItem Text="Export PNG"
+                     Order="Secondary">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialRegular"
                                  Color="AliceBlue"
-                                 Glyph="{x:Static m:MaterialRound.Picture_as_pdf}" />
+                                 Glyph="{x:Static m:MaterialRound.Image}" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
         

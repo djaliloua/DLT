@@ -126,9 +126,9 @@ BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
                 var newAccount = await accountRepository.SaveOrUpdateItem(item.Adapt<Account>());
                 base.AddItem(newAccount.Adapt<AccountDTO>());
                 await _toastNotification.ShowNotification($"{newAccount.Money} added");
-#if ANDROID
-BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
-#endif
+//#if ANDROID
+//BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
+//#endif
             }
             else
             {

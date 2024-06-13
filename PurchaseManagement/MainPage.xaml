@@ -5,13 +5,32 @@
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:vm="clr-namespace:PurchaseManagement.MVVM.ViewModels"
-             xmlns:models="clr-namespace:PurchaseManagement.MVVM.Models"
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              x:Name="main"
              BackgroundColor="LightBlue"
              BindingContext="{x:Static service:ViewModelLocator.MainViewModel}"
              >
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{Binding Counter}"
+                     Order="Primary" />
+        <ToolbarItem Text="Export PDF"
+                     Order="Secondary">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="AliceBlue"
+                                 Glyph="{x:Static m:MaterialRound.Picture_as_pdf}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="Export Excel"
+                     Order="Secondary">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="AliceBlue"
+                                 Glyph="{x:Static m:MaterialRound.Picture_as_pdf}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+    </ContentPage.ToolbarItems>
     <ContentPage.Triggers>
         <DataTrigger TargetType="ContentPage"
                      Binding="{Binding Source={x:Reference main}, Path=IsEnabled}"

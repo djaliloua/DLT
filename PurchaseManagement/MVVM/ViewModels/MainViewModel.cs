@@ -97,8 +97,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Add(object sender)
         {
             ProductDto purchase_proxy_item;
-            Purchase purchase = await _purchaseDB.GetPurchaseByDate(SelectedDate);
-            if(purchase != null)
+            if(await _purchaseDB.GetPurchaseByDate(SelectedDate) is Purchase purchase)
             {
                 PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
                 purchase_proxy_item = stat == null ? new ProductDto(0) : new ProductDto(stat.PurchaseCount);
@@ -123,7 +122,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             ShowActivity();
             IEnumerable<Purchase> _purchases = await _purchaseDB.GetAllItems();
             var data = _purchases.Select(mapper.Map<PurchasesDTO>).ToList();
-            SetItems(data); 
+            SetItems(data);
             HideActivity();
         }
         #endregion

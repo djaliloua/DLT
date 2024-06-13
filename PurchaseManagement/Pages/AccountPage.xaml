@@ -11,21 +11,23 @@
              BindingContext="{x:Static local:ViewModelLocator.AccountPageViewModel}"
              Title="Account">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Export PDF"
+        <ToolbarItem Text="{Binding AccountListViewViewModel.Counter}"
+                     Order="Primary" />
+        <ToolbarItem Text="Export TXT"
                      Command="{Binding ExportToPdfCommand}"
-                     Order="Primary">
-            <ToolbarItem.IconImageSource>
-                <FontImageSource FontFamily="MaterialRegular"
-                                 Color="AliceBlue"
-                                 Glyph="{x:Static m:MaterialRound.Picture_as_pdf}" />
-            </ToolbarItem.IconImageSource>
-        </ToolbarItem>
-        <ToolbarItem Text="Export Excel"
                      Order="Secondary">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialRegular"
                                  Color="AliceBlue"
-                                 Glyph="{x:Static m:MaterialRound.Picture_as_pdf}" />
+                                 Glyph="{x:Static m:MaterialRound.Text_format}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
+        <ToolbarItem Text="Export PDF"
+                     Order="Secondary">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="AliceBlue"
+                                 Glyph="{x:Static m:MaterialRound.Security_update}" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </ContentPage.ToolbarItems>
@@ -62,7 +64,7 @@
             <material:TextField Title="Money"
                                 x:Name="entry"
                                 Grid.Column="1"
-                                VerticalOptions="Center"
+                                VerticalOptions="End"
                                 Text="{Binding Money}"
                                 Keyboard="Numeric"
                                 CornerRadius="10"

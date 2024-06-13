@@ -31,7 +31,7 @@
         
         
         <VerticalStackLayout Spacing="15">
-            <material:TextField Title="Name"
+            <material:TextField Title="Product"
                                 Text="{Binding PurchaseItem.Item_Name}" />
             <material:TextField Title="Price"
                                 Keyboard="Numeric"

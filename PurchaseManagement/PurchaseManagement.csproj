@@ -34,6 +34,9 @@
     <AndroidSigningStorePass>Chakira2002</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>purchasemanagement</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>chk</AndroidSigningKeyPass>
+    <DebugSymbols>True</DebugSymbols>
+    <RunAOTCompilation>False</RunAOTCompilation>
+    <PublishTrimmed>False</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
