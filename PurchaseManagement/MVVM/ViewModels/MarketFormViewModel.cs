@@ -6,6 +6,9 @@ using AutoMapper;
 using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.Validations;
+using FluentValidation.Results;
+using System.Runtime.InteropServices;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -39,6 +42,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
         private readonly IProductRepository _productRepository;
         private readonly INotification _toastNotification;
+        private ProductValidation productValidation = new();
         #endregion
 
         #region Commands
@@ -92,39 +96,61 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
-                UpdateProductItem(mapper.Map<Purchase>(ViewModelLocator.ProductItemsViewModel.Purchases));
+                if(!await UpdateProductItem(mapper.Map<Purchase>(ViewModelLocator.ProductItemsViewModel.Purchases)))
+                {
+                    return;
+                }
             }
             await Shell.Current.GoToAsync("..");
             await _toastNotification.ShowNotification($"{ViewModelLocator.ProductItemsViewModel.SelectedItem.Item_Name} updated");
         }
         private async void On_Save(object sender)
         {
-            ShowActivity();
-            Purchase purchase = new Purchase("test", ViewModelLocator.MainViewModel.SelectedDate);
-            if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purchases)
+            ValidationResult validationResult = productValidation.Validate(PurchaseItem);
+            if (validationResult.IsValid)
             {
-                AddNewProducts(purchases);
+                ShowActivity();
+                Purchase purchase = new Purchase("test", ViewModelLocator.MainViewModel.SelectedDate);
+                if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purchases)
+                {
+                    AddNewProducts(purchases);
+                }
+                else
+                {
+                    SavePurchaseAndProductItem(purchase);
+                }
+                Counter++;
+                await _toastNotification.ShowNotification($"{Counter}");
+                HideActivity();
             }
             else
             {
-                SavePurchaseAndProductItem(purchase);
+                await _toastNotification.ShowNotification(validationResult.Errors[0].ErrorMessage);
             }
-            Counter++;
-            await _toastNotification.ShowNotification($"{Counter}");
-            HideActivity();
         }
         #endregion
 
         #region Private Methods
-        private async void UpdateProductItem(Purchase purchase)
+        private async Task<bool> UpdateProductItem(Purchase purchase)
         {
-            Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
-            await _productRepository.SaveOrUpdateItem(m_purchase_item);
-            await _statisticsDB.SaveOrUpdateItem(purchase.PurchaseStatistics);
-            
+            ValidationResult validationResult = productValidation.Validate(PurchaseItem);
+            if(validationResult.IsValid)
+            {
+                Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
+                await _productRepository.SaveOrUpdateItem(m_purchase_item);
+                await _statisticsDB.SaveOrUpdateItem(purchase.PurchaseStatistics);
 
-            // Update UI
-            UpdateUI();
+
+                // Update UI
+                UpdateUI();
+            }
+            else
+            {
+                await _toastNotification.ShowNotification(validationResult.Errors[0].ErrorMessage);
+                return false;
+            }
+            return true;
+            
         }
 
         private async void AddNewProducts(Purchase purchase)
@@ -137,7 +163,6 @@ namespace PurchaseManagement.MVVM.ViewModels
 
             // UI
             UpdateUI();
-
         }
         private async void UpdateUI()
         {
@@ -157,16 +182,16 @@ namespace PurchaseManagement.MVVM.ViewModels
             m_purchase_item.PurchaseId = purchase.Purchase_Id;
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
             //
-            
+
             m_purchaseStatistics = await _statisticsDB.SaveOrUpdateItem(m_purchaseStatistics);
 
-            
+
 
             // Update Statistics
             purchase.PurchaseStatistics = m_purchaseStatistics;
             purchase.Purchase_Stats_Id = m_purchaseStatistics.Id;
             await _purchaseDB.SaveOrUpdateItem(purchase);
-            
+
             //
             var p = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             ViewModelLocator.MainViewModel.AddItem(mapper.Map<PurchasesDTO>(p));
