@@ -4,6 +4,7 @@
              x:Class="PurchaseManagement.Pages.MarketFormPage"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:validation="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
              xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              BindingContext="{x:Static service:ViewModelLocator.MarketFormViewModel}"
              BackgroundColor="LightBlue"
@@ -31,22 +32,31 @@
         
         
         <VerticalStackLayout Spacing="15">
-            <material:TextField Title="Name"
-                                Text="{Binding PurchaseItem.Item_Name}" />
+            <material:TextField Title="Product"
+                                x:Name="product"
+                                Text="{Binding PurchaseItem.Item_Name}">
+                <!--<validation:RequiredValidation />-->
+            </material:TextField>
             <material:TextField Title="Price"
                                 Keyboard="Numeric"
-                                Text="{Binding PurchaseItem.Item_Price}" />
+                                x:Name="price"
+                                Text="{Binding PurchaseItem.Item_Price}">
+                <!--<validation:RequiredValidation />-->
+            </material:TextField>
             <material:TextField Title="Quantity"
                                 Keyboard="Numeric"
-                                Text="{Binding PurchaseItem.Item_Quantity}" />
+                                x:Name="quantity"
+                                Text="{Binding PurchaseItem.Item_Quantity}">
+                <!--<validation:RequiredValidation />-->
+            </material:TextField>
             <material:TextField Title="Note"
                                 Text="{Binding PurchaseItem.Item_Description}" />
             <material:CheckBox IsChecked="{Binding PurchaseItem.IsPurchased}"/>
         </VerticalStackLayout>
-        <ActivityIndicator IsRunning="{Binding Show}"
+        <ActivityIndicator IsRunning="{Binding IsActivity}"
                            Color="Blue"
                            Grid.Row="{x:OnPlatform Android=0, Default=0}"
-                           IsVisible="{Binding Show}"
+                           IsVisible="{Binding IsActivity}"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            HeightRequest="80"
@@ -64,6 +74,26 @@
                     Command="{Binding SaveCommand}"
                     IsEnabled="{Binding IsSavebtnEnabled}"
                     Margin="10">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={Reference product}, Path=Text.Length}"
+                                 Value="0">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={Reference price}, Path=Text.Length}"
+                                 Value="0">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={Reference quantity}, Path=Text.Length}"
+                                 Value="0">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                </Button.Triggers>
             </Button>
             <Button FontAttributes="Bold"
                     HorizontalOptions="End"
@@ -80,6 +110,24 @@
                                  Value="false">
                         <Setter Property="IsVisible"
                                 Value="true" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={Reference product}, Path=Text.Length}"
+                                 Value="0">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={Reference price}, Path=Text.Length}"
+                                 Value="0">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={Reference quantity}, Path=Text.Length}"
+                                 Value="0">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
                     </DataTrigger>
                 </Button.Triggers>
             </Button>

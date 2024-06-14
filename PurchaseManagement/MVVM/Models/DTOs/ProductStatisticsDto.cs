@@ -2,7 +2,7 @@
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
-    public class PurchaseStatisticsDTO:BaseViewModel
+    public class ProductStatisticsDto:BaseViewModel
     {
         private int _id;
         public int Id
@@ -34,14 +34,14 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _totalQuantity;
             set => UpdateObservable(ref _totalQuantity, value);
         }
-        public PurchaseStatisticsDTO(int p_id, int p_count, double total_price, double total_quantity)
+        public ProductStatisticsDto(int p_id, int p_count, double total_price, double total_quantity)
         {
             Purchase_Id = p_id;
             PurchaseCount = p_count;
             TotalPrice = total_price;
             TotalQuantity = total_quantity;
         }
-        public PurchaseStatisticsDTO()
+        public ProductStatisticsDto()
         {
 
         }

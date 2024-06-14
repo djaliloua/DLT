@@ -34,6 +34,9 @@
     <AndroidSigningStorePass>Chakira2002</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>purchasemanagement</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>chk</AndroidSigningKeyPass>
+    <DebugSymbols>True</DebugSymbols>
+    <RunAOTCompilation>False</RunAOTCompilation>
+    <PublishTrimmed>False</PublishTrimmed>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
@@ -65,12 +68,11 @@
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="CommunityToolkit.Maui" Version="9.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="FluentValidation" Version="11.9.2" />
     <PackageReference Include="LiveChartsCore.SkiaSharpView.Maui" Version="2.0.0-rc2" />
-    <PackageReference Include="Microsoft.AppCenter" Version="5.0.4" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.4" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.4" />
-    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.0" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Mapster.Core" Version="1.2.1" />
+    <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     <PackageReference Include="UraniumUI.Icons.MaterialIcons" Version="2.5.6" />
     <PackageReference Include="UraniumUI.Material" Version="2.5.6" />
@@ -85,6 +87,9 @@
   <ItemGroup>
     <Compile Update="Pages\MarketFormPage.xaml.cs">
       <DependentUpon>MarketFormPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Pages\ProductsPage.xaml.cs">
+      <DependentUpon>ProductsPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -112,7 +117,7 @@
     <MauiXaml Update="Pages\PurchaseItemDetails.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
-    <MauiXaml Update="Pages\PurchaseItemsPage.xaml">
+    <MauiXaml Update="Pages\ProductsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\SettingsPage.xaml">

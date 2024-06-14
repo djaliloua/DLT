@@ -12,27 +12,45 @@ namespace Patterns
     }
     public interface ILoadable<TItem>
     {
-        ObservableCollection<TItem> Items { get; set; }
+        ObservableCollection<TItem> Items { get; protected set; }
         TItem SelectedItem { get; set; }
         bool IsEmpty { get; }
         bool IsSelected { get; }
         int Counter { get; }
         int NumberOfItems { get; set; }
         void SetItems(IList<TItem> items);
-        void DeleteItem(TItem item);
-        void AddItem(TItem item);
-        void UpdateItem(TItem item);
         ObservableCollection<TItem> GetItems();
         void AddOrUpdateItem(TItem item);
         void DeleteAllItems();
         void SelectedItemCallBack(TItem item);
         void ItemsCallBack(IList<TItem> item);
-        bool IsContains(TItem item);
+        bool ItemExist(TItem item);
     }
-    public abstract class Loadable<TItem> : ILoadable<TItem>, INotifyPropertyChanged, IActivity where TItem : class
+    public interface ILoadableService<TItem>
+    {
+        void DeleteItem(TItem item);
+        void AddItem(TItem item);
+        void UpdateItem(TItem item);
+        Task LoadItems();
+    }
+    public abstract class Loadable<TItem> : ILoadable<TItem>, ILoadableService<TItem>, INotifyPropertyChanged, IActivity where TItem : class
     {
         public abstract Task LoadItems();
         protected abstract void Reorder();
+        protected Loadable()
+        {
+            Items.CollectionChanged += Items_CollectionChanged;
+        }
+
+        private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            ItemsCollectionChanged(e);
+        }
+        protected virtual void ItemsCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Counter = Items.Count;
+        }
+
         private TItem _selectedItem;
         public TItem SelectedItem
         {
@@ -42,11 +60,16 @@ namespace Patterns
         private ObservableCollection<TItem> _items;
         public ObservableCollection<TItem> Items
         {
-            get => _items;
+            get => _items ?? new ObservableCollection<TItem>();
             set => UpdateObservable(ref _items, value, () => ItemsCallBack(value));
         }
         public bool IsSelected => SelectedItem != null;
-        public int Counter => Items.Count;
+        private int _counter;
+        public int Counter
+        {
+            get => _counter;
+            set => UpdateObservable(ref _counter, value);
+        }
         public bool IsEmpty => Counter == 0;
 
         private int _numberOfItems;
@@ -56,7 +79,7 @@ namespace Patterns
             set => UpdateObservable(ref _numberOfItems, value);
         }
         private bool _isActivity;
-        public bool IsActivity 
+        public bool IsActivity
         {
             get => _isActivity;
             set => UpdateObservable(ref _isActivity, value);
@@ -69,9 +92,9 @@ namespace Patterns
         }
         public virtual void ItemsCallBack(IList<TItem> item)
         {
-
+            Counter = item.Count;
         }
-        public virtual bool IsContains(TItem item)
+        public virtual bool ItemExist(TItem item)
         {
             return _items.Contains(item);
         }
@@ -91,19 +114,22 @@ namespace Patterns
         public void DeleteAllItems()
         {
             Items.Clear();
+            Counter = Items.Count;
             Notify();
         }
         public virtual void DeleteItem(TItem item)
         {
             Items.Remove(item);
+            Counter = Items.Count;
         }
 
         public virtual void AddItem(TItem item)
         {
             Items.Add(item);
+            Counter = Items.Count;
             Reorder();
         }
-        public virtual int Index(TItem item)
+        protected virtual int Index(TItem item)
         {
             return Items.IndexOf(item);
         }
@@ -161,5 +187,5 @@ namespace Patterns
         }
         #endregion
     }
-    
+
 }

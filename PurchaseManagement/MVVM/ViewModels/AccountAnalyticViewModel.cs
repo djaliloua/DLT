@@ -4,11 +4,13 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using MVVM;
+using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.MVVM.Models.DTOs;
-using PurchaseManagement.DataAccessLayer;
 using PurchaseManagement.ServiceLocator;
+using PurchaseManagement.DataAccessLayer.Repository;
 using SkiaSharp;
 using System.Collections.ObjectModel;
+using LiveChartsCore.ConditionalDraw;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -20,6 +22,13 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class AccountAnalyticViewModel : BaseViewModel
     {
         private readonly IAccountRepository accountRepository;
+        SolidColorPaint[] paints = new SolidColorPaint[]
+        {
+            new(SKColors.Red),
+            new(SKColors.Green),
+            new(SKColors.Blue),
+            new(SKColors.Yellow)
+        };
         public ISeries[] LineSeries { get; set; } =
     {
         new LineSeries<AccountDTO>
@@ -27,10 +36,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             Values = ViewModelLocator.AccountListViewViewModel.GetItems(),
             DataLabelsFormatter = point => $"{point.Model?.Money} CFA",
             DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
-            XToolTipLabelFormatter = point => $"{point.Model?.DateTime:D}",
+            YToolTipLabelFormatter = point => $"{point.Model?.DateTime:D}",
             DataLabelsPosition = DataLabelsPosition.Top,
             Fill = null,
-            Mapping = (point, index) => new(point.Money/10000, index)  
+            Mapping = (point, index) => new(index, point.Money/10000)  
         }
     };
         public LabelVisual Title { get; set; } =
@@ -50,25 +59,17 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public AccountAnalyticViewModel(IAccountRepository _accountRepository)
         {
-            Show = true;
+            ShowActivity();
             accountRepository = _accountRepository;
             Statistics = new ObservableCollection<Statistics>();
             _ = Load();
-            //DateTime.Now.ToString("")
-            var paints = new SolidColorPaint[]
-        {
-            new(SKColors.Red),
-            new(SKColors.Green),
-            new(SKColors.Blue),
-            new(SKColors.Yellow)
-        };
             col = new ColumnSeries<Statistics>
             {
                 Values = Statistics,
-                DataLabelsFormatter = point => $"{point.Model?.Day}",
+                DataLabelsFormatter = point => $"{point.Model?.DateTime:ddd}",
                 DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
                 DataLabelsPosition = DataLabelsPosition.Top,
-                XToolTipLabelFormatter = point => $"{point.Model?.CountMoney}",
+                YToolTipLabelFormatter = point => $"{point.Model?.CountMoney}",
                 // Defines the distance between every bars in the series
                 Padding = 5,
                 Rx = 50,
@@ -77,11 +78,22 @@ namespace PurchaseManagement.MVVM.ViewModels
                 // Defines the max width a bar can have
                 MaxBarWidth = double.PositiveInfinity,
                 //Mapping
-                Mapping = (stat, index) => new(stat.AvgMoney/1000, index)
+                Mapping = (stat, index) => new(index, stat.AvgMoney / 10000)
+
             };
+            col
+                .OnPointMeasured(point =>
+                {
+                    if (point.Visual is null) return;
+
+                    // get a paint from the array
+                    var paint = paints[point.Index % paints.Length];
+                    // set the paint to the visual
+                    point.Visual.Fill = paint;
+                });
+            BarSeries = [col];
             
-            BarSeries = new ISeries[] { col };
-            Show = false;
+            HideActivity();
         }
 
 

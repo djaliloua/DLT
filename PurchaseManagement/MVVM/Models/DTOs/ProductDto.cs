@@ -1,32 +1,31 @@
-﻿using AutoMapper;
-using MVVM;
+﻿using MVVM;
 using CommunityToolkit.Mvvm.Messaging;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
-    public class Purchase_ItemsDTO : BaseViewModel
+    public class ProductDto : BaseViewModel
     {
         public int Item_Id { get; set; }
-        public int Purchase_Id { get; set; }
-        private string item_name = "Kello";
+        public int PurchaseId { get; set; }
+        private string item_name;
         public string Item_Name
         {
             get => item_name;
             set => UpdateObservable(ref item_name, value);
         }
-        private long item_price = 1000;
+        private long item_price;
         public long Item_Price
         {
             get => item_price;
             set => UpdateObservable(ref item_price, value);
         }
-        private long item_quantity = 10;
+        private long item_quantity;
         public long Item_Quantity
         {
             get => item_quantity;
             set => UpdateObservable(ref item_quantity, value);
         }
-        private string _item_desc = "Je t'aime bien";
+        private string _item_desc;
         public string Item_Description
         {
             get => _item_desc;
@@ -41,18 +40,21 @@ namespace PurchaseManagement.MVVM.Models.DTOs
                 WeakReferenceMessenger.Default.Send(this, "update");
             });
         }
-        public int Counter { get; set; }
-        private Mapper mapper;
-        public Purchase_ItemsDTO(int counter)
+        private int _location_id;
+        public int Location_Id
         {
-            Counter = counter;
-            mapper = MapperConfig.InitializeAutomapper();
+            get => _location_id;
+            set => _location_id = value;
         }
-        private MarketLocationDTO _location;
-        public MarketLocationDTO Location
+        private LocationDto _location;
+        public LocationDto Location
         {
             get => _location;
-            set => UpdateObservable(ref _location, value);
+            set => UpdateObservable(ref _location, value, () =>
+            {
+                if (value != null)
+                    IsLocation = true;
+            });
         }
         private PurchasesDTO _purchases;
         public PurchasesDTO Purchase
@@ -60,17 +62,26 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _purchases;
             set => UpdateObservable(ref _purchases, value);
         }
-        //public bool IsLocation => Location != null; 
         private bool isLocation;
         public bool IsLocation
         {
             get => isLocation;
             set => UpdateObservable(ref isLocation, value);
         }
-        public Purchase_ItemsDTO()
+        public int Counter { get; set; }
+
+        #region Constructors
+        public ProductDto(int counter)
+        {
+            Counter = counter;
+        }
+        public ProductDto()
         {
             Counter = 0;
         }
+        #endregion
+        
+        
 
     }
 }

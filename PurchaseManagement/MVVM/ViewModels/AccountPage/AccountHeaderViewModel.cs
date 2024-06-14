@@ -1,4 +1,5 @@
 ﻿using MVVM;
+
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
@@ -12,8 +13,8 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Properties
-        private long _money;
-        public long Money
+        private double _money;
+        public double Money
         {
             get => _money;
             set => UpdateObservable(ref _money, value);
@@ -37,12 +38,14 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         #region Commands
         public ICommand AddCommand { get; private set; }
+        
         #endregion
 
         #region Constructor
         public AccountHeaderViewModel()
         {
             Init();
+            
             CommandSetup();
         }
         #endregion
@@ -52,6 +55,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         private void CommandSetup()
         {
             AddCommand = new Command(OnAdd);
+            
         }
         private void Init()
         {
@@ -62,9 +66,11 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Handlers
+        
         private void OnAdd(object parameter)
         {
-            ViewModelLocator.AccountListViewViewModel.AddAccount(new AccountDTO(SelectedDate, Money));
+            ViewModelLocator.AccountListViewViewModel.AddItem(new AccountDTO(SelectedDate, Money));
+            Money = 0;
         }
         #endregion
     }

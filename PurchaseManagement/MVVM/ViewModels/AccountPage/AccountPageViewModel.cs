@@ -1,35 +1,24 @@
 ﻿using MVVM;
 using System.Windows.Input;
+using PurchaseManagement.Commons;
 using PurchaseManagement.ServiceLocator;
+using PurchaseManagement.MVVM.Models.DTOs;
+using System.Xml.Serialization;
+using CommunityToolkit.Maui.Storage;
+using System.Globalization;
+using System.Diagnostics;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
     public class AccountPageViewModel : BaseViewModel
     {
         #region Private methods
+        private INotification toastNotification;
+        private ExportContext<AccountDTO> exportContext;
         #endregion
 
         #region Properties
-        //private long _money;
-        //public long Money
-        //{
-        //    get => _money;
-        //    set => UpdateObservable(ref _money, value);
-        //}
 
-
-        //private bool _isSavebtnEnabled;
-        //public bool IsSavebtnEnabled
-        //{
-        //    get => _isSavebtnEnabled;
-        //    set => UpdateObservable(ref _isSavebtnEnabled, value);
-        //}
-        //private DateTime _selectedDate;
-        //public DateTime SelectedDate
-        //{
-        //    get => _selectedDate;
-        //    set => UpdateObservable(ref _selectedDate, value);
-        //}
         private AccountListViewViewModel _accountListViewModel;
         public AccountListViewViewModel AccountListViewViewModel
         {
@@ -46,24 +35,32 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         #region Commands
         //public ICommand AddCommand { get; private set; }
+        public ICommand ExportToPdfCommand { get; private set; }
         #endregion
 
         #region Constructor
-        public AccountPageViewModel()
+        public AccountPageViewModel(ExportContext<AccountDTO> context)
         {
             AccountListViewViewModel = ViewModelLocator.AccountListViewViewModel;
             AccountHeaderViewModel = ViewModelLocator.AccountHeaderViewModel;
+            toastNotification = new ToastNotification();
+            exportContext = context;
             //Init();
-            //CommandSetup();
+            CommandSetup();
         }
         #endregion
 
         #region Private Methods
 
-        //private void CommandSetup()
-        //{
-        //    AddCommand = new Command(OnAdd);
-        //}
+        private void CommandSetup()
+        {
+            ExportToPdfCommand = new Command(OnExportToPdfCommand);
+        }
+        private async void OnExportToPdfCommand(object parameter)
+        {
+            await toastNotification.ShowNotification("Hello pdf");
+            exportContext.ExportTo("", AccountListViewViewModel.GetItems());
+        }
         //private void Init()
         //{
         //    SelectedDate = DateTime.Now;

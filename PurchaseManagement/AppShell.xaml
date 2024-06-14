@@ -15,6 +15,7 @@
         <views:ControlView />
     </Shell.FlyoutHeader>
     <FlyoutItem FlyoutDisplayOptions="AsSingleItem"
+                Shell.NavBarHasShadow="True"
                 IsVisible="{OnPlatform Android=True, Default=True}"
                 Title="Home">
         <FlyoutItem.FlyoutIcon>
@@ -23,7 +24,6 @@
                              Glyph="{x:Static m:MaterialRound.Home}" />
         </FlyoutItem.FlyoutIcon>
         <ShellContent Title="Account"
-                      
                       ContentTemplate="{DataTemplate pages:AccountPage}"
                       Route="AccountPage">
             <ShellContent.Icon>

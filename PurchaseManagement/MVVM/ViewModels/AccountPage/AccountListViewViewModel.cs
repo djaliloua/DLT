@@ -1,37 +1,25 @@
-﻿using AutoMapper;
-using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
-using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.MVVM.Models;
+﻿
+using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;
-
-/* Unmerged change from project 'PurchaseManagement (net8.0)'
-Before:
+using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.ServiceLocator;
-After:
-using PurchaseManagement.ServiceLocator;
-using PurchaseManagement;
-using PurchaseManagement.MVVM;
-using PurchaseManagement.MVVM.ViewModels;
-using PurchaseManagement.MVVM.ViewModels.AccountPage;
-*/
-using PurchaseManagement.ServiceLocator;
+using PurchaseManagement.Commons;
+using Mapster;
+using MapsterMapper;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
-    public interface IAccountListViewMethods
-    {
-        void AddAccount(AccountDTO account);
-        void DeleteAccount(AccountDTO account);
-    }
-    public class AccountListViewViewModel : Loadable<AccountDTO>, IAccountListViewMethods
+    
+    public class AccountListViewViewModel : Loadable<AccountDTO>
     {
         #region Private methods
         private readonly IAccountRepository accountRepository;
-        private readonly IAccountRepositoryAPI accountRepositoryAPI;
-        private Mapper mapper = MapperConfig.InitializeAutomapper();
+        private INotification _snackBarNotification;
+        private INotification _toastNotification;
+        private INotification _messageBox;
+        private IMapper mapper;
         #endregion
 
         #region Properties
@@ -49,17 +37,18 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository _accountRepository, IAccountRepositoryAPI _accountRepositoryAPI)
+        public AccountListViewViewModel(IAccountRepository _accountRepository, IMapper _mapper)
         {
             accountRepository = _accountRepository;
-            accountRepositoryAPI = _accountRepositoryAPI;
+            mapper = _mapper;
+            SetupNotification();
             Init();
             SetupComands();
         }
-        #endregion
+#endregion
 
         #region Private methods
-        public override bool IsContains(AccountDTO newAccount)
+        public override bool ItemExist(AccountDTO newAccount)
         {
             foreach (AccountDTO account in Items)
             {
@@ -69,22 +58,11 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             return false;
         }
 
-        private async Task MakeSnackBarAsync(string msg)
+        private void SetupNotification()
         {
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            var snackbarOptions = new SnackbarOptions
-            {
-                BackgroundColor = Colors.LightBlue,
-                TextColor = Colors.Black,
-                ActionButtonTextColor = Colors.Yellow,
-                CornerRadius = new CornerRadius(10),
-                CharacterSpacing = 0.5
-            };
-            string text = msg;
-            TimeSpan duration = TimeSpan.FromSeconds(5);
-            var snackbar = Snackbar.Make(text, duration: duration, visualOptions: snackbarOptions);
-            await snackbar.Show(cancellationTokenSource.Token);
+            _snackBarNotification = new SnackBarNotification();
+            _messageBox = new MessageBoxNotification();
+            _toastNotification = new ToastNotification();
         }
         private async void Init()
         {
@@ -94,7 +72,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 {
                     if (!IsEmpty)
                     {
-                        await MakeSnackBarAsync($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                        await _snackBarNotification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
                     }
                 }
                 );
@@ -124,10 +102,13 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         public override async Task LoadItems()
         {
             ShowActivity();
-            var data = await accountRepositoryAPI.GetAccounts();
-            var dt = data.Select(mapper.Map<AccountDTO>).OrderByDescending(a => a.DateTime).ToList();
+            IEnumerable<Account> data = await accountRepository.GetAllItems();
+            var dt = data.Adapt<List<AccountDTO>>();
             SetItems(dt);
             HideActivity();
+#if ANDROID
+BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
+#endif
         }
         #endregion
 
@@ -135,43 +116,48 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         private void On_Delete(object parameter)
         {
-            DeleteAccount(SelectedItem);
+            DeleteItem(SelectedItem);
         }
-
-        public async void AddAccount(AccountDTO account)
+        public override async void AddItem(AccountDTO item)
         {
-            if (!IsContains(account))
+            
+            if (!ItemExist(item))
             {
-                var y = await accountRepositoryAPI.PostAccount(mapper.Map<Account>(account));
-                var x = await accountRepository.SaveOrUpdateAsync(mapper.Map<Account>(account));
-                AddItem(mapper.Map<AccountDTO>(x));
+                var newAccount = await accountRepository.SaveOrUpdateItem(item.Adapt<Account>());
+                base.AddItem(newAccount.Adapt<AccountDTO>());
+                await _toastNotification.ShowNotification($"{newAccount.Money} added");
+//#if ANDROID
+//BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
+//#endif
             }
             else
             {
-                await Shell.Current.DisplayAlert("Message", "Item already present", "Cancel");
+                await _messageBox.ShowNotification("Item already present");
             }
         }
-
-        public async void DeleteAccount(AccountDTO account)
+        
+        public async override void DeleteItem(AccountDTO item)
         {
+            
             if (IsSelected)
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    var acount = mapper.Map<Account>(account);
-                    await accountRepository.DeleteAsync(acount);
-                    await accountRepositoryAPI.DeleteAccount(acount.Id);
-                    DeleteItem(account);
+                    var acount = item.Adapt<Account>();
+                    await accountRepository.DeleteItem(acount);
+                    base.DeleteItem(item);
+                    await _toastNotification.ShowNotification($"{item.Money} deleted");
+#if ANDROID
+BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
+#endif
                 }
             }
             else
             {
-                await Shell.Current.DisplayAlert("Message", "Please select the item first", "Cancel");
+                await _messageBox.ShowNotification("Please select the item first");
             }
         }
-
-
-
+        
         #endregion
     }
     
