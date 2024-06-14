@@ -35,19 +35,19 @@
             <material:TextField Title="Product"
                                 x:Name="product"
                                 Text="{Binding PurchaseItem.Item_Name}">
-                <validation:RequiredValidation />
+                <!--<validation:RequiredValidation />-->
             </material:TextField>
             <material:TextField Title="Price"
                                 Keyboard="Numeric"
                                 x:Name="price"
                                 Text="{Binding PurchaseItem.Item_Price}">
-                <validation:RequiredValidation />
+                <!--<validation:RequiredValidation />-->
             </material:TextField>
             <material:TextField Title="Quantity"
                                 Keyboard="Numeric"
                                 x:Name="quantity"
                                 Text="{Binding PurchaseItem.Item_Quantity}">
-                <validation:RequiredValidation />
+                <!--<validation:RequiredValidation />-->
             </material:TextField>
             <material:TextField Title="Note"
                                 Text="{Binding PurchaseItem.Item_Description}" />

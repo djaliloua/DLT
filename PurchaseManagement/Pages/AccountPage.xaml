@@ -69,7 +69,7 @@
                                 Text="{Binding Money}"
                                 Keyboard="Numeric"
                                 CornerRadius="10">
-                <validation:RequiredValidation />
+                <!--<validation:RequiredValidation />-->
             </material:TextField>
             <Button FontAttributes="Bold"
                     HorizontalOptions="CenterAndExpand"
