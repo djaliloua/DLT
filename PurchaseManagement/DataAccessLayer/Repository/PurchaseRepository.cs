@@ -47,32 +47,29 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         }
         public async Task<Purchase> GetPurchaseByDate(DateTime date)
         {
-            string sqlCmd = $"select *\r\nfrom Purchases P\r\nwhere P.PurchaseDate= '{date:yyyy-MM-dd}';";
+            string sqlCmd = "select *\r\nfrom Purchases P\r\nwhere P.PurchaseDate= ?;";
             Purchase purchase = null;
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase>();
-                var p = connection.Query<Purchase>(sqlCmd);
-                if (p != null && p.Count > 0)
-                {
-                    purchase = p[0];
+                purchase = connection.Query<Purchase>(sqlCmd, $"{date:yyyy-MM-dd}").FirstOrDefault();
+                
+                if (purchase != null)
                     await purchase.LoadPurchaseStatistics(_statisticsRepository);
-                }
             }
             return purchase;
         }
 
         public async Task<Purchase> GetFullPurchaseByDate(DateTime date)
         {
-            string sqlCmd = $"select *\r\nfrom Purchases P\r\nwhere P.PurchaseDate= '{date:yyyy-MM-dd}';";
+            string sqlCmd = "select *\r\nfrom Purchases P\r\nwhere P.PurchaseDate= ?";
             Purchase purchase = null;
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase>();
-                var p = connection.Query<Purchase>(sqlCmd);
-                if (p != null && p.Count > 0)
+                purchase = connection.Query<Purchase>(sqlCmd, $"{date:yyyy-MM-dd}").FirstOrDefault();
+                if (purchase != null)
                 {
-                    purchase = p[0];
                     await purchase.LoadPurchaseStatistics(_statisticsRepository);
                     await purchase.LoadProducts(_productRepository, _locationRepository);
                 }
