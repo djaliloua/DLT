@@ -42,7 +42,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Account>();
-                connection.EnableWriteAheadLogging();
                 account = connection.Table<Account>().FirstOrDefault(a => a.Id == id);
             }
             return account;

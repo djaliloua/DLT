@@ -1,6 +1,7 @@
 ﻿using SQLite;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
+using SQLiteNetExtensions.Extensions;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
@@ -34,8 +35,8 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase>();
-                connection.EnableWriteAheadLogging();
                 purchases = connection.Query<Purchase>(sqlComd);
+                
                 for (int i = 0; i < purchases.Count; i++)
                 {
                     await purchases[i].LoadPurchaseStatistics(_statisticsRepository);
@@ -86,8 +87,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase>();
-                connection.EnableWriteAheadLogging();
-                purchase = connection.Table<Purchase>().FirstOrDefault(p => p.Purchase_Id == id);
+                purchase = connection.GetWithChildren<Purchase>(id);
             }
             return purchase;
         }
@@ -99,7 +99,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Purchase>();
-                connection.EnableWriteAheadLogging();
                 if (item.Purchase_Id != 0)
                     res = connection.Update(item);
                 else

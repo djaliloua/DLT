@@ -48,7 +48,8 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <HorizontalStackLayout Spacing="60"
-                               Margin="10"
+                               WidthRequest="{Binding Path=WidthRequest, Source={x:Reference listview}}"
+                               Margin="0, 10, 0, 0"
                                HorizontalOptions="Center">
             <material:DatePickerField Date="{Binding SelectedDate}"
                                       VerticalOptions="End"
@@ -91,6 +92,7 @@
         <ListView ItemsSource="{Binding Items}"
                   RowHeight="150"
                   Grid.Row="1"
+                  x:Name="listview"
                   VerticalScrollBarVisibility="Never"
                   SelectedItem="{Binding SelectedItem}">
             <ListView.Triggers>

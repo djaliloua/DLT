@@ -17,7 +17,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
-                connection.EnableWriteAheadLogging();
                 connection.Delete(item);
             }
         }
@@ -29,7 +28,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
-                connection.EnableWriteAheadLogging();
                 items = connection.Table<PurchaseStatistics>().ToList();
             }
             return items;
@@ -42,7 +40,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
-                connection.EnableWriteAheadLogging();
                 stat = connection.Table<PurchaseStatistics>().FirstOrDefault(s => s.Id == id);
             }
             return stat;
@@ -69,7 +66,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
-                connection.EnableWriteAheadLogging();
                 item ??= new();
                 item.PurchaseCount = await CountPurchaseItems(item.Id);
                 item.TotalPrice = await GetTotalValue(item.Id, "Price");

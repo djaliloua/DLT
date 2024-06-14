@@ -7,25 +7,25 @@ namespace PurchaseManagement.MVVM.Models.DTOs
     {
         public int Item_Id { get; set; }
         public int PurchaseId { get; set; }
-        private string item_name = "Jello";
+        private string item_name;
         public string Item_Name
         {
             get => item_name;
             set => UpdateObservable(ref item_name, value);
         }
-        private long item_price = 1000;
+        private long item_price;
         public long Item_Price
         {
             get => item_price;
             set => UpdateObservable(ref item_price, value);
         }
-        private long item_quantity = 10;
+        private long item_quantity;
         public long Item_Quantity
         {
             get => item_quantity;
             set => UpdateObservable(ref item_quantity, value);
         }
-        private string _item_desc = "Je t'aime bien";
+        private string _item_desc;
         public string Item_Description
         {
             get => _item_desc;

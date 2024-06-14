@@ -18,7 +18,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Product>();
-                connection.EnableWriteAheadLogging();
                 purchase_items = connection.Query<Product>(sqlCmd);
             }
             return purchase_items;
@@ -29,7 +28,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Product>();
-                connection.EnableWriteAheadLogging();
                 connection.Delete(item);
             }
         }
@@ -41,7 +39,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Product>();
-                connection.EnableWriteAheadLogging();
                 products = connection.Table<Product>().ToList();
             }
             return products;
@@ -54,7 +51,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Product>();
-                connection.EnableWriteAheadLogging();
                 product = connection.Table<Product>().FirstOrDefault(p => p.PurchaseId == id);
             }
             return product;
@@ -67,7 +63,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Product>();
-                connection.EnableWriteAheadLogging();
                 if (item.Item_Id != 0)
                     res = connection.Update(item);
                 else

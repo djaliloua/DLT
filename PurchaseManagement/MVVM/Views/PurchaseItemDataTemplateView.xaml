@@ -222,14 +222,14 @@
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
                              Value="P">
                     <Setter Property="Background"
-                            Value="NavajoWhite" />
+                            Value="DarkMagenta" />
                 </DataTrigger>
 
                 <DataTrigger TargetType="Border"
                              Binding="{Binding Source={x:Reference txt},Path=Text}"
                              Value="P">
                     <Setter Property="Background"
-                            Value="NavajoWhite" />
+                            Value="DarkMagenta" />
                 </DataTrigger>
 
                 <DataTrigger TargetType="Border"

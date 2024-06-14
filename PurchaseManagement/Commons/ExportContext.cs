@@ -62,7 +62,7 @@ namespace PurchaseManagement.Commons
         {
             CancellationToken cancellationToken = CancellationToken.None;
             using var stream = new MemoryStream(Encoding.Default.GetBytes(txt));
-            var fileSaverResult = await fileSaver.SaveAsync("test.txt", stream, cancellationToken);
+            var fileSaverResult = await fileSaver.SaveAsync("data.txt", stream, cancellationToken);
             fileSaverResult.EnsureSuccess();
         }
     }

@@ -13,7 +13,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
-                connection.EnableWriteAheadLogging();
                 connection.Delete(item);
             }
         }
@@ -24,7 +23,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
-                connection.EnableWriteAheadLogging();
                 items = connection.Table<MarketModels.Location>().ToList();
             }
             return items;
@@ -36,7 +34,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
-                connection.EnableWriteAheadLogging();
                 loc = connection.Table<MarketModels.Location>().FirstOrDefault(s => s.Location_Id == id);
             }
             return loc;
@@ -49,7 +46,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
-                connection.EnableWriteAheadLogging();
                 if (item.Location_Id != 0)
                     res = connection.Update(item);
                 else
