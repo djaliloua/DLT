@@ -106,9 +106,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             var dt = data.Adapt<List<AccountDTO>>();
             SetItems(dt);
             HideActivity();
-#if ANDROID
-BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
-#endif
+
         }
         #endregion
 
@@ -147,9 +145,6 @@ BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
                     await accountRepository.DeleteItem(acount);
                     base.DeleteItem(item);
                     await _toastNotification.ShowNotification($"{item.Money} deleted");
-#if ANDROID
-BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
-#endif
                 }
             }
             else
