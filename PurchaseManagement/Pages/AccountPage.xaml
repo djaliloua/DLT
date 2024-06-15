@@ -161,7 +161,7 @@
                                                    Padding="10,0,0,0"
                                                    VerticalOptions="Center" />
                                             <Label VerticalOptions="Center"
-                                                   Text="{Binding Money, StringFormat='{0} CFA'}"
+                                                   Text="{Binding Money, StringFormat='{0:C2}'}"
                                                    Grid.Column="1" />
 
                                             <Button FontAttributes="Bold"
