@@ -72,7 +72,13 @@ namespace PurchaseManagement
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                     fonts.AddMaterialIconFonts();
                 })
-                ;
+                .ConfigureMauiHandlers(handlers =>
+                {
+#if ANDROID
+handlers.AddHandler(typeof(ListView), typeof(CustomListView));
+#endif
+                });
+            ;
 
 #if DEBUG
             builder.Logging.AddDebug();

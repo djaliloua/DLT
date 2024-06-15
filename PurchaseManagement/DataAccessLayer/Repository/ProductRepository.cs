@@ -12,13 +12,13 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         
         public async Task<IList<Product>> GetAllItemById(int id)
         {
-            string sqlCmd = $"select *\r\nfrom Purchase_items P\r\nwhere P.PurchaseId = {id}\r\norder by P.Item_id desc;";
+            string sqlCmd = $"select *\r\nfrom Purchase_items P\r\nwhere P.PurchaseId = ?\r\norder by P.Item_id desc;";
             List<Product> purchase_items = null;
             await Task.Delay(1);
             using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
             {
                 connection.CreateTable<Product>();
-                purchase_items = connection.Query<Product>(sqlCmd);
+                purchase_items = connection.Query<Product>(sqlCmd, id);
             }
             return purchase_items;
         }

@@ -1,77 +1,73 @@
-﻿using BottomNavigation = Google.Android.Material.BottomNavigation;
+﻿using List = Android.Widget;
 using Microsoft.Maui.Controls.Handlers.Compatibility;
-using Microsoft.Maui.Controls.Platform.Compatibility;
 using Microsoft.Maui.Platform;
-using Google.Android.Material.Badge;
-using Microsoft.Maui.Controls.Platform;
+using Android.Content;
+using Android.Widget;
 
 namespace PurchaseManagement
 {
-    public class TabBarBadgeRender: ShellRenderer
+    //public partial class AccountPage : ContentPage
+    //{
+    //    partial void ChangedHandler(object sender, EventArgs e)
+    //    {
+    //        ListView listView = sender as ListView;
+    //        var list = listView.Handler.PlatformView as List.Ab+sListView;
+            
+    //        list.ItemLongClick += List_ItemLongClick;
+    //        list.LongClick += List_LongClick;
+    //        list.ItemSelected += List_ItemSelected;
+    //    }
+
+    //    private void List_ItemSelected(object sender, Android.Widget.AdapterView.ItemSelectedEventArgs e)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    private void List_LongClick(object sender, Android.Views.View.LongClickEventArgs e)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+
+    //    private void List_ItemLongClick(object sender, Android.Widget.AdapterView.ItemLongClickEventArgs e)
+    //    {
+            
+    //    }
+    //}
+    public class CustomListView : ListViewRenderer
     {
-        protected override IShellBottomNavViewAppearanceTracker 
-            CreateBottomNavViewAppearanceTracker(ShellItem shellItem)
+        public CustomListView(Context context) : base(context)
         {
-            return new BadgeShellBottomNavAppearanceTracker(this, shellItem);
         }
-    }
-    class BadgeShellBottomNavAppearanceTracker : ShellBottomNavViewAppearanceTracker
-    {
-        private BadgeDrawable badgeDrawable;
-        const int cartTabItemIndex = 0;
-        public BadgeShellBottomNavAppearanceTracker(IShellContext shellContext, ShellItem shellItem):base(shellContext, shellItem) 
+        protected override Android.Widget.ListView CreateNativeControl()
         {
-            BadgeCounterService.CounterChanged += BadgeCounterService_CounterChanged;
-        }
-        private void BadgeCounterService_CounterChanged(object sender, int e)
-        {
-            UpdateBadge(e);
+            var listView = base.CreateNativeControl();
+            listView.ChoiceMode = ChoiceMode.Single;
+            listView.SetSelector(Android.Resource.Color.Transparent);
+            listView.ItemSelected += ListView_ItemSelected;
+            return listView;
         }
 
-        public override void SetAppearance(BottomNavigation.BottomNavigationView bottomView, IShellAppearanceElement appearance)
+        private void ListView_ItemSelected(object sender, AdapterView.ItemSelectedEventArgs e)
         {
-            base.SetAppearance(bottomView, appearance);
-            //bottomView.SetPadding(0,50,0,0);
-            if(badgeDrawable is null)
+            var listView = sender as List.ListView;
+            if(listView != null)
             {
-                badgeDrawable = bottomView.GetOrCreateBadge(cartTabItemIndex);
-            }
-        }
-
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            BadgeCounterService.CounterChanged -= BadgeCounterService_CounterChanged;
-        }
-        private void UpdateBadge(int count)
-        {
-            if(badgeDrawable is not null)
-            {
-                if(count >= 0)
+                for (int i = 0; i < listView.ChildCount; i++)
                 {
-                    badgeDrawable.Number = count;
-                    badgeDrawable.BackgroundColor = Colors.Red.ToPlatform();
-                    badgeDrawable.BadgeTextColor = Colors.White.ToPlatform();
-                    badgeDrawable.SetVisible(true);
-                    badgeDrawable.SetBadgeWithoutTextShapeAppearanceOverlay(0);
+                    var view = listView.GetChildAt(i);
+                    if (view != null)
+                    {
+                        view.SetBackgroundColor(Android.Graphics.Color.Transparent);
+                    }
+                }
+
+                if (e.Parent != null && e.Position != AdapterView.InvalidPosition)
+                {
+                    var selectedView = listView.GetChildAt(e.Position);
+                    selectedView?.SetBackgroundColor(Android.Graphics.Color.LightGray);
                 }
             }
+            
         }
-    }
-    public static class BadgeCounterService
-    {
-        private static int _count;
-        public static int Count
-        {
-            get => _count;
-            private set
-            {
-                _count = value;
-                CounterChanged?.Invoke(null, value);
-            }
-        }
-        public static int SetCount(int count) => Count = count;
-        public static event EventHandler<int> CounterChanged;
     }
 }

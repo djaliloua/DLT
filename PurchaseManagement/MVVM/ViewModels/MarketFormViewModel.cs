@@ -182,11 +182,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             m_purchase_item.PurchaseId = purchase.Purchase_Id;
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
             //
-
             m_purchaseStatistics = await _statisticsDB.SaveOrUpdateItem(m_purchaseStatistics);
-
-
-
             // Update Statistics
             purchase.PurchaseStatistics = m_purchaseStatistics;
             purchase.Purchase_Stats_Id = m_purchaseStatistics.Id;

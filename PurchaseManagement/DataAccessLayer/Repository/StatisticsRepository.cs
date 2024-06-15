@@ -67,9 +67,9 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             {
                 connection.CreateTable<PurchaseStatistics>();
                 item ??= new();
-                item.PurchaseCount = await CountPurchaseItems(item.Id);
-                item.TotalPrice = await GetTotalValue(item.Id, "Price");
-                item.TotalQuantity = await GetTotalValue(item.Id, "Quantity");
+                item.PurchaseCount = await CountPurchaseItems(item.Purchase_Id);
+                item.TotalPrice = await GetTotalValue(item.Purchase_Id, "Price");
+                item.TotalQuantity = await GetTotalValue(item.Purchase_Id, "Quantity");
                 if (item.Id != 0)
                     res = connection.Update(item);
                 else

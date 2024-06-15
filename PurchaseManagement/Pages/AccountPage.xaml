@@ -11,6 +11,10 @@
              x:Name="page"
              BindingContext="{x:Static local:ViewModelLocator.AccountPageViewModel}"
              Title="Account">
+    <ContentPage.Resources>
+        
+
+    </ContentPage.Resources>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{Binding AccountListViewViewModel.Counter}"
                      Order="Primary" />
@@ -129,6 +133,7 @@
                           RowHeight="150"
                           VerticalScrollBarVisibility="Never"
                           VerticalOptions="Start"
+                          HandlerChanged="listview_HandlerChanged"
                           CachingStrategy="RecycleElementAndDataTemplate"
                           SelectedItem="{Binding SelectedItem}">
                     <ListView.Triggers>
@@ -147,7 +152,7 @@
                     </ListView.Triggers>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <ViewCell>
+                            <ViewCell x:Name="viewCell">
                                 <SwipeView>
                                     <Frame CornerRadius="10"
                                            BackgroundColor="{StaticResource Surface}">
@@ -161,7 +166,7 @@
                                                    Padding="10,0,0,0"
                                                    VerticalOptions="Center" />
                                             <Label VerticalOptions="Center"
-                                                   Text="{Binding Money, StringFormat='{0} CFA'}"
+                                                   Text="{Binding Money, StringFormat='{0:C2}'}"
                                                    Grid.Column="1" />
 
                                             <Button FontAttributes="Bold"

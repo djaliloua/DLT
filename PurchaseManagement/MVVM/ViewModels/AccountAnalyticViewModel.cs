@@ -62,7 +62,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             ShowActivity();
             accountRepository = _accountRepository;
             Statistics = new ObservableCollection<Statistics>();
-            _ = Load();
+            
             col = new ColumnSeries<Statistics>
             {
                 Values = Statistics,
