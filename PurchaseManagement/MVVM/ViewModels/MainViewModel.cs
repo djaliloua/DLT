@@ -5,19 +5,20 @@ using System.Windows.Input;
 using Patterns;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.DataAccessLayer.Repository;
+using System.Diagnostics;
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchasesDTO
     {
-        public TItem GetItemByDate(DateTime date)
+        public TItem GetItemByDate()
         {
-            TItem item = GetItems().FirstOrDefault(p => p.PurchaseDate.Equals($"{date:yyyy-MM-dd}"));
+            TItem item = GetItems().FirstOrDefault(p => p.PurchaseDate.Equals($"{DateTime:yyyy-MM-dd}"));
             return item;
         }
         public DateTime DateTime { get; set; }
         protected override int Index(TItem item)
         {
-            TItem item1 = GetItemByDate(DateTime);
+            TItem item1 = GetItemByDate();
             return base.Index(item1);
         }
         
@@ -64,7 +65,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             _purchaseDB = db;   
             _statisticsDB = statisticsDB;
-            mapper = MapperConfig.InitializeAutomapper();
+            mapper = MapperConfig.InitializeAutomapper();   
             IsSavebtnEnabled = true;
             _ = LoadItems();
             CommandSetup();
@@ -83,28 +84,35 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         private async void On_DoubleClick(object sender)
         {
-            if(IsSelected)
+            try
             {
-                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                if (IsSelected)
+                {
+                    Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "purchase", SelectedItem }
                         };
-                SelectedDate = DateTime.Parse(SelectedItem.PurchaseDate);
-                await Shell.Current.GoToAsync(nameof(ProductsPage), navigationParameter);
+                    SelectedDate = DateTime.Parse(SelectedItem.PurchaseDate);
+                    await Shell.Current.GoToAsync(nameof(ProductsPage), navigationParameter);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
         }
         
         private async void On_Add(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(await _purchaseDB.GetPurchaseByDate(SelectedDate) is Purchase purchase)
+            if(GetItemByDate() is PurchasesDTO purchase)
             {
                 PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
-                purchase_proxy_item = stat == null ? new ProductDto(0) : new ProductDto(stat.PurchaseCount);
+                purchase_proxy_item = Factory.CreateObject(mapper.Map<ProductStatisticsDto>(stat));
             }
             else
             {
-                purchase_proxy_item = new ProductDto(0);
+                purchase_proxy_item = Factory.CreateObject(0);
             }
 
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
@@ -112,6 +120,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                             { "IsSave", true },
                             { "Purchase_ItemsDTO", purchase_proxy_item }
                 };
+            
             await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
         }
         #endregion
