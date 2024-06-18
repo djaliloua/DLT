@@ -14,6 +14,15 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{Binding Counter}"
                      Order="Primary" />
+        <ToolbarItem Text="Analytics"
+                     Command="{Binding OpenAnalyticCommand}"
+                     Order="Secondary">
+            <ToolbarItem.IconImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Color="AliceBlue"
+                                 Glyph="{x:Static m:MaterialRound.Analytics}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
         <ToolbarItem Text="Export TXT"
                      Command="{Binding ExportToPdfCommand}"
                      Order="Secondary">

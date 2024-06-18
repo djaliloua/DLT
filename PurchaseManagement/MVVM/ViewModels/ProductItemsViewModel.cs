@@ -10,7 +10,6 @@ using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
-using System.Xml.Serialization;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -65,6 +64,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Commands
+        public ICommand OpenAnalyticCommand { get; private set; }
         public ICommand ExportToPdfCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
@@ -94,6 +94,15 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Handlers
+        public async void OnOpenAnalyticCommand(object parameter)
+        {
+            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
+                        {
+                            { "product", GetItems() },
+                            
+                        };
+            await Shell.Current.GoToAsync(nameof(ProductAnalytics), navigationParameter);
+        }
         private void OnExportToPdfCommand(object parameter)
         {
             exportContext.ExportTo("", GetItems());
@@ -220,6 +229,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             OpenMapCommand = new Command(On_OpenMap);
             EditCommand = new Command(On_Edit);
             GetMapCommand = new Command(On_GetMap);
+            OpenAnalyticCommand = new Command(OnOpenAnalyticCommand);
             ExportToPdfCommand = new Command(OnExportToPdfCommand);
         }
         private async void UpdateUI()

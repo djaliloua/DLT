@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PurchaseManagement.Pages.ProductAnalytics"
+             xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
+             BindingContext="{x:Static service:ViewModelLocator.ProductAnalyticsViewModel}"
+             Title="Dashboard">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <ListView ItemsSource="{Binding Summary}"
+                  VerticalScrollBarVisibility="Never"
+                  SelectionMode="None"
+                  Footer="{Binding Date}"
+                  Header="{Binding .}"
+                  >
+            <ListView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid BackgroundColor="LightBlue" Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Label Text="State"
+                               FontSize="16"
+                               FontAttributes="Bold" />
+                        <Label Text="#. of products"
+                               Grid.Column="1"
+                               FontSize="16"
+                               FontAttributes="Bold" />
+                        <Label Text="Total Price"
+                               Grid.Column="2"
+                               FontSize="16"
+                               FontAttributes="Bold" />
+                        <Label Text="ToTal Quantity"
+                               Grid.Column="3"
+                               FontSize="16"
+                               FontAttributes="Bold" />
+                    </Grid>
+                </DataTemplate>
+            </ListView.HeaderTemplate>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+                            <Label Text="{Binding Name}" />
+                            <Label Text="{Binding Count}"
+                                   Grid.Column="1" />
+                            <Label Text="{Binding TotalPrice, StringFormat='{0:C2}'}"
+                                   Grid.Column="2" />
+                            <Label Text="{Binding TotalQuantity}"
+                                   Grid.Column="3" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </ListView>
+        <lvc:PieChart Series="{Binding Series}"
+                      Grid.Row="1"
+                      IsClockwise="False"
+                      InitialRotation="-90">
+        </lvc:PieChart>
+    </Grid>
+    
+</ContentPage>
