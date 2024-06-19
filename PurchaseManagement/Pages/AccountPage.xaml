@@ -7,10 +7,12 @@
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:local="clr-namespace:PurchaseManagement.ServiceLocator"
+             xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Maui.Skeleton"
              BackgroundColor="LightBlue"
              x:Name="page"
              BindingContext="{x:Static local:ViewModelLocator.AccountPageViewModel}"
              Title="Account">
+    
     <ContentPage.Resources>
         
 
@@ -48,6 +50,7 @@
     <ContentPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="Fuchsia"
                                    StatusBarStyle="LightContent" />
+        
     </ContentPage.Behaviors>
     <Grid Margin="20" RowSpacing="25">
         <Grid.RowDefinitions>
@@ -135,6 +138,9 @@
                           VerticalOptions="Start"
                           HandlerChanged="listview_HandlerChanged"
                           CachingStrategy="RecycleElementAndDataTemplate"
+                          sk:Skeleton.IsParent="True"
+                          sk:Skeleton.IsBusy="{Binding IsActivity}"
+                          sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
                           SelectedItem="{Binding SelectedItem}">
                     <ListView.Triggers>
                         <DataTrigger TargetType="ListView"

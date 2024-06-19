@@ -6,21 +6,24 @@
              xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.Maui;assembly=LiveChartsCore.SkiaSharpView.Maui"
              BindingContext="{x:Static service:ViewModelLocator.ProductAnalyticsViewModel}"
              Title="Dashboard">
+    <!--<Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackButtonCommand}"/>
+    </Shell.BackButtonBehavior>-->
     <Grid Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
+            <RowDefinition Height="250" />
             <RowDefinition />
         </Grid.RowDefinitions>
-
         <ListView ItemsSource="{Binding Summary}"
                   VerticalScrollBarVisibility="Never"
+                  VerticalOptions="Start"
                   SelectionMode="None"
                   Footer="{Binding Date}"
                   Header="{Binding .}"
                   >
             <ListView.HeaderTemplate>
                 <DataTemplate>
-                    <Grid BackgroundColor="LightBlue" Margin="10">
+                    <Grid Margin="10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                             <ColumnDefinition />
@@ -29,17 +32,21 @@
                         </Grid.ColumnDefinitions>
                         <Label Text="State"
                                FontSize="16"
+                               HorizontalTextAlignment="Center"
                                FontAttributes="Bold" />
-                        <Label Text="#. of products"
+                        <Label Text="{OnIdiom Default=#. of products, Phone=#.Prdts}"
                                Grid.Column="1"
+                               HorizontalTextAlignment="Center"
                                FontSize="16"
                                FontAttributes="Bold" />
-                        <Label Text="Total Price"
+                        <Label Text="{OnIdiom Default=Total Price, Phone= Price}"
                                Grid.Column="2"
                                FontSize="16"
+                               HorizontalTextAlignment="Center"
                                FontAttributes="Bold" />
-                        <Label Text="ToTal Quantity"
+                        <Label Text="{OnIdiom Default=ToTal Quantity, Phone=Quantity}"
                                Grid.Column="3"
+                               HorizontalTextAlignment="Center"
                                FontSize="16"
                                FontAttributes="Bold" />
                     </Grid>
@@ -48,19 +55,24 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <Grid Margin="10">
+                        <Grid Margin="5">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Label Text="{Binding Name}" />
+                            <Label Text="{Binding Name}"
+                                   
+                                   HorizontalTextAlignment="Start" />
                             <Label Text="{Binding Count}"
+                                   HorizontalTextAlignment="Center"
                                    Grid.Column="1" />
                             <Label Text="{Binding TotalPrice, StringFormat='{0:C2}'}"
-                                   Grid.Column="2" />
+                                   Grid.Column="2"
+                                   HorizontalTextAlignment="Center" />
                             <Label Text="{Binding TotalQuantity}"
+                                   HorizontalTextAlignment="Center"
                                    Grid.Column="3" />
                         </Grid>
                     </ViewCell>
@@ -69,6 +81,7 @@
             
         </ListView>
         <lvc:PieChart Series="{Binding Series}"
+                      VerticalOptions="Start"
                       Grid.Row="1"
                       IsClockwise="False"
                       InitialRotation="-90">

@@ -15,7 +15,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             string sqlCmd = $"select *\r\nfrom Purchase_items P\r\nwhere P.PurchaseId = ?\r\norder by P.Item_id desc;";
             List<Product> purchase_items = null;
             await Task.Delay(1);
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Product>();
                 purchase_items = connection.Query<Product>(sqlCmd, id);
@@ -25,7 +25,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         public async Task DeleteItem(Product item)
         {
             await Task.Delay(1);
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Product>();
                 connection.Delete(item);
@@ -36,7 +36,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             await Task.Delay(1);
             List<Product> products;
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Product>();
                 products = connection.Table<Product>().ToList();
@@ -48,7 +48,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             await Task.Delay(1);
             Product product;
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Product>();
                 product = connection.Table<Product>().FirstOrDefault(p => p.PurchaseId == id);
@@ -60,7 +60,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             int res = 0;
             await Task.Delay(1);
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Product>();
                 if (item.Item_Id != 0)

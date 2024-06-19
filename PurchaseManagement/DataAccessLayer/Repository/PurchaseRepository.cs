@@ -32,7 +32,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             string sqlComd = $"select *\r\nfrom Purchases P\r\nOrder by P.PurchaseDate desc\r\n;";
             List<Purchase> purchases = null;
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Purchase>();
                 purchases = connection.Query<Purchase>(sqlComd);
@@ -49,7 +49,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             string sqlCmd = "select *\r\nfrom Purchases P\r\nwhere P.PurchaseDate= ?;";
             Purchase purchase = null;
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Purchase>();
                 purchase = connection.Query<Purchase>(sqlCmd, $"{date:yyyy-MM-dd}").FirstOrDefault();
@@ -64,7 +64,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             string sqlCmd = "select *\r\nfrom Purchases P\r\nwhere P.PurchaseDate= ?";
             Purchase purchase = null;
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Purchase>();
                 purchase = connection.Query<Purchase>(sqlCmd, $"{date:yyyy-MM-dd}").FirstOrDefault();
@@ -81,7 +81,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             await Task.Delay(1);
             Purchase purchase;
-            using (SQLiteConnection connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Purchase>();
                 purchase = connection.GetWithChildren<Purchase>(id);
@@ -93,7 +93,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             int res = 0;
             await Task.Delay(1);
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<Purchase>();
                 if (item.Purchase_Id != 0)

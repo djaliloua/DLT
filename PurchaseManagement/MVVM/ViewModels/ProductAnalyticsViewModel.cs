@@ -6,6 +6,10 @@ using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Core.Extensions;
+using System.Windows.Input;
+using Microsoft.Maui.Handlers;
+using PurchaseManagement.NavigationLib.Abstractions;
+using PurchaseManagement.NavigationLib.Models;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -46,8 +50,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         
     }
-    public class ProductAnalyticsViewModel : BaseViewModel, IQueryAttributable
+    public class ProductAnalyticsViewModel : BaseViewModel, INavigatedEvents
     {
+        private readonly INavigationService navigationService;
         private ObservableCollection<ProductDto> _products;
         public ObservableCollection<ProductDto> Products
         {
@@ -80,7 +85,16 @@ namespace PurchaseManagement.MVVM.ViewModels
             get => _series;
             set => UpdateObservable(ref _series, value);    
         }
-         
+        public ICommand BackButtonCommand { get; private set; }
+        public ProductAnalyticsViewModel(INavigationService navigationService)
+        {
+            this.navigationService = navigationService;
+            BackButtonCommand = new Command(OnBackButtonCommand);
+        }
+        private async void OnBackButtonCommand(object parameter)
+        {
+            await navigationService.Navigate("..");
+        }
         private void SetValues(HelperClass helper)
         {
             string[] _names = helper.GetLabels();
@@ -104,13 +118,15 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Date = Products[0].Purchase?.PurchaseDate;
             }
         }
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        public async Task OnNavigatedTo(NavigationParameters parameters)
         {
-            if (query.Count() > 0)
-            {
-                Products = (ObservableCollection<ProductDto>)query["product"];
-                
-            }
+            await Task.Delay(1);
+            Products = parameters.GetValue<ObservableCollection<ProductDto>>("product");
+        }
+
+        public async Task OnNavigatedFrom(NavigationParameters parameters)
+        {
+            await Task.Delay(1);
         }
     }
 }

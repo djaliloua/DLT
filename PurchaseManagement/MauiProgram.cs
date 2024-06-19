@@ -12,6 +12,8 @@ using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.DTOs;
 using Mapster;
 using CommunityToolkit.Maui.Storage;
+using PurchaseManagement.NavigationLib.Services;
+using PurchaseManagement.NavigationLib.Abstractions;
 
 
 namespace PurchaseManagement
@@ -28,6 +30,9 @@ namespace PurchaseManagement
             mauiAppBuilder.Services.AddScoped<IExportStrategy<AccountDTO>, AccountTxtStrategy>();
             mauiAppBuilder.Services.AddScoped<ExportContext<ProductDto>>();
             mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductDto>, ProductTxtStrategy>();
+            mauiAppBuilder.Services.AddScoped<INavigationService, NavigationService>();
+            mauiAppBuilder.Services.AddScoped<ProductAnalytics>();
+            mauiAppBuilder.Services.AddScoped<ProductsPage>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder DbContextExtension(this MauiAppBuilder mauiAppBuilder)
@@ -84,8 +89,11 @@ handlers.AddHandler(typeof(ListView), typeof(CustomListView));
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
-            
-            return builder.Build();
+            var serviceProvider = builder.Build();
+            var scope = serviceProvider.Services.CreateScope();
+            ServiceResolver.RegisterScope(scope);
+
+            return serviceProvider;
         }
     }
 }

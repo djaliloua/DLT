@@ -10,7 +10,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         public async Task DeleteItem(MarketModels.Location item)
         {
             await Task.Delay(1);
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
                 connection.Delete(item);
@@ -20,7 +20,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             await Task.Delay(1);
             List<MarketModels.Location> items;
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
                 items = connection.Table<MarketModels.Location>().ToList();
@@ -31,7 +31,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             await Task.Delay(1);
             MarketModels.Location loc = new();
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
                 loc = connection.Table<MarketModels.Location>().FirstOrDefault(s => s.Location_Id == id);
@@ -43,7 +43,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             int res = 0;
             await Task.Delay(1);
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
                 if (item.Location_Id != 0)

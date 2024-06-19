@@ -10,6 +10,8 @@ using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.NavigationLib.Models;
+using PurchaseManagement.NavigationLib.Abstractions;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -22,9 +24,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
 
     }
-    public class ProductItemsViewModel: PurchaseItemsViewModelLoadable<ProductDto>, IQueryAttributable
+    public class ProductItemsViewModel: PurchaseItemsViewModelLoadable<ProductDto>, INavigatedEvents
     {
         #region Private properties
+        private readonly INavigationService navigationService;
         private readonly IPurchaseRepository _purchaseDB;
         private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
         private readonly IGenericRepository<MarketModels.Location> _locationRepository;
@@ -78,6 +81,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ProductItemsViewModel(IProductRepository productRepository,
             IGenericRepository<PurchaseStatistics> statisticsDB,
             IPurchaseRepository purchaseDB,
+            INavigationService navigationService,
             ExportContext<ProductDto> context,
             IGenericRepository<MarketModels.Location> locationRepository)
         {
@@ -85,6 +89,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             _statisticsDB = statisticsDB;
             _purchaseDB = purchaseDB;
             exportContext = context;
+            this.navigationService = navigationService;
             _locationRepository = locationRepository;
             _notification = new ToastNotification();
             _messageBox = new MessageBoxNotification();
@@ -96,12 +101,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Handlers
         public async void OnOpenAnalyticCommand(object parameter)
         {
-            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
-                        {
-                            { "product", GetItems() },
-                            
-                        };
-            await Shell.Current.GoToAsync(nameof(ProductAnalytics), navigationParameter);
+            NavigationParametersTest.AddParameter("product", GetItems());
+            var navigationParameters = new NavigationParameters();
+            navigationParameters.Add("product", GetItems());
+            await navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
+            //await Shell.Current.GoToAsync(nameof(ProductAnalytics), NavigationParametersTest.GetParameters());
+            
         }
         private void OnExportToPdfCommand(object parameter)
         {
@@ -145,6 +150,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                             { "IsSave", false },
                             {"Purchase_ItemsDTO", proxy }
                         };
+                
                 await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
             }
             else
@@ -199,11 +205,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if (IsSelected)
             {
-                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
-                        {
-                            { "details", SelectedItem }
-                        };
-                await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), navigationParameter);
+                NavigationParametersTest.AddParameter("details", SelectedItem);
+                await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), NavigationParametersTest.GetParameters());
             }
         }
         #endregion
@@ -269,13 +272,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             
         }
         #endregion
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
-        {
-            if(query.Count > 0)
-            {
-                Purchases = query["purchase"] as PurchasesDTO;
-            }
-        }
+        
 
         public override async Task LoadItems()
         {
@@ -284,6 +281,16 @@ namespace PurchaseManagement.MVVM.ViewModels
             SetItems(Purchases.Products);
             HideActivity();
         }
-        
+
+        public async Task OnNavigatedTo(NavigationParameters parameters)
+        {
+            await Task.Delay(1);
+            Purchases = parameters.GetValue<PurchasesDTO>("purchase");
+        }
+
+        public Task OnNavigatedFrom(NavigationParameters parameters)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
