@@ -15,6 +15,7 @@
             <RowDefinition />
         </Grid.RowDefinitions>
         <ListView ItemsSource="{Binding Summary}"
+                  CachingStrategy="RecycleElementAndDataTemplate"
                   VerticalScrollBarVisibility="Never"
                   VerticalOptions="Start"
                   SelectionMode="None"

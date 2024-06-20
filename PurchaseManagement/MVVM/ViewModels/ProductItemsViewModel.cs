@@ -221,6 +221,8 @@ namespace PurchaseManagement.MVVM.ViewModels
                     p.PurchaseId = purchase.Purchase_Id;
                     var x = mapper.Map<Product>(p);
                     await _productRepository.SaveOrUpdateItem(x);
+                    var purchaseX = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchaseX));
                 }
             });
         }
@@ -282,10 +284,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             HideActivity();
         }
 
-        public async Task OnNavigatedTo(NavigationParameters parameters)
+        public Task OnNavigatedTo(NavigationParameters parameters)
         {
-            await Task.Delay(1);
             Purchases = parameters.GetValue<PurchasesDTO>("purchase");
+            return Task.CompletedTask;
         }
 
         public Task OnNavigatedFrom(NavigationParameters parameters)

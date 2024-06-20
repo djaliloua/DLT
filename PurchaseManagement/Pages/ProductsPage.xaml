@@ -14,13 +14,13 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{Binding Counter}"
                      Order="Primary" />
-        <ToolbarItem Text="Analytics"
+        <ToolbarItem Text="Dashboard"
                      Command="{Binding OpenAnalyticCommand}"
-                     Order="Secondary">
+                     Order="Primary">
             <ToolbarItem.IconImageSource>
                 <FontImageSource FontFamily="MaterialRegular"
                                  Color="AliceBlue"
-                                 Glyph="{x:Static m:MaterialRound.Analytics}" />
+                                 Glyph="{x:Static m:MaterialRound.Dashboard}" />
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
         <ToolbarItem Text="Export TXT"

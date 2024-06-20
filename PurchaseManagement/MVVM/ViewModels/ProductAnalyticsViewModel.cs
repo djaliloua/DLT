@@ -7,13 +7,49 @@ using SkiaSharp;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Core.Extensions;
 using System.Windows.Input;
-using Microsoft.Maui.Handlers;
 using PurchaseManagement.NavigationLib.Abstractions;
 using PurchaseManagement.NavigationLib.Models;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public record Summary(string Name, int Count, double TotalPrice, double TotalQuantity);
+    public class Summary:BaseViewModel
+    {
+        private string _name;
+        public string Name
+        {
+            get => _name;
+            set => UpdateObservable(ref _name, value);
+        }
+        private int _count;
+        public int Count
+        {
+            get => _count;
+            set => UpdateObservable(ref _count, value);
+        }
+        private double _price;
+        public double TotalPrice
+        {
+            get => _price;
+            set => UpdateObservable(ref _price, value);
+        }
+        private double _quantity;
+        public double TotalQuantity
+        {
+            get => _quantity;
+            set => UpdateObservable(ref _quantity, value);
+        }
+        public Summary(string _Name, int _Count, double _TotalPrice, double _TotalQuantity)
+        {
+            Name = _Name;
+            Count = _Count;
+            TotalPrice = _TotalPrice;
+            TotalQuantity = _TotalQuantity;
+        }
+        public Summary()
+        {
+            
+        }
+    }
     public class HelperClass
     {
         string[] labels = [];
@@ -64,6 +100,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 helper.Load(Products.ToList());
                 SetValues(helper);
                 Summary = helper.GetSummary();
+                OnPropertyChanged(nameof(Summary));
                 SetDate();
             }
         }
