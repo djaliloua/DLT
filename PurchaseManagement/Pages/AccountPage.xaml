@@ -160,7 +160,7 @@
                         <DataTemplate>
                             <ViewCell x:Name="viewCell">
                                 <SwipeView>
-                                    <Frame CornerRadius="10"
+                                    <Frame CornerRadius="0"
                                            BackgroundColor="{StaticResource Surface}">
                                         <Grid Padding="2">
                                             <Grid.ColumnDefinitions>
