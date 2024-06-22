@@ -3,29 +3,44 @@ using CommunityToolkit.Mvvm.Messaging;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
+    public class Factory
+    {
+        public static ProductDto CreateObject(int counter)
+        {
+            return new ProductDto(0);
+        }
+        public static ProductDto CreateObject(ProductStatisticsDto stat)
+        {
+            return stat == null ? new ProductDto(0) : new ProductDto(stat.PurchaseCount);
+        }
+        public static ProductDto CreateObject()
+        {
+            return new ProductDto();
+        }
+    }
     public class ProductDto : BaseViewModel
     {
         public int Item_Id { get; set; }
         public int PurchaseId { get; set; }
-        private string item_name;
+        private string item_name = "Tiramissu";
         public string Item_Name
         {
             get => item_name;
             set => UpdateObservable(ref item_name, value);
         }
-        private long item_price;
+        private long item_price = 1000;
         public long Item_Price
         {
             get => item_price;
             set => UpdateObservable(ref item_price, value);
         }
-        private long item_quantity;
+        private long item_quantity = 10;
         public long Item_Quantity
         {
             get => item_quantity;
             set => UpdateObservable(ref item_quantity, value);
         }
-        private string _item_desc;
+        private string _item_desc = "Ahahah this is a simple test";
         public string Item_Description
         {
             get => _item_desc;

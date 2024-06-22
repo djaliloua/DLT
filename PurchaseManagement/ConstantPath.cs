@@ -1,7 +1,7 @@
 ﻿using Microsoft.Maui.Storage;
 namespace PurchaseManagement
 {
-    public class Constants
+    public class ConstantPath
     {
         public const SQLite.SQLiteOpenFlags Flags =
             // open the database in read/write mode

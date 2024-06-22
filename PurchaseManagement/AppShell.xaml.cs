@@ -8,6 +8,7 @@ namespace PurchaseManagement
         {
             InitializeComponent();
             Routing.RegisterRoute(nameof(ProductsPage), typeof(ProductsPage));
+            Routing.RegisterRoute(nameof(ProductAnalytics), typeof(ProductAnalytics));
             Routing.RegisterRoute(nameof(PurchaseItemDetails), typeof(PurchaseItemDetails));
             Routing.RegisterRoute(nameof(MarketFormPage), typeof(MarketFormPage));
         }

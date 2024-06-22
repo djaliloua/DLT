@@ -5,19 +5,24 @@ using System.Windows.Input;
 using Patterns;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.DataAccessLayer.Repository;
+using System.Diagnostics;
+using Newtonsoft.Json.Linq;
+using PurchaseManagement.Commons;
+using PurchaseManagement.NavigationLib.Abstractions;
+using PurchaseManagement.NavigationLib.Models;
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchasesDTO
     {
-        public TItem GetItemByDate(DateTime date)
+        public TItem GetItemByDate()
         {
-            TItem item = GetItems().FirstOrDefault(p => p.PurchaseDate.Equals($"{date:yyyy-MM-dd}"));
+            TItem item = GetItems().FirstOrDefault(p => p.PurchaseDate.Equals($"{DateTime:yyyy-MM-dd}"));
             return item;
         }
         public DateTime DateTime { get; set; }
         protected override int Index(TItem item)
         {
-            TItem item1 = GetItemByDate(DateTime);
+            TItem item1 = GetItemByDate();
             return base.Index(item1);
         }
         
@@ -31,6 +36,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class MainViewModel: LaodableMainViewModel<PurchasesDTO>
     {
         #region Private Properties
+        private readonly INavigationService navigationService;
         private readonly IPurchaseRepository _purchaseDB;
         private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
         #endregion
@@ -60,11 +66,14 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Constructor
-        public MainViewModel(IPurchaseRepository db, IGenericRepository<PurchaseStatistics> statisticsDB)
+        public MainViewModel(IPurchaseRepository db,
+            INavigationService navigationService,
+            IGenericRepository<PurchaseStatistics> statisticsDB)
         {
             _purchaseDB = db;   
             _statisticsDB = statisticsDB;
-            mapper = MapperConfig.InitializeAutomapper();
+            this.navigationService = navigationService;
+            mapper = MapperConfig.InitializeAutomapper();   
             IsSavebtnEnabled = true;
             _ = LoadItems();
             CommandSetup();
@@ -83,36 +92,41 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         private async void On_DoubleClick(object sender)
         {
-            if(IsSelected)
+            try
             {
-                Dictionary<string, object> navigationParameter = new Dictionary<string, object>
-                        {
-                            { "purchase", SelectedItem }
-                        };
-                SelectedDate = DateTime.Parse(SelectedItem.PurchaseDate);
-                await Shell.Current.GoToAsync(nameof(ProductsPage), navigationParameter);
+                if (IsSelected)
+                {
+                    SelectedDate = DateTime.Parse(SelectedItem.PurchaseDate);
+                    //NavigationParametersTest.AddParameter("purchase", SelectedItem);
+                    var navigationParameters = new NavigationParameters
+                    {
+                        { "purchase", SelectedItem }
+                    };
+                    await navigationService.Navigate(nameof(ProductsPage), navigationParameters);
+                    //await Shell.Current.GoToAsync(nameof(ProductsPage), NavigationParametersTest.GetParameters());
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
         }
         
         private async void On_Add(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(await _purchaseDB.GetPurchaseByDate(SelectedDate) is Purchase purchase)
+            if(GetItemByDate() is PurchasesDTO purchase)
             {
                 PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
-                purchase_proxy_item = stat == null ? new ProductDto(0) : new ProductDto(stat.PurchaseCount);
+                purchase_proxy_item = Factory.CreateObject(mapper.Map<ProductStatisticsDto>(stat));
             }
             else
             {
-                purchase_proxy_item = new ProductDto(0);
+                purchase_proxy_item = Factory.CreateObject(0);
             }
-
-            Dictionary<string, object> navigationParameter = new Dictionary<string, object>
-                        {
-                            { "IsSave", true },
-                            { "Purchase_ItemsDTO", purchase_proxy_item }
-                };
-            await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
+            NavigationParametersTest.AddParameter("IsSave", true);
+            NavigationParametersTest.AddParameter("Purchase_ItemsDTO", purchase_proxy_item);
+            await Shell.Current.GoToAsync(nameof(MarketFormPage), NavigationParametersTest.GetParameters());
         }
         #endregion
 

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui.Storage;
 using PurchaseManagement.MVVM.Models.DTOs;
+using System.Diagnostics;
 using System.Text;
 
 namespace PurchaseManagement.Commons
@@ -60,10 +61,17 @@ namespace PurchaseManagement.Commons
         }
         private async void Save(string txt)
         {
-            CancellationToken cancellationToken = CancellationToken.None;
-            using var stream = new MemoryStream(Encoding.Default.GetBytes(txt));
-            var fileSaverResult = await fileSaver.SaveAsync("data.txt", stream, cancellationToken);
-            fileSaverResult.EnsureSuccess();
+            try
+            {
+                CancellationToken cancellationToken = CancellationToken.None;
+                using var stream = new MemoryStream(Encoding.Default.GetBytes(txt));
+                var fileSaverResult = await fileSaver.SaveAsync("data.txt", stream, cancellationToken);
+                fileSaverResult.EnsureSuccess();
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 }

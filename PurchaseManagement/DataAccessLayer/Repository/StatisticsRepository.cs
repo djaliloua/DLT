@@ -14,7 +14,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         public async Task DeleteItem(PurchaseStatistics item)
         {
             await Task.Delay(1);
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
                 connection.Delete(item);
@@ -25,7 +25,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             await Task.Delay(1);
             List<PurchaseStatistics> items;
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
                 items = connection.Table<PurchaseStatistics>().ToList();
@@ -37,7 +37,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             await Task.Delay(1);
             PurchaseStatistics stat = new();
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
                 stat = connection.Table<PurchaseStatistics>().FirstOrDefault(s => s.Id == id);
@@ -63,7 +63,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             int res = 0;
             await Task.Delay(1);
-            using (var connection = new SQLiteConnection(Constants.DatabasePurchase, Constants.Flags))
+            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<PurchaseStatistics>();
                 item ??= new();

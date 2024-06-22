@@ -1,38 +1,10 @@
-﻿using System.Collections.ObjectModel;
+﻿using Patterns.Abstractions;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Patterns
 {
-    public interface IActivity
-    {
-        bool IsActivity { get; set; }
-        void ShowActivity();
-        void HideActivity();
-    }
-    public interface ILoadable<TItem>
-    {
-        ObservableCollection<TItem> Items { get; protected set; }
-        TItem SelectedItem { get; set; }
-        bool IsEmpty { get; }
-        bool IsSelected { get; }
-        int Counter { get; }
-        int NumberOfItems { get; set; }
-        void SetItems(IList<TItem> items);
-        ObservableCollection<TItem> GetItems();
-        void AddOrUpdateItem(TItem item);
-        void DeleteAllItems();
-        void SelectedItemCallBack(TItem item);
-        void ItemsCallBack(IList<TItem> item);
-        bool ItemExist(TItem item);
-    }
-    public interface ILoadableService<TItem>
-    {
-        void DeleteItem(TItem item);
-        void AddItem(TItem item);
-        void UpdateItem(TItem item);
-        Task LoadItems();
-    }
     public abstract class Loadable<TItem> : ILoadable<TItem>, ILoadableService<TItem>, INotifyPropertyChanged, IActivity where TItem : class
     {
         public abstract Task LoadItems();
