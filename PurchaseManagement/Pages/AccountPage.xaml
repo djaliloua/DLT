@@ -12,11 +12,6 @@
              x:Name="page"
              BindingContext="{x:Static local:ViewModelLocator.AccountPageViewModel}"
              Title="Account">
-    
-    <ContentPage.Resources>
-        
-
-    </ContentPage.Resources>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{Binding AccountListViewViewModel.Counter}"
                      Order="Primary" />
