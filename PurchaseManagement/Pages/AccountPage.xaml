@@ -68,6 +68,8 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <material:DatePickerField Date="{Binding SelectedDate}"
+                                      AllowClear="False"
+                                      Icon="{FontImageSource FontFamily=MaterialRegular, Glyph={x:Static m:MaterialRegular.Calendar_month}}"
                                       Title="Date" />
             <material:TextField Title="Money"
                                 x:Name="entry"
