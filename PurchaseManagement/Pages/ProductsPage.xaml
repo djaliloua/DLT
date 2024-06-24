@@ -88,6 +88,44 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
+                        <!--<ViewCell.ContextActions>
+                            <MenuItem Text="Update"
+                                      BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                      Command="{Binding EditCommand}">
+                                <MenuItem.IconImageSource>
+                                    <FontImageSource FontFamily="MaterialRegular"
+                                                     Color="Black"
+                                                     Glyph="{x:Static m:MaterialRound.Edit}" />
+                                </MenuItem.IconImageSource>
+                            </MenuItem>
+                            <MenuItem Text="Delete"
+                                      BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                      Command="{Binding DeleteCommand}">
+                                <MenuItem.IconImageSource>
+                                    <FontImageSource FontFamily="MaterialRegular"
+                                                     Color="Black"
+                                                     Glyph="{x:Static m:MaterialRound.Delete}" />
+                                </MenuItem.IconImageSource>
+                            </MenuItem>
+                            <MenuItem Text="GetMap"
+                                      BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                      Command="{Binding GetMapCommand}">
+                                <MenuItem.IconImageSource>
+                                    <FontImageSource FontFamily="MaterialRegular"
+                                                     Color="Black"
+                                                     Glyph="{x:Static m:MaterialRound.Maps_ugc}" />
+                                </MenuItem.IconImageSource>
+                            </MenuItem>
+                            <MenuItem Text="OpenMap"
+                                      BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                      Command="{Binding OpenMapCommand}">
+                                <MenuItem.IconImageSource>
+                                    <FontImageSource FontFamily="MaterialRegular"
+                                                     Color="Black"
+                                                     Glyph="{x:Static m:MaterialRound.Map}" />
+                                </MenuItem.IconImageSource>
+                            </MenuItem>
+                        </ViewCell.ContextActions>-->
                         <SwipeView>
                             <SwipeView.LeftItems >
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
