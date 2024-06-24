@@ -56,6 +56,7 @@
               VerticalOptions="Start"
               ColumnSpacing="10"
               BindingContext="{Binding AccountHeaderViewModel}"
+              x:Name="grid"
               >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -75,7 +76,7 @@
                                 CornerRadius="10">
                 <!--<validation:RequiredValidation />-->
             </material:TextField>
-            <Button FontAttributes="Bold"
+            <!--<Button FontAttributes="Bold"
                     HorizontalOptions="CenterAndExpand"
                     VerticalOptions="Center"
                     Command="{Binding AddCommand}"
@@ -98,100 +99,124 @@
                     <FontImageSource FontFamily="MaterialRegular"
                                      Glyph="{x:Static m:MaterialRound.Add}" />
                 </Button.ImageSource>
+            </Button>-->
+        </Grid>
+        <Grid Grid.Row="1"
+              BindingContext="{Binding AccountListViewViewModel}">
+            <ActivityIndicator IsRunning="{Binding IsActivity}"
+                               Color="Blue"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Center"
+                               HeightRequest="80"
+                               WidthRequest="80"
+                               x:Name="activity"
+                               ZIndex="10">
+                <ActivityIndicator.Triggers>
+                    <DataTrigger TargetType="ActivityIndicator"
+                                 Binding="{Binding IsActivity}"
+                                 Value="True">
+                        <Setter Property="IsVisible"
+                                Value="Visible" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="ActivityIndicator"
+                                 Binding="{Binding IsActivity}"
+                                 Value="False">
+                        <Setter Property="IsVisible"
+                                Value="Hidden" />
+                    </DataTrigger>
+                </ActivityIndicator.Triggers>
+            </ActivityIndicator>
+            <ListView ItemsSource="{Binding Items, Mode=TwoWay}"
+                      Margin="0,20,0,0"
+                      x:Name="listview"
+                      RowHeight="150"
+                      VerticalScrollBarVisibility="Never"
+                      VerticalOptions="Start"
+                      HandlerChanged="listview_HandlerChanged"
+                      CachingStrategy="RecycleElementAndDataTemplate"
+                      sk:Skeleton.IsParent="True"
+                      sk:Skeleton.IsBusy="{Binding IsActivity}"
+                      sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                      SelectedItem="{Binding SelectedItem}">
+                <ListView.Triggers>
+                    <DataTrigger TargetType="ListView"
+                                 Binding="{Binding IsActivity}"
+                                 Value="True">
+                        <Setter Property="IsVisible"
+                                Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="ListView"
+                                 Binding="{Binding IsActivity}"
+                                 Value="False">
+                        <Setter Property="IsVisible"
+                                Value="Visible" />
+                    </DataTrigger>
+                </ListView.Triggers>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell x:Name="viewCell">
+                            <SwipeView>
+                                <Frame CornerRadius="0"
+                                       BackgroundColor="{StaticResource Surface}">
+                                    <Grid Padding="2">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Text="{Binding DateTime, StringFormat='{0:yyyy-MM-dd}'}"
+                                               Padding="10,0,0,0"
+                                               VerticalOptions="Center" />
+                                        <Label VerticalOptions="Center"
+                                               Text="{Binding Money, StringFormat='{0:C2}'}"
+                                               Grid.Column="1" />
+
+                                        <Button FontAttributes="Bold"
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Center"
+                                                Command="{Binding DeleteCommand}"
+                                                BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
+                                                Grid.Column="2">
+                                            <Button.ImageSource>
+                                                <FontImageSource FontFamily="MaterialRegular"
+                                                                 Glyph="{x:Static m:MaterialRound.Delete}" />
+                                            </Button.ImageSource>
+                                        </Button>
+                                    </Grid>
+                                </Frame>
+                            </SwipeView>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button FontAttributes="Bold"
+                    HorizontalOptions="End"
+                    Margin="0,0,15,20"
+                    BindingContext="{Binding Source={x:Reference grid}, Path=BindingContext}"
+                    VerticalOptions="End"
+                    Command="{Binding AddCommand}"
+                    IsEnabled="True"
+                    CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"
+                    Grid.Column="2">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={x:Reference entry}, Path=Text}"
+                                 Value="0">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Button"
+                                 Binding="{Binding Source={x:Reference entry}, Path=Text}"
+                                 Value="">
+                        <Setter Property="IsEnabled"
+                                Value="False" />
+                    </DataTrigger>
+                </Button.Triggers>
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialRegular"
+                                     Glyph="{x:Static m:MaterialRound.Add}" />
+                </Button.ImageSource>
             </Button>
         </Grid>
-        <ScrollView Grid.Row="1"
-                    BindingContext="{Binding AccountListViewViewModel}"
-                    VerticalScrollBarVisibility="Never">
-            <VerticalStackLayout>
-                <ActivityIndicator IsRunning="{Binding IsActivity}"
-                                   Color="Blue"
-                                   VerticalOptions="Center"
-                                   HorizontalOptions="Center"
-                                   HeightRequest="80"
-                                   WidthRequest="80"
-                                   x:Name="activity"
-                                   ZIndex="10">
-                    <ActivityIndicator.Triggers>
-                        <DataTrigger TargetType="ActivityIndicator"
-                                     Binding="{Binding IsActivity}"
-                                     Value="True">
-                            <Setter Property="IsVisible"
-                                    Value="Visible" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="ActivityIndicator"
-                                     Binding="{Binding IsActivity}"
-                                     Value="False">
-                            <Setter Property="IsVisible"
-                                    Value="Hidden" />
-                        </DataTrigger>
-                    </ActivityIndicator.Triggers>
-                </ActivityIndicator>
-                <ListView ItemsSource="{Binding Items, Mode=TwoWay}"
-                          Margin="0,20,0,0"
-                          x:Name="listview"
-                          RowHeight="150"
-                          VerticalScrollBarVisibility="Never"
-                          VerticalOptions="Start"
-                          HandlerChanged="listview_HandlerChanged"
-                          CachingStrategy="RecycleElementAndDataTemplate"
-                          sk:Skeleton.IsParent="True"
-                          sk:Skeleton.IsBusy="{Binding IsActivity}"
-                          sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
-                          SelectedItem="{Binding SelectedItem}">
-                    <ListView.Triggers>
-                        <DataTrigger TargetType="ListView"
-                                     Binding="{Binding IsActivity}"
-                                     Value="True">
-                            <Setter Property="IsVisible"
-                                    Value="Hidden" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="ListView"
-                                     Binding="{Binding IsActivity}"
-                                     Value="False">
-                            <Setter Property="IsVisible"
-                                    Value="Visible" />
-                        </DataTrigger>
-                    </ListView.Triggers>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell x:Name="viewCell">
-                                <SwipeView>
-                                    <Frame CornerRadius="0"
-                                           BackgroundColor="{StaticResource Surface}">
-                                        <Grid Padding="2">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition />
-                                                <ColumnDefinition />
-                                                <ColumnDefinition />
-                                            </Grid.ColumnDefinitions>
-                                            <Label Text="{Binding DateTime, StringFormat='{0:yyyy-MM-dd}'}"
-                                                   Padding="10,0,0,0"
-                                                   VerticalOptions="Center" />
-                                            <Label VerticalOptions="Center"
-                                                   Text="{Binding Money, StringFormat='{0:C2}'}"
-                                                   Grid.Column="1" />
-
-                                            <Button FontAttributes="Bold"
-                                                    HorizontalOptions="End"
-                                                    VerticalOptions="Center"
-                                                    Command="{Binding DeleteCommand}"
-                                                    BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
-                                                    Grid.Column="2">
-                                                <Button.ImageSource>
-                                                    <FontImageSource FontFamily="MaterialRegular"
-                                                                     Glyph="{x:Static m:MaterialRound.Delete}" />
-                                                </Button.ImageSource>
-                                            </Button>
-                                        </Grid>
-                                    </Frame>
-                                </SwipeView>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </VerticalStackLayout>
-        </ScrollView>
-        
     </Grid>
 </ContentPage>

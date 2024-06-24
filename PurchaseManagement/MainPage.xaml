@@ -45,14 +45,13 @@
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <HorizontalStackLayout Margin="0, 10, 0, 0">
+        <Grid Margin="0, 10, 0, 0">
             <material:DatePickerField Date="{Binding SelectedDate}"
-                                      VerticalOptions="End"
                                       AllowClear="True"
                                       Icon="{FontImageSource FontFamily=MaterialRegular, Glyph={x:Static m:MaterialRegular.Calendar_month}}"
-                                      WidthRequest="200"
                                       Title="Date" />
-        </HorizontalStackLayout>
+        </Grid>
+        
         <ActivityIndicator IsRunning="{Binding IsActivity}"
                            Color="Blue"
                            Grid.Row="1"
