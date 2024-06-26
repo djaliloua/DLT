@@ -96,7 +96,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         }
         #endregion
         
-        
+        public ProductDto Clone() => (ProductDto)MemberwiseClone();
 
     }
 }

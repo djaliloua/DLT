@@ -11,6 +11,9 @@
              BindingContext="{x:Static service:ViewModelLocator.ProductItemsViewModel}"
              BackgroundColor="LightBlue"
              Title="Products">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackCommand}" />
+    </Shell.BackButtonBehavior>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{Binding Counter}"
                      Order="Primary" />

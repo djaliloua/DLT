@@ -12,6 +12,7 @@ using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.NavigationLib.Models;
 using PurchaseManagement.NavigationLib.Abstractions;
+using PurchaseManagement.Utilities;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -75,6 +76,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ICommand DeleteCommand { get; private set; }
         public ICommand EditCommand { get; private set; }
         public ICommand GetMapCommand { get; private set; }
+        public ICommand BackCommand { get; private set; }
         #endregion
 
         #region Constructor
@@ -99,13 +101,18 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Handlers
+        private async void OnBackCommand(object parameter)
+        {
+            ResetSelectedItem();
+            await navigationService.Navigate("..");
+        }
         public async void OnOpenAnalyticCommand(object parameter)
         {
-            NavigationParametersTest.AddParameter("product", GetItems());
-            var navigationParameters = new NavigationParameters();
-            navigationParameters.Add("product", GetItems());
+            var navigationParameters = new NavigationParameters
+            {
+                { "product", GetItems() }
+            };
             await navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
-            //await Shell.Current.GoToAsync(nameof(ProductAnalytics), NavigationParametersTest.GetParameters());
             
         }
         private void OnExportToPdfCommand(object parameter)
@@ -117,7 +124,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             ShowActivity();
             if (IsSelected)
             {
-                Microsoft.Maui.Devices.Sensors.Location location = await GetCurrentLocation();
+                Microsoft.Maui.Devices.Sensors.Location location = await ProductViewModelUtility.GetCurrentLocation();
                 if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase)
                 {
                     // Update Product with its corresponding location
@@ -139,7 +146,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await _messageBox.ShowNotification("Please select the item first");
             HideActivity();
         }
-        private async void On_Edit(object parameter)
+        private async void OnEdit(object parameter)
         {
             if (IsSelected)
             {
@@ -156,19 +163,19 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
                 await _messageBox.ShowNotification("Please select the item first");
         }
-        private async void On_OpenMap(object parameter)
+        private async void OnOpenMap(object parameter)
         {
             if (IsSelected)
             {
                 if (SelectedItem.Location != null)
-                    await NavigateToBuilding25(mapper.Map<Microsoft.Maui.Devices.Sensors.Location>(SelectedItem.Location));
+                    await ProductViewModelUtility.NavigateToBuilding25(mapper.Map<Microsoft.Maui.Devices.Sensors.Location>(SelectedItem.Location));
                 else
                     await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
             }
             else
                 await _messageBox.ShowNotification("Please select the item first");
         }
-        private async void On_Delete(object parameter)
+        private async void OnDelete(object parameter)
         {
             if(IsSelected)
             {
@@ -197,16 +204,20 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
                 await _messageBox.ShowNotification("Please select the item first");
         }
-        private async void On_Open(object parameter)
+        private async void OnOpen(object parameter)
         {
             await Task.Delay(1);
         }
-        private async void On_DoubleClick(object parameter)
+        private async void OnDoubleClick(object parameter)
         {
             if (IsSelected)
             {
-                NavigationParametersTest.AddParameter("details", SelectedItem);
-                await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), NavigationParametersTest.GetParameters());
+                var navigationParameters = new NavigationParameters
+            {
+                { "details", SelectedItem.Clone() }
+            };
+                SelectedItem = null;
+                await navigationService.Navigate(nameof(PurchaseItemDetails), navigationParameters);
             }
         }
         #endregion
@@ -228,54 +239,29 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private void CommandSetup()
         {
-            DoubleClickCommand = new Command(On_DoubleClick);
-            OpenCommand = new Command(On_Open);
-            DeleteCommand = new Command(On_Delete);
-            OpenMapCommand = new Command(On_OpenMap);
-            EditCommand = new Command(On_Edit);
+            BackCommand = new Command(OnBackCommand);
+            DoubleClickCommand = new Command(OnDoubleClick);
+            OpenCommand = new Command(OnOpen);
+            DeleteCommand = new Command(OnDelete);
+            OpenMapCommand = new Command(OnOpenMap);
+            EditCommand = new Command(OnEdit);
             GetMapCommand = new Command(On_GetMap);
             OpenAnalyticCommand = new Command(OnOpenAnalyticCommand);
             ExportToPdfCommand = new Command(OnExportToPdfCommand);
         }
+        
         private async void UpdateUI()
         {
             var purchase = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
         }
-        private async Task NavigateToBuilding25(Microsoft.Maui.Devices.Sensors.Location location)
-        {
-            try
-            {
-                await Map.Default.OpenAsync(location);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-        }
-       
-        private async Task<Microsoft.Maui.Devices.Sensors.Location> GetCurrentLocation()
-        {
-            try
-            {
-                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-
-                CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
-
-                Microsoft.Maui.Devices.Sensors.Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-                return location;
-            }
-
-            catch (Exception ex)
-            {
-                Debug.Write(ex.Message);
-                return null;
-            }
-            
-        }
-        #endregion
         
+        #endregion
 
+        public void ResetSelectedItem()
+        {
+            SelectedItem = null;
+        }
         public override async Task LoadItems()
         {
             ShowActivity();
@@ -292,7 +278,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public Task OnNavigatedFrom(NavigationParameters parameters)
         {
-            throw new NotImplementedException();
+           return Task.CompletedTask;
         }
     }
 }

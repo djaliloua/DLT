@@ -1,11 +1,11 @@
 ﻿using MVVM;
-using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.NavigationLib.Abstractions;
+using PurchaseManagement.NavigationLib.Models;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public class PurchaseItemDetailsViewModel:BaseViewModel, IQueryAttributable
+    public class PurchaseItemDetailsViewModel:BaseViewModel, INavigatedEvents
     {
         private ProductDto _purchaseDetails;
         public ProductDto PurchaseDetails
@@ -16,13 +16,15 @@ namespace PurchaseManagement.MVVM.ViewModels
         public PurchaseItemDetailsViewModel()
         {
         }
-
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        public Task OnNavigatedTo(NavigationParameters parameters)
         {
-            if(query.Count > 0)
-            {
-                PurchaseDetails = query["details"] as ProductDto;
-            }
+            PurchaseDetails = parameters.GetValue<ProductDto>("details");
+            return Task.CompletedTask;
+        }
+
+        public Task OnNavigatedFrom(NavigationParameters parameters)
+        {
+            throw new NotImplementedException();
         }
     }
 }
