@@ -8,7 +8,6 @@ using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Validations;
 using FluentValidation.Results;
-using System.Runtime.InteropServices;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -85,6 +84,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Back(object parameter)
         {
             Counter = 0;
+            ViewModelLocator.ProductItemsViewModel.ResetSelectedItem();
             await Shell.Current.GoToAsync("..");
         }
         protected override void OnShow()

@@ -8,6 +8,9 @@
              BindingContext="{x:Static service:ViewModelLocator.PurchaseItemDetailsViewModel}"
              BackgroundColor="{StaticResource Surface}"
              Title="Details">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior Command="{Binding BackCommand}" />
+    </Shell.BackButtonBehavior>
     <ContentPage.Resources>
         <Style TargetType="HorizontalStackLayout">
             <Setter Property="Spacing"

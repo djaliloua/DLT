@@ -1,3 +1,5 @@
+using PurchaseManagement.ServiceLocator;
+
 namespace PurchaseManagement.Pages;
 
 public partial class MarketFormPage : ContentPage
@@ -6,4 +8,9 @@ public partial class MarketFormPage : ContentPage
 	{
 		InitializeComponent();
 	}
+    protected override bool OnBackButtonPressed()
+    {
+        ViewModelLocator.ProductItemsViewModel.ResetSelectedItem();
+        return base.OnBackButtonPressed();
+    }
 }
