@@ -1,11 +1,6 @@
-﻿using AutoMapper;
-using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
-using System.Diagnostics;
-using System.Windows.Input;
-using Patterns;
-using CommunityToolkit.Mvvm.Messaging;
 using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
@@ -13,6 +8,10 @@ using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.NavigationLib.Models;
 using PurchaseManagement.NavigationLib.Abstractions;
 using PurchaseManagement.Utilities;
+using Patterns;
+using AutoMapper;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -103,7 +102,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Handlers
         private async void OnBackCommand(object parameter)
         {
-            ResetSelectedItem();
             await navigationService.Navigate("..");
         }
         public async void OnOpenAnalyticCommand(object parameter)
@@ -122,6 +120,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_GetMap(object parameter)
         {
             ShowActivity();
+            ProductDto productDto = parameter as ProductDto;
+            SelectedItem = productDto;
             if (IsSelected)
             {
                 Microsoft.Maui.Devices.Sensors.Location location = await ProductViewModelUtility.GetCurrentLocation();
@@ -148,10 +148,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void OnEdit(object parameter)
         {
+            ProductDto productDto = parameter as ProductDto;
             if (IsSelected)
             {
                 var mapper = MapperConfig.InitializeAutomapper();
-                ProductDto proxy = mapper.Map<ProductDto>(SelectedItem);
+                ProductDto proxy = mapper.Map<ProductDto>(productDto);
                 Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", false },
@@ -165,6 +166,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void OnOpenMap(object parameter)
         {
+            ProductDto productDto = parameter as ProductDto;
+            SelectedItem = productDto;
             if (IsSelected)
             {
                 if (SelectedItem.Location != null)
@@ -177,7 +180,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void OnDelete(object parameter)
         {
-            if(IsSelected)
+            ProductDto productDto = parameter as ProductDto;
+            SelectedItem = productDto;
+            if (IsSelected)
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
@@ -214,9 +219,9 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 var navigationParameters = new NavigationParameters
             {
-                { "details", SelectedItem.Clone() }
+                { "details", SelectedItem }
             };
-                SelectedItem = null;
+                //SelectedItem = null;
                 await navigationService.Navigate(nameof(PurchaseItemDetails), navigationParameters);
             }
         }

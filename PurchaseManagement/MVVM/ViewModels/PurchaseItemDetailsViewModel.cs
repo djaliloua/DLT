@@ -36,7 +36,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public Task OnNavigatedFrom(NavigationParameters parameters)
         {
-            ViewModelLocator.ProductItemsViewModel.ResetSelectedItem();
+            //ViewModelLocator.ProductItemsViewModel.ResetSelectedItem();
             return Task.CompletedTask;
         }
     }

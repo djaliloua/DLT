@@ -11,9 +11,9 @@
              BindingContext="{x:Static service:ViewModelLocator.ProductItemsViewModel}"
              BackgroundColor="LightBlue"
              Title="Products">
-    <Shell.BackButtonBehavior>
+    <!--<Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding BackCommand}" />
-    </Shell.BackButtonBehavior>
+    </Shell.BackButtonBehavior>-->
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{Binding Counter}"
                      Order="Primary" />
@@ -91,49 +91,12 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <!--<ViewCell.ContextActions>
-                            <MenuItem Text="Update"
-                                      BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
-                                      Command="{Binding EditCommand}">
-                                <MenuItem.IconImageSource>
-                                    <FontImageSource FontFamily="MaterialRegular"
-                                                     Color="Black"
-                                                     Glyph="{x:Static m:MaterialRound.Edit}" />
-                                </MenuItem.IconImageSource>
-                            </MenuItem>
-                            <MenuItem Text="Delete"
-                                      BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
-                                      Command="{Binding DeleteCommand}">
-                                <MenuItem.IconImageSource>
-                                    <FontImageSource FontFamily="MaterialRegular"
-                                                     Color="Black"
-                                                     Glyph="{x:Static m:MaterialRound.Delete}" />
-                                </MenuItem.IconImageSource>
-                            </MenuItem>
-                            <MenuItem Text="GetMap"
-                                      BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
-                                      Command="{Binding GetMapCommand}">
-                                <MenuItem.IconImageSource>
-                                    <FontImageSource FontFamily="MaterialRegular"
-                                                     Color="Black"
-                                                     Glyph="{x:Static m:MaterialRound.Maps_ugc}" />
-                                </MenuItem.IconImageSource>
-                            </MenuItem>
-                            <MenuItem Text="OpenMap"
-                                      BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
-                                      Command="{Binding OpenMapCommand}">
-                                <MenuItem.IconImageSource>
-                                    <FontImageSource FontFamily="MaterialRegular"
-                                                     Color="Black"
-                                                     Glyph="{x:Static m:MaterialRound.Map}" />
-                                </MenuItem.IconImageSource>
-                            </MenuItem>
-                        </ViewCell.ContextActions>-->
                         <SwipeView>
                             <SwipeView.LeftItems >
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
-                                           Command="{Binding EditCommand}">
+                                           Command="{Binding EditCommand}"
+                                           CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}">
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialRegular"
                                                          Color="AliceBlue"
@@ -142,6 +105,7 @@
                                 </SwipeItem>
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
+                                           CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
                                            Command="{Binding DeleteCommand}">
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialRegular"
@@ -152,6 +116,7 @@
                             <SwipeView.RightItems>
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
+                                           CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
                                            Command="{Binding OpenMapCommand}">
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialRegular"
@@ -160,6 +125,7 @@
                                 </SwipeItem>
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
+                                           CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
                                            Command="{Binding GetMapCommand}"
                                            >
                                     <SwipeItem.IconImageSource>
@@ -169,12 +135,11 @@
                                     </SwipeItem.IconImageSource>
                                 </SwipeItem>
                             </SwipeView.RightItems>
-                            <Frame CornerRadius="0"
+                            <Frame CornerRadius="20"
                                    HasShadow="True"
                                    Padding="10"
                                    BackgroundColor="{StaticResource Surface}"
-                                   ZIndex="20">
-                                
+                                   ZIndex="30">
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer BindingContext="{Binding Path=BindingContext, 
                                         Source={x:Reference main}}"
@@ -182,7 +147,7 @@
                                                           NumberOfTapsRequired="2" />
                                 </Frame.GestureRecognizers>
                                 
-                                <views:PurchaseItemDataTemplateView>
+                                <views:PurchaseItemDataTemplateView x:Name="item">
                                     
                                 </views:PurchaseItemDataTemplateView>
                             </Frame>

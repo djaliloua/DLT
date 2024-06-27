@@ -62,29 +62,27 @@ namespace PurchaseManagement.MVVM.ViewModels
             _toastNotification = new ToastNotification();
             IsSavebtnEnabled = true;
             CommandSetup();
-            
         }
         #endregion
 
         #region Private Methods
         private void CommandSetup()
         {
-            CancelCommand = new Command(On_Cancel);
-            SaveCommand = new Command(On_Save);
-            BackCommand = new Command(On_Back);
-            UpdateCommand = new Command(On_Update);
+            CancelCommand = new Command(OnCancel);
+            SaveCommand = new Command(OnSave);
+            BackCommand = new Command(OnBack);
+            UpdateCommand = new Command(OnUpdate);
         }
         #endregion
 
         #region Handlers
-        private async void On_Cancel(object sender)
+        private async void OnCancel(object sender)
         {
             await Shell.Current.GoToAsync("..");
         }
-        private async void On_Back(object parameter)
+        private async void OnBack(object parameter)
         {
             Counter = 0;
-            ViewModelLocator.ProductItemsViewModel.ResetSelectedItem();
             await Shell.Current.GoToAsync("..");
         }
         protected override void OnShow()
@@ -92,7 +90,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             IsSavebtnEnabled = !IsActivity;
         }
         
-        private async void On_Update(object parameter)
+        private async void OnUpdate(object parameter)
         {
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
@@ -104,7 +102,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             await Shell.Current.GoToAsync("..");
             await _toastNotification.ShowNotification($"{ViewModelLocator.ProductItemsViewModel.SelectedItem.Item_Name} updated");
         }
-        private async void On_Save(object sender)
+        private async void OnSave(object sender)
         {
             ValidationResult validationResult = productValidation.Validate(PurchaseItem);
             if (validationResult.IsValid)
