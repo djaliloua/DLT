@@ -149,6 +149,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void OnEdit(object parameter)
         {
             ProductDto productDto = parameter as ProductDto;
+            SelectedItem = productDto;
             if (IsSelected)
             {
                 var mapper = MapperConfig.InitializeAutomapper();

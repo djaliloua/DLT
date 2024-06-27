@@ -101,6 +101,7 @@
                     <ViewCell>
                         <SwipeView>
                             <Frame CornerRadius="0"
+                                   ZIndex="30"
                                    BackgroundColor="{StaticResource Surface}">
                                 <VerticalStackLayout Spacing="10">
                                     <VerticalStackLayout.GestureRecognizers>
