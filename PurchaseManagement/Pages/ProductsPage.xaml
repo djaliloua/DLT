@@ -135,7 +135,7 @@
                                     </SwipeItem.IconImageSource>
                                 </SwipeItem>
                             </SwipeView.RightItems>
-                            <Frame CornerRadius="20"
+                            <Frame CornerRadius="0"
                                    HasShadow="True"
                                    Padding="10"
                                    BackgroundColor="{StaticResource Surface}"
