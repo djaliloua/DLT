@@ -74,32 +74,8 @@
                                 Text="{Binding Money}"
                                 Keyboard="Numeric"
                                 CornerRadius="10">
-                <!--<validation:RequiredValidation />-->
             </material:TextField>
-            <!--<Button FontAttributes="Bold"
-                    HorizontalOptions="CenterAndExpand"
-                    VerticalOptions="Center"
-                    Command="{Binding AddCommand}"
-                    IsEnabled="True"
-                    CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"
-                    Grid.Column="2">
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding Source={x:Reference entry}, Path=Text}" Value="0">
-                        <Setter Property="IsEnabled"
-                                Value="False" />
-                    </DataTrigger>
-                    <DataTrigger TargetType="Button"
-                                 Binding="{Binding Source={x:Reference entry}, Path=Text}"
-                                 Value="">
-                        <Setter Property="IsEnabled"
-                                Value="False" />
-                    </DataTrigger>
-                </Button.Triggers>
-                <Button.ImageSource>
-                    <FontImageSource FontFamily="MaterialRegular"
-                                     Glyph="{x:Static m:MaterialRound.Add}" />
-                </Button.ImageSource>
-            </Button>-->
+            
         </Grid>
         <Grid Grid.Row="1"
               BindingContext="{Binding AccountListViewViewModel}">
@@ -134,9 +110,6 @@
                       VerticalOptions="Start"
                       HandlerChanged="listview_HandlerChanged"
                       CachingStrategy="RecycleElementAndDataTemplate"
-                      sk:Skeleton.IsParent="True"
-                      sk:Skeleton.IsBusy="{Binding IsActivity}"
-                      sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
                       SelectedItem="{Binding SelectedItem}">
                 <ListView.Triggers>
                     <DataTrigger TargetType="ListView"
@@ -158,7 +131,7 @@
                             <SwipeView>
                                 <Frame CornerRadius="0"
                                        BackgroundColor="{StaticResource Surface}">
-                                    <Grid Padding="2">
+                                    <Grid Padding="2" x:Name="grid">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition />
                                             <ColumnDefinition />
@@ -175,6 +148,7 @@
                                                 HorizontalOptions="End"
                                                 VerticalOptions="Center"
                                                 Command="{Binding DeleteCommand}"
+                                                CommandParameter="{Binding Source={x:Reference grid}, Path=BindingContext}"
                                                 BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
                                                 Grid.Column="2">
                                             <Button.ImageSource>

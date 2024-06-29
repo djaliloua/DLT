@@ -113,6 +113,8 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         private void On_Delete(object parameter)
         {
+            AccountDTO accountDTO = parameter as AccountDTO;
+            SelectedItem = accountDTO;
             DeleteItem(SelectedItem);
         }
         public override async void AddItem(AccountDTO item)
@@ -123,9 +125,6 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 var newAccount = await accountRepository.SaveOrUpdateItem(item.Adapt<Account>());
                 base.AddItem(newAccount.Adapt<AccountDTO>());
                 await _toastNotification.ShowNotification($"{newAccount.Money} added");
-//#if ANDROID
-//BadgeCounterService.SetCount(ViewModelLocator.AccountListViewViewModel.Counter);
-//#endif
             }
             else
             {

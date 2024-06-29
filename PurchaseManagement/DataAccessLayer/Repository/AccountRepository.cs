@@ -7,15 +7,14 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public class AccountRepository : IAccountRepository
     {
+        private readonly IGenericRepository<Account> _accountRepository;
+        public AccountRepository(IGenericRepository<Account> accountRepository)
+        {
+            _accountRepository = accountRepository;
+        }
         public async Task DeleteItem(Account item)
         {
-            int res = 0;
-            await Task.Delay(1);
-            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
-            {
-                connection.CreateTable<Account>();
-                res = connection.Delete(item);
-            }
+            await _accountRepository.DeleteItem(item);
         }
 
         public async Task<IEnumerable<Account>> GetAllItems()
@@ -33,14 +32,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public async Task<Account> GetItemById(int id)
         {
-            await Task.Delay(1);
-            Account account = new();
-            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
-            {
-                connection.CreateTable<Account>();
-                account = connection.Table<Account>().FirstOrDefault(a => a.Id == id);
-            }
-            return account;
+            return await _accountRepository.GetItemById(id);
         }
 
         public async Task<IList<Statistics>> GetStatisticsAsync()
@@ -82,17 +74,8 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public async Task<Account> SaveOrUpdateItem(Account item)
         {
-            int res = 0;
-            await Task.Delay(1);
-            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
-            {
-                connection.CreateTable<Account>();
-                if (item.Id != 0)
-                    res = connection.Update(item);
-                else
-                    res = connection.Insert(item);
-            }
-            return item;
+            
+            return await _accountRepository.SaveOrUpdateItem(item);
         }
     }
 }

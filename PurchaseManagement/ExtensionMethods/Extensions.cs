@@ -13,6 +13,7 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using CommunityToolkit.Maui.Storage;
 using PurchaseManagement.NavigationLib.Services;
 using PurchaseManagement.NavigationLib.Abstractions;
+using PurchaseManagement.MVVM.Models.Accounts;
 
 
 namespace PurchaseManagement.ExtensionMethods
@@ -45,6 +46,7 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<ProductStatistics>, GenericRepository<ProductStatistics>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<Product>, GenericRepository<Product>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<Purchase>, GenericRepository<Purchase>>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<Account>, GenericRepository<Account>>();
             // Test on Person
             mauiAppBuilder.Services.AddScoped<IGenericRepository<Person>, GenericRepository<Person>>();
             mauiAppBuilder.Services.AddScoped<IGenericRepository<Car>, GenericRepository<Car>>();
