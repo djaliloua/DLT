@@ -1,5 +1,6 @@
 ﻿using SQLite;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
@@ -34,7 +35,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
-                loc = connection.Table<MarketModels.Location>().FirstOrDefault(s => s.Location_Id == id);
+                loc = connection.Table<MarketModels.Location>().FirstOrDefault(s => s.Id == id);
             }
             return loc;
         }
@@ -46,7 +47,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<MarketModels.Location>();
-                if (item.Location_Id != 0)
+                if (item.Id != 0)
                     res = connection.Update(item);
                 else
                     res = connection.Insert(item);

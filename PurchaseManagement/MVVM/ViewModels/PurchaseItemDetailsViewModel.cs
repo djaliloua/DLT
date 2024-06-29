@@ -1,28 +1,43 @@
 ﻿using MVVM;
-using PurchaseManagement.DataAccessLayer;
-using PurchaseManagement.MVVM.Models;
 using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.NavigationLib.Abstractions;
+using PurchaseManagement.NavigationLib.Models;
+using PurchaseManagement.ServiceLocator;
+using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public class PurchaseItemDetailsViewModel:BaseViewModel, IQueryAttributable
+    public class PurchaseItemDetailsViewModel:BaseViewModel, INavigatedEvents
     {
+        private readonly INavigationService _navigationService;
         private ProductDto _purchaseDetails;
         public ProductDto PurchaseDetails
         {
             get => _purchaseDetails;
             set => UpdateObservable(ref _purchaseDetails, value);
         }
-        public PurchaseItemDetailsViewModel()
+        #region Commands
+        public ICommand BackCommand { get; private set; }
+        #endregion
+        public PurchaseItemDetailsViewModel(INavigationService navigationService)
         {
+            _navigationService = navigationService;
+            BackCommand = new Command(OnBackCommand);
+        }
+        private async void OnBackCommand()
+        {
+            await _navigationService.Navigate("..");
+        }
+        public Task OnNavigatedTo(NavigationParameters parameters)
+        {
+            PurchaseDetails = parameters.GetValue<ProductDto>("details");
+            return Task.CompletedTask;
         }
 
-        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        public Task OnNavigatedFrom(NavigationParameters parameters)
         {
-            if(query.Count > 0)
-            {
-                PurchaseDetails = query["details"] as ProductDto;
-            }
+            //ViewModelLocator.ProductItemsViewModel.ResetSelectedItem();
+            return Task.CompletedTask;
         }
     }
 }

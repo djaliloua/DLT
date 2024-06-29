@@ -16,7 +16,7 @@ namespace PurchaseManagement.Commons
         {
             foreach (var item in items)
             {
-                sb.AppendLine($"{item.Item_Id};{item.Purchase?.PurchaseDate};{item.Item_Name};{item.Item_Price:C2};{item.Item_Quantity};{item.Item_Description}");
+                sb.AppendLine($"{item.Id};{item.Purchase?.PurchaseDate};{item.Item_Name};{item.Item_Price:C2};{item.Item_Quantity};{item.Item_Description}");
             }
 
             return sb.ToString();

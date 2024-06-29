@@ -5,7 +5,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
     public class LocationDto:BaseViewModel
     {
         private int _location_id;
-        public int Location_Id
+        public int Id
         {
             get => _location_id;
             set => UpdateObservable(ref _location_id, value);

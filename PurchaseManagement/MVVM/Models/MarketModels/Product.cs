@@ -1,4 +1,5 @@
 ﻿using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 
@@ -7,10 +8,9 @@ using SQLiteNetExtensions.Attributes;
 namespace PurchaseManagement.MVVM.Models.MarketModels
 {
     [Table("Purchase_Items")]
-    public class Product
+    public class Product:BaseEntity
     {
-        [PrimaryKey, AutoIncrement]
-        public int Item_Id { get; set; }
+
         [ForeignKey(typeof(Purchase))]
         public int PurchaseId { get; set; }
         public string Item_Name { get; set; }

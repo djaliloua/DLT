@@ -2,6 +2,7 @@
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 using Patterns;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.DataAccessLayer.Repository;
@@ -38,7 +39,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Private Properties
         private readonly INavigationService navigationService;
         private readonly IPurchaseRepository _purchaseDB;
-        private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
+        private readonly IGenericRepository<ProductStatistics> _statisticsDB;
         #endregion
 
         #region Public Properites
@@ -68,7 +69,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Constructor
         public MainViewModel(IPurchaseRepository db,
             INavigationService navigationService,
-            IGenericRepository<PurchaseStatistics> statisticsDB)
+            IGenericRepository<ProductStatistics> statisticsDB)
         {
             _purchaseDB = db;   
             _statisticsDB = statisticsDB;
@@ -97,13 +98,11 @@ namespace PurchaseManagement.MVVM.ViewModels
                 if (IsSelected)
                 {
                     SelectedDate = DateTime.Parse(SelectedItem.PurchaseDate);
-                    //NavigationParametersTest.AddParameter("purchase", SelectedItem);
                     var navigationParameters = new NavigationParameters
                     {
                         { "purchase", SelectedItem }
                     };
                     await navigationService.Navigate(nameof(ProductsPage), navigationParameters);
-                    //await Shell.Current.GoToAsync(nameof(ProductsPage), NavigationParametersTest.GetParameters());
                 }
             }
             catch (Exception ex)
@@ -117,7 +116,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             ProductDto purchase_proxy_item;
             if(GetItemByDate() is PurchasesDTO purchase)
             {
-                PurchaseStatistics stat = await _statisticsDB.GetItemById(purchase.Purchase_Id);
+                ProductStatistics stat = await _statisticsDB.GetItemById(purchase.Id);
                 purchase_proxy_item = Factory.CreateObject(mapper.Map<ProductStatisticsDto>(stat));
             }
             else

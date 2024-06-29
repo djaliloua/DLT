@@ -33,8 +33,8 @@ namespace PurchaseManagement
                 cfg.CreateMap<Purchase, PurchasesDTO>();
                 cfg.CreateMap<PurchasesDTO, Purchase>();
                 //
-                cfg.CreateMap<PurchaseStatistics, ProductStatisticsDto>();
-                cfg.CreateMap<ProductStatisticsDto, PurchaseStatistics>();
+                cfg.CreateMap<ProductStatistics, ProductStatisticsDto>();
+                cfg.CreateMap<ProductStatisticsDto, ProductStatistics>();
                 //
 
             });

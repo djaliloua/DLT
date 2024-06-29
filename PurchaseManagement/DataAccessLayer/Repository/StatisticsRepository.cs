@@ -1,75 +1,58 @@
 ﻿using PurchaseManagement.MVVM.Models.MarketModels;
-using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 using SQLite;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
-    public class StatisticsRepository : IGenericRepository<PurchaseStatistics>
+    public class StatisticsRepository : IGenericRepository<ProductStatistics>
     {
         private readonly IProductRepository _productRepository;
         public StatisticsRepository(IProductRepository productRepository)
         {
             _productRepository = productRepository;
         }
-        public async Task DeleteItem(PurchaseStatistics item)
+        public async Task DeleteItem(ProductStatistics item)
         {
             await Task.Delay(1);
             using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
-                connection.CreateTable<PurchaseStatistics>();
+                connection.CreateTable<ProductStatistics>();
                 connection.Delete(item);
             }
         }
 
-        public async Task<IEnumerable<PurchaseStatistics>> GetAllItems()
+        public async Task<IEnumerable<ProductStatistics>> GetAllItems()
         {
             await Task.Delay(1);
-            List<PurchaseStatistics> items;
+            List<ProductStatistics> items;
             using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
-                connection.CreateTable<PurchaseStatistics>();
-                items = connection.Table<PurchaseStatistics>().ToList();
+                connection.CreateTable<ProductStatistics>();
+                items = connection.Table<ProductStatistics>().ToList();
             }
             return items;
         }
 
-        public async Task<PurchaseStatistics> GetItemById(int id)
+        public async Task<ProductStatistics> GetItemById(int id)
         {
             await Task.Delay(1);
-            PurchaseStatistics stat = new();
+            ProductStatistics stat = new();
             using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
-                connection.CreateTable<PurchaseStatistics>();
-                stat = connection.Table<PurchaseStatistics>().FirstOrDefault(s => s.Id == id);
+                connection.CreateTable<ProductStatistics>();
+                stat = connection.Table<ProductStatistics>().FirstOrDefault(s => s.Id == id);
             }
             return stat;
         }
-        private async Task<double> GetTotalValue(int id, string colname)
-        {
-            var d = await _productRepository.GetAllItemById(id);
-            double result = 0;
-            if (colname == "Price")
-                result = d.Sum(x => x.Item_Price);
-            else
-                result = d.Sum(x => x.Item_Quantity);
-            return result;
-        }
-        private async Task<int> CountPurchaseItems(int purchase_id)
-        {
-            IList<Product> items = await _productRepository.GetAllItemById(purchase_id);
-            return items.Count();
-        }
-        public async Task<PurchaseStatistics> SaveOrUpdateItem(PurchaseStatistics item)
+        
+        public async Task<ProductStatistics> SaveOrUpdateItem(ProductStatistics item)
         {
             int res = 0;
             await Task.Delay(1);
             using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
-                connection.CreateTable<PurchaseStatistics>();
-                item ??= new();
-                item.PurchaseCount = await CountPurchaseItems(item.Purchase_Id);
-                item.TotalPrice = await GetTotalValue(item.Purchase_Id, "Price");
-                item.TotalQuantity = await GetTotalValue(item.Purchase_Id, "Quantity");
+                connection.CreateTable<ProductStatistics>();
+                
                 if (item.Id != 0)
                     res = connection.Update(item);
                 else

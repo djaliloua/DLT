@@ -1,11 +1,9 @@
-﻿using SQLite;
-
-namespace PurchaseManagement.MVVM.Models.Accounts
+﻿namespace PurchaseManagement.MVVM.Models.Accounts
 {
-    public class Account
+    public class Account:BaseEntity
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
+        //[PrimaryKey, AutoIncrement]
+        //public int Id { get; set; }
         public double Money { get; set; }
         public DateTime DateTime { get; set; }
         public string Day { get; set; }

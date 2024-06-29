@@ -7,7 +7,7 @@ using MVVM;
 using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
-using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using LiveChartsCore.ConditionalDraw;

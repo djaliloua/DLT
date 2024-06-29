@@ -20,7 +20,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
     }
     public class ProductDto : BaseViewModel
     {
-        public int Item_Id { get; set; }
+        public int Id { get; set; }
         public int PurchaseId { get; set; }
         private string item_name = "Tiramissu";
         public string Item_Name
@@ -96,7 +96,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         }
         #endregion
         
-        
+        public ProductDto Clone() => (ProductDto)MemberwiseClone();
 
     }
 }

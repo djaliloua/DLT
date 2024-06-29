@@ -1,4 +1,4 @@
-﻿using PurchaseManagement.DataAccessLayer.Repository;
+﻿using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;

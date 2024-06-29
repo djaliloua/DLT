@@ -1,17 +1,18 @@
-﻿using AutoMapper;
-using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
-using System.Diagnostics;
-using System.Windows.Input;
-using Patterns;
-using CommunityToolkit.Mvvm.Messaging;
 using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.NavigationLib.Models;
 using PurchaseManagement.NavigationLib.Abstractions;
+using PurchaseManagement.Utilities;
+using Patterns;
+using AutoMapper;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -19,7 +20,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         protected override void Reorder()
         {
-            var data = Items.OrderByDescending(item => item.Item_Id).ToList();
+            var data = Items.OrderByDescending(item => item.Id).ToList();
             SetItems(data);
         }
 
@@ -29,7 +30,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Private properties
         private readonly INavigationService navigationService;
         private readonly IPurchaseRepository _purchaseDB;
-        private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
+        private readonly IGenericRepository<ProductStatistics> _statisticsDB;
         private readonly IGenericRepository<MarketModels.Location> _locationRepository;
         private readonly IProductRepository _productRepository;
         private readonly INotification _notification;
@@ -75,11 +76,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ICommand DeleteCommand { get; private set; }
         public ICommand EditCommand { get; private set; }
         public ICommand GetMapCommand { get; private set; }
+        public ICommand BackCommand { get; private set; }
         #endregion
 
         #region Constructor
         public ProductItemsViewModel(IProductRepository productRepository,
-            IGenericRepository<PurchaseStatistics> statisticsDB,
+            IGenericRepository<ProductStatistics> statisticsDB,
             IPurchaseRepository purchaseDB,
             INavigationService navigationService,
             ExportContext<ProductDto> context,
@@ -99,13 +101,17 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Handlers
+        private async void OnBackCommand(object parameter)
+        {
+            await navigationService.Navigate("..");
+        }
         public async void OnOpenAnalyticCommand(object parameter)
         {
-            NavigationParametersTest.AddParameter("product", GetItems());
-            var navigationParameters = new NavigationParameters();
-            navigationParameters.Add("product", GetItems());
+            var navigationParameters = new NavigationParameters
+            {
+                { "product", GetItems() }
+            };
             await navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
-            //await Shell.Current.GoToAsync(nameof(ProductAnalytics), NavigationParametersTest.GetParameters());
             
         }
         private void OnExportToPdfCommand(object parameter)
@@ -115,19 +121,21 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_GetMap(object parameter)
         {
             ShowActivity();
+            ProductDto productDto = parameter as ProductDto;
+            SelectedItem = productDto;
             if (IsSelected)
             {
-                Microsoft.Maui.Devices.Sensors.Location location = await GetCurrentLocation();
+                Microsoft.Maui.Devices.Sensors.Location location = await ProductViewModelUtility.GetCurrentLocation();
                 if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase)
                 {
                     // Update Product with its corresponding location
                     var loc = mapper.Map<MarketModels.Location>(location);
                     SelectedItem.Location = mapper.Map<LocationDto>(loc);
                     loc.Purchase_Id = SelectedItem.PurchaseId;
-                    loc.Purchase_Item_Id = SelectedItem.Item_Id;
+                    loc.Purchase_Item_Id = SelectedItem.Id;
                     SelectedItem.IsLocation = SelectedItem.Location != null;
                     loc = await _locationRepository.SaveOrUpdateItem(loc);
-                    SelectedItem.Location_Id = loc.Location_Id;
+                    SelectedItem.Location_Id = loc.Id;
                     await _productRepository.SaveOrUpdateItem(mapper.Map<Product>(SelectedItem));
                     await _notification.ShowNotification("Got location");
                     // Update UI
@@ -139,12 +147,14 @@ namespace PurchaseManagement.MVVM.ViewModels
                 await _messageBox.ShowNotification("Please select the item first");
             HideActivity();
         }
-        private async void On_Edit(object parameter)
+        private async void OnEdit(object parameter)
         {
+            ProductDto productDto = parameter as ProductDto;
+            SelectedItem = productDto;
             if (IsSelected)
             {
                 var mapper = MapperConfig.InitializeAutomapper();
-                ProductDto proxy = mapper.Map<ProductDto>(SelectedItem);
+                ProductDto proxy = mapper.Map<ProductDto>(productDto);
                 Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", false },
@@ -156,28 +166,32 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
                 await _messageBox.ShowNotification("Please select the item first");
         }
-        private async void On_OpenMap(object parameter)
+        private async void OnOpenMap(object parameter)
         {
+            ProductDto productDto = parameter as ProductDto;
+            SelectedItem = productDto;
             if (IsSelected)
             {
                 if (SelectedItem.Location != null)
-                    await NavigateToBuilding25(mapper.Map<Microsoft.Maui.Devices.Sensors.Location>(SelectedItem.Location));
+                    await ProductViewModelUtility.NavigateToBuilding25(mapper.Map<Microsoft.Maui.Devices.Sensors.Location>(SelectedItem.Location));
                 else
                     await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
             }
             else
                 await _messageBox.ShowNotification("Please select the item first");
         }
-        private async void On_Delete(object parameter)
+        private async void OnDelete(object parameter)
         {
-            if(IsSelected)
+            ProductDto productDto = parameter as ProductDto;
+            SelectedItem = productDto;
+            if (IsSelected)
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
                     await _productRepository.DeleteItem(mapper.Map<Product>(SelectedItem));
                     // Update Stat
-                    PurchaseStatistics purchaseStatistics = await _statisticsDB.GetItemById(SelectedItem.PurchaseId);
-                    await _statisticsDB.SaveOrUpdateItem(purchaseStatistics);
+                    ProductStatistics purchaseStatistics = await _statisticsDB.GetItemById(SelectedItem.PurchaseId);
+                    await _statisticsDB.SaveOrUpdateItem(await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(purchaseStatistics));
                     //
                     if(SelectedItem.Location_Id != 0)
                     {
@@ -197,16 +211,20 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
                 await _messageBox.ShowNotification("Please select the item first");
         }
-        private async void On_Open(object parameter)
+        private async void OnOpen(object parameter)
         {
             await Task.Delay(1);
         }
-        private async void On_DoubleClick(object parameter)
+        private async void OnDoubleClick(object parameter)
         {
             if (IsSelected)
             {
-                NavigationParametersTest.AddParameter("details", SelectedItem);
-                await Shell.Current.GoToAsync(nameof(PurchaseItemDetails), NavigationParametersTest.GetParameters());
+                var navigationParameters = new NavigationParameters
+            {
+                { "details", SelectedItem }
+            };
+                //SelectedItem = null;
+                await navigationService.Navigate(nameof(PurchaseItemDetails), navigationParameters);
             }
         }
         #endregion
@@ -218,7 +236,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if (p.Purchase is PurchasesDTO purchase)
                 {
-                    p.PurchaseId = purchase.Purchase_Id;
+                    p.PurchaseId = purchase.Id;
                     var x = mapper.Map<Product>(p);
                     await _productRepository.SaveOrUpdateItem(x);
                     var purchaseX = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
@@ -228,54 +246,29 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private void CommandSetup()
         {
-            DoubleClickCommand = new Command(On_DoubleClick);
-            OpenCommand = new Command(On_Open);
-            DeleteCommand = new Command(On_Delete);
-            OpenMapCommand = new Command(On_OpenMap);
-            EditCommand = new Command(On_Edit);
+            BackCommand = new Command(OnBackCommand);
+            DoubleClickCommand = new Command(OnDoubleClick);
+            OpenCommand = new Command(OnOpen);
+            DeleteCommand = new Command(OnDelete);
+            OpenMapCommand = new Command(OnOpenMap);
+            EditCommand = new Command(OnEdit);
             GetMapCommand = new Command(On_GetMap);
             OpenAnalyticCommand = new Command(OnOpenAnalyticCommand);
             ExportToPdfCommand = new Command(OnExportToPdfCommand);
         }
+        
         private async void UpdateUI()
         {
             var purchase = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             ViewModelLocator.MainViewModel.UpdateItem(mapper.Map<PurchasesDTO>(purchase));
         }
-        private async Task NavigateToBuilding25(Microsoft.Maui.Devices.Sensors.Location location)
-        {
-            try
-            {
-                await Map.Default.OpenAsync(location);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-        }
-       
-        private async Task<Microsoft.Maui.Devices.Sensors.Location> GetCurrentLocation()
-        {
-            try
-            {
-                GeolocationRequest request = new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10));
-
-                CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
-
-                Microsoft.Maui.Devices.Sensors.Location location = await Geolocation.Default.GetLocationAsync(request, _cancelTokenSource.Token);
-                return location;
-            }
-
-            catch (Exception ex)
-            {
-                Debug.Write(ex.Message);
-                return null;
-            }
-            
-        }
-        #endregion
         
+        #endregion
 
+        public void ResetSelectedItem()
+        {
+            SelectedItem = null;
+        }
         public override async Task LoadItems()
         {
             ShowActivity();
@@ -292,7 +285,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public Task OnNavigatedFrom(NavigationParameters parameters)
         {
-            throw new NotImplementedException();
+           return Task.CompletedTask;
         }
     }
 }

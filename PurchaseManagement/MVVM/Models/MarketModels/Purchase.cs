@@ -1,28 +1,26 @@
-﻿using PurchaseManagement.DataAccessLayer.Repository;
+﻿using PurchaseManagement.DataAccessLayer.Abstractions;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 
 namespace PurchaseManagement.MVVM.Models.MarketModels
 {
     [Table("Purchases")]
-    public class Purchase
+    public class Purchase:BaseEntity
     {
-        [PrimaryKey, AutoIncrement]
-        public int Purchase_Id { get; set; }
         public string Title { get; set; }
         public string PurchaseDate { get; set; }
         private IList<Product> _products;
-        [OneToMany(nameof(Purchase_Id))]
+        [OneToMany(nameof(Id))]
         public IList<Product> Products
         {
             get => _products;
             set => _products = value;
         }
 
-        [ForeignKey(typeof(PurchaseStatistics))]
-        public int Purchase_Stats_Id { get; set; }
+        [ForeignKey(typeof(ProductStatistics))]
+        public int ProductStatId { get; set; }
         [OneToOne]
-        public PurchaseStatistics PurchaseStatistics { get; set; }
+        public ProductStatistics PurchaseStatistics { get; set; }
         public Purchase(string title, DateTime dt)
         {
             Title = title;
@@ -32,11 +30,11 @@ namespace PurchaseManagement.MVVM.Models.MarketModels
         {
 
         }
-        public async Task LoadPurchaseStatistics(IGenericRepository<PurchaseStatistics> repository)
+        public async Task LoadPurchaseStatistics(IGenericRepository<ProductStatistics> repository)
         {
             if (PurchaseStatistics == null)
             {
-                PurchaseStatistics = await repository.GetItemById(Purchase_Id);
+                PurchaseStatistics = await repository.GetItemById(Id);
             }
         }
         public async Task LoadProducts(IProductRepository productRepository, IGenericRepository<MarketModels.Location> locationRepository)
@@ -44,7 +42,7 @@ namespace PurchaseManagement.MVVM.Models.MarketModels
             if (Products == null)
             {
                 Products ??= new List<Product>();
-                foreach (var item in await productRepository.GetAllItemById(Purchase_Id))
+                foreach (var item in await productRepository.GetAllItemById(Id))
                 {
                     item.Purchase = this;
                     await item.LoadLoacation(locationRepository);
