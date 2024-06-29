@@ -3,13 +3,13 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 using AutoMapper;
-using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Validations;
 using FluentValidation.Results;
 using PurchaseManagement.Utilities;
+using PurchaseManagement.Commons.Notifications;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

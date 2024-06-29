@@ -1,6 +1,4 @@
 ﻿using MVVM;
-using PurchaseManagement.MVVM.Models;
-using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
@@ -10,8 +8,6 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
     public class AccountHeaderViewModel:BaseViewModel
     {
         #region Private methods
-        private readonly IGenericRepository<Person> _personRepository;
-        private readonly IGenericRepository<Car> _carRepository;
         #endregion
 
         #region Properties
@@ -44,10 +40,8 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountHeaderViewModel(IGenericRepository<Person> personRepository, IGenericRepository<Car> carRepository)
+        public AccountHeaderViewModel()
         {
-            _personRepository = personRepository;
-            _carRepository = carRepository;
             Init();
             CommandSetup();
         }
@@ -60,11 +54,10 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             AddCommand = new Command(OnAdd);
             
         }
-        private async void Init()
+        private void Init()
         {
             SelectedDate = DateTime.Now;
             IsSavebtnEnabled = true;
-            await Seed();
         }
 
         #endregion
@@ -77,15 +70,5 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             Money = 0;
         }
         #endregion
-        // Data Seeding
-        private async Task Seed()
-        {
-            Person person;
-            for(int i=0; i < 10; i++)
-            {
-                person = await _personRepository.SaveOrUpdateItem(new($"Name {i}"));
-                await _carRepository.SaveOrUpdateItem(new(person.Id, person.Name));
-            }
-        }
     }
 }

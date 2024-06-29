@@ -6,13 +6,14 @@ using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
-using PurchaseManagement.NavigationLib.Models;
-using PurchaseManagement.NavigationLib.Abstractions;
+using MauiNavigationHelper.NavigationLib.Models;
+using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Utilities;
 using Patterns;
 using AutoMapper;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using PurchaseManagement.Commons.Notifications;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

@@ -11,9 +11,10 @@ using PurchaseManagement.Pages;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.DTOs;
 using CommunityToolkit.Maui.Storage;
-using PurchaseManagement.NavigationLib.Services;
-using PurchaseManagement.NavigationLib.Abstractions;
+using MauiNavigationHelper.NavigationLib.Services;
+using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.MVVM.Models.Accounts;
+using PurchaseManagement.Commons.ExportFileStrategies;
 
 
 namespace PurchaseManagement.ExtensionMethods
@@ -26,30 +27,20 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddSingleton<MainPage>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetails>();
             mauiAppBuilder.Services.AddScoped<AccountAnalyticPage>();
-            mauiAppBuilder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
-            mauiAppBuilder.Services.AddScoped<ExportContext<AccountDTO>>();
-            mauiAppBuilder.Services.AddScoped<IExportStrategy<AccountDTO>, AccountTxtStrategy>();
-            mauiAppBuilder.Services.AddScoped<ExportContext<ProductDto>>();
-            mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductDto>, ProductTxtStrategy>();
-            mauiAppBuilder.Services.AddScoped<INavigationService, NavigationService>();
             mauiAppBuilder.Services.AddScoped<ProductAnalytics>();
             mauiAppBuilder.Services.AddScoped<ProductsPage>();
             return mauiAppBuilder;
         }
-        public static MauiAppBuilder DbContextExtension(this MauiAppBuilder mauiAppBuilder)
+        public static MauiAppBuilder RepositoryExtension(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
             mauiAppBuilder.Services.AddSingleton<IProductRepository, ProductRepository>();
             mauiAppBuilder.Services.AddSingleton<IPurchaseRepository, PurchaseRepository>();
-            //mauiAppBuilder.Services.AddSingleton<IGenericRepository<MarketModels.Location>, LocationRepository>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<MarketModels.Location>, GenericRepository<MarketModels.Location>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<ProductStatistics>, GenericRepository<ProductStatistics>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<Product>, GenericRepository<Product>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<Purchase>, GenericRepository<Purchase>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<Account>, GenericRepository<Account>>();
-            // Test on Person
-            mauiAppBuilder.Services.AddScoped<IGenericRepository<Person>, GenericRepository<Person>>();
-            mauiAppBuilder.Services.AddScoped<IGenericRepository<Car>, GenericRepository<Car>>();
 
             return mauiAppBuilder;
         }
@@ -70,6 +61,12 @@ namespace PurchaseManagement.ExtensionMethods
         }
         public static MauiAppBuilder UtilityExtension(this MauiAppBuilder mauiAppBuilder)
         {
+            mauiAppBuilder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
+            mauiAppBuilder.Services.AddScoped<ExportContext<AccountDTO>>();
+            mauiAppBuilder.Services.AddScoped<IExportStrategy<AccountDTO>, AccountTxtStrategy>();
+            mauiAppBuilder.Services.AddScoped<ExportContext<ProductDto>>();
+            mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductDto>, ProductTxtStrategy>();
+            mauiAppBuilder.Services.AddScoped<INavigationService, NavigationService>();
             mauiAppBuilder.Services.AddMapster();
             return mauiAppBuilder;
         }
