@@ -1,14 +1,10 @@
-﻿using PurchaseManagement.MVVM.Models.Accounts;
+﻿using PurchaseManagement.DataAccessLayer.Abstractions;
+using PurchaseManagement.MVVM.Models.Accounts;
 using SQLite;
+
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
-    public interface IAccountRepository: IGenericRepository<Account>
-    {
-        Task<IList<Statistics>> GetStatisticsAsync();
-        Task<IList<MaxMin>> GetMaxAsync();
-        Task<IList<MaxMin>> GetMinAsync();
-    }
     public class AccountRepository : IAccountRepository
     {
         public async Task DeleteItem(Account item)
@@ -99,6 +95,4 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             return item;
         }
     }
-    
-    
 }

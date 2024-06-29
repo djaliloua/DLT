@@ -1,4 +1,4 @@
-﻿namespace PurchaseManagement.DataAccessLayer.Repository
+﻿namespace PurchaseManagement.DataAccessLayer.Abstractions
 {
     public interface IGenericRepository<TItem> where TItem : class
     {

@@ -2,6 +2,7 @@
 using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
@@ -19,7 +20,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         protected override void Reorder()
         {
-            var data = Items.OrderByDescending(item => item.Item_Id).ToList();
+            var data = Items.OrderByDescending(item => item.Id).ToList();
             SetItems(data);
         }
 
@@ -29,7 +30,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Private properties
         private readonly INavigationService navigationService;
         private readonly IPurchaseRepository _purchaseDB;
-        private readonly IGenericRepository<PurchaseStatistics> _statisticsDB;
+        private readonly IGenericRepository<ProductStatistics> _statisticsDB;
         private readonly IGenericRepository<MarketModels.Location> _locationRepository;
         private readonly IProductRepository _productRepository;
         private readonly INotification _notification;
@@ -80,7 +81,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         #region Constructor
         public ProductItemsViewModel(IProductRepository productRepository,
-            IGenericRepository<PurchaseStatistics> statisticsDB,
+            IGenericRepository<ProductStatistics> statisticsDB,
             IPurchaseRepository purchaseDB,
             INavigationService navigationService,
             ExportContext<ProductDto> context,
@@ -131,10 +132,10 @@ namespace PurchaseManagement.MVVM.ViewModels
                     var loc = mapper.Map<MarketModels.Location>(location);
                     SelectedItem.Location = mapper.Map<LocationDto>(loc);
                     loc.Purchase_Id = SelectedItem.PurchaseId;
-                    loc.Purchase_Item_Id = SelectedItem.Item_Id;
+                    loc.Purchase_Item_Id = SelectedItem.Id;
                     SelectedItem.IsLocation = SelectedItem.Location != null;
                     loc = await _locationRepository.SaveOrUpdateItem(loc);
-                    SelectedItem.Location_Id = loc.Location_Id;
+                    SelectedItem.Location_Id = loc.Id;
                     await _productRepository.SaveOrUpdateItem(mapper.Map<Product>(SelectedItem));
                     await _notification.ShowNotification("Got location");
                     // Update UI
@@ -189,8 +190,8 @@ namespace PurchaseManagement.MVVM.ViewModels
                 {
                     await _productRepository.DeleteItem(mapper.Map<Product>(SelectedItem));
                     // Update Stat
-                    PurchaseStatistics purchaseStatistics = await _statisticsDB.GetItemById(SelectedItem.PurchaseId);
-                    await _statisticsDB.SaveOrUpdateItem(purchaseStatistics);
+                    ProductStatistics purchaseStatistics = await _statisticsDB.GetItemById(SelectedItem.PurchaseId);
+                    await _statisticsDB.SaveOrUpdateItem(await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(purchaseStatistics));
                     //
                     if(SelectedItem.Location_Id != 0)
                     {
@@ -235,7 +236,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if (p.Purchase is PurchasesDTO purchase)
                 {
-                    p.PurchaseId = purchase.Purchase_Id;
+                    p.PurchaseId = purchase.Id;
                     var x = mapper.Map<Product>(p);
                     await _productRepository.SaveOrUpdateItem(x);
                     var purchaseX = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);

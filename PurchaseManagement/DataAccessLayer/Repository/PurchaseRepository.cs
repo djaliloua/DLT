@@ -1,31 +1,31 @@
 ﻿using SQLite;
 using PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using SQLiteNetExtensions.Extensions;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
-    public interface IPurchaseRepository : IGenericRepository<Purchase>
-    {
-        Task<Purchase> GetPurchaseByDate(DateTime date);
-        Task<Purchase> GetFullPurchaseByDate(DateTime date);
-    }
     public class PurchaseRepository : IPurchaseRepository
     {
-        private readonly IGenericRepository<PurchaseStatistics> _statisticsRepository;
+        private readonly IGenericRepository<ProductStatistics> _statisticsRepository;
         private readonly IProductRepository _productRepository;
         private readonly IGenericRepository<MarketModels.Location> _locationRepository;
-        public PurchaseRepository(IGenericRepository<PurchaseStatistics> statisticsRepository, 
+        private readonly IGenericRepository<Purchase> _purchaseRepository;
+        public PurchaseRepository(IGenericRepository<ProductStatistics> statisticsRepository, 
             IProductRepository productRepository,
-            IGenericRepository<MarketModels.Location> locationRepository)
+            IGenericRepository<MarketModels.Location> locationRepository,
+            IGenericRepository<Purchase> purchaseRepository)
         {
             _statisticsRepository = statisticsRepository;
             _productRepository = productRepository;
             _locationRepository = locationRepository;
+            _purchaseRepository = purchaseRepository;
         }
-        public Task DeleteItem(Purchase item)
+        public async Task DeleteItem(Purchase item)
         {
-            throw new NotImplementedException();
+            await _purchaseRepository.DeleteItem(item);
+            return ;
         }
 
         public async Task<IEnumerable<Purchase>> GetAllItems()
@@ -91,17 +91,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public async Task<Purchase> SaveOrUpdateItem(Purchase item)
         {
-            int res = 0;
-            await Task.Delay(1);
-            using (var connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
-            {
-                connection.CreateTable<Purchase>();
-                if (item.Purchase_Id != 0)
-                    res = connection.Update(item);
-                else
-                    res = connection.Insert(item);
-            }
-            return item;
+            return await _purchaseRepository.SaveOrUpdateItem(item);
         }
     }
 }

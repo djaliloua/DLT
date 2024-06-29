@@ -3,10 +3,10 @@
 namespace PurchaseManagement.MVVM.Models.MarketModels
 {
     [Table("Location")]
-    public class Location
+    public class Location:BaseEntity
     {
-        [PrimaryKey, AutoIncrement]
-        public int Location_Id { get; set; }
+        //[PrimaryKey, AutoIncrement]
+        //public int Location_Id { get; set; }
         public int Purchase_Item_Id { get; set; }
         public int Purchase_Id { get; set; }
         public double? Course { get; set; }

@@ -326,7 +326,7 @@ namespace PurchaseManagement.NavigationLib.Services
         /// <summary>
         /// This method allows the <see cref="SelectTab{T}()"/> to be called with reflection.
         /// </summary>
-        private async void SelectTabWithType(Type tabType)
+        private void SelectTabWithType(Type tabType)
         {
             var selectTabMethod = GetType()
                 .GetMethod(nameof(SelectTab))

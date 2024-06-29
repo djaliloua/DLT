@@ -7,7 +7,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
     public class PurchasesDTO:BaseViewModel
     {
         private int _purchase_Id;
-        public int Purchase_Id
+        public int Id
         {
             get => _purchase_Id;
             set => UpdateObservable(ref _purchase_Id, value);
@@ -31,7 +31,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             set => UpdateObservable(ref _purchase_Items, value);
         }
         private int purchase_Stat_Id;
-        public int Purchase_Stats_Id
+        public int ProductStatId
         {
             get => purchase_Stat_Id;
             set => UpdateObservable(ref purchase_Stat_Id, value);
