@@ -1,7 +1,7 @@
-﻿using PurchaseManagement.NavigationLib.Models;
-using PurchaseManagement.NavigationLib.Abstractions;
+﻿using MauiNavigationHelper.NavigationLib.Models;
+using MauiNavigationHelper.NavigationLib.Abstractions;
 
-namespace PurchaseManagement.NavigationLib.Utility
+namespace MauiNavigationHelper.NavigationLib.Utility
 {
     internal static class LifecycleEventUtility
     {

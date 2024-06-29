@@ -5,12 +5,10 @@ using System.Windows.Input;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using Patterns;
 using PurchaseManagement.MVVM.Models.MarketModels;
-using PurchaseManagement.DataAccessLayer.Repository;
 using System.Diagnostics;
-using Newtonsoft.Json.Linq;
 using PurchaseManagement.Commons;
-using PurchaseManagement.NavigationLib.Abstractions;
-using PurchaseManagement.NavigationLib.Models;
+using MauiNavigationHelper.NavigationLib.Abstractions;
+using MauiNavigationHelper.NavigationLib.Models;
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchasesDTO

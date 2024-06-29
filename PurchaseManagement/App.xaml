@@ -3,11 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:m="clr-namespace:UraniumUI.Material.Resources;assembly=UraniumUI.Material"
              xmlns:u="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
-             xmlns:local="clr-namespace:PurchaseManagement.ServiceLocator"
              x:Class="PurchaseManagement.App">
     <Application.Resources>
         <ResourceDictionary>
-            <local:ViewModelLocator x:Key="locator" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <!--<u:ColorResource />-->

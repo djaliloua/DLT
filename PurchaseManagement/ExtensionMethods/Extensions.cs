@@ -11,8 +11,8 @@ using PurchaseManagement.Pages;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.DTOs;
 using CommunityToolkit.Maui.Storage;
-using PurchaseManagement.NavigationLib.Services;
-using PurchaseManagement.NavigationLib.Abstractions;
+using MauiNavigationHelper.NavigationLib.Services;
+using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.MVVM.Models.Accounts;
 
 

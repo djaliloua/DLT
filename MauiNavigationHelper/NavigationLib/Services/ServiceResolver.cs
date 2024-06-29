@@ -1,10 +1,10 @@
-﻿namespace PurchaseManagement.NavigationLib.Services
+﻿namespace MauiNavigationHelper.NavigationLib.Services
 {
     public static class ServiceResolver
     {
         private static IServiceScope scope;
 
-        internal static void RegisterScope(
+        public static void RegisterScope(
             IServiceScope serviceScope)
         {
             scope = serviceScope;

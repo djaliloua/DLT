@@ -7,8 +7,8 @@ using SkiaSharp;
 using System.Collections.ObjectModel;
 using CommunityToolkit.Maui.Core.Extensions;
 using System.Windows.Input;
-using PurchaseManagement.NavigationLib.Abstractions;
-using PurchaseManagement.NavigationLib.Models;
+using MauiNavigationHelper.NavigationLib.Abstractions;
+using MauiNavigationHelper.NavigationLib.Models;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

@@ -1,10 +1,10 @@
-﻿using PurchaseManagement.NavigationLib.Utility;
-using PurchaseManagement.NavigationLib.Models;
-using PurchaseManagement.NavigationLib.Abstractions;
+﻿using MauiNavigationHelper.NavigationLib.Utility;
+using MauiNavigationHelper.NavigationLib.Models;
+using MauiNavigationHelper.NavigationLib.Abstractions;
 
-namespace PurchaseManagement.NavigationLib.Services
+namespace MauiNavigationHelper.NavigationLib.Services
 {
-    internal class NavigationService : INavigationService
+    public class NavigationService : INavigationService
     {
         #region Core navigation methods
 

@@ -1,8 +1,7 @@
 ﻿using MVVM;
 using PurchaseManagement.MVVM.Models.DTOs;
-using PurchaseManagement.NavigationLib.Abstractions;
-using PurchaseManagement.NavigationLib.Models;
-using PurchaseManagement.ServiceLocator;
+using MauiNavigationHelper.NavigationLib.Abstractions;
+using MauiNavigationHelper.NavigationLib.Models;
 using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels

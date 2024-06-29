@@ -2,7 +2,7 @@
 using UraniumUI;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 using Microsoft.Extensions.Logging;
-using PurchaseManagement.NavigationLib.Services;
+using MauiNavigationHelper.NavigationLib.Services;
 using PurchaseManagement.ExtensionMethods;
 
 

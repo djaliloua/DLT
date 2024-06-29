@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
-using PurchaseManagement.NavigationLib.Models;
-namespace PurchaseManagement.NavigationLib.Utility
+using MauiNavigationHelper.NavigationLib.Models;
+
+
+namespace MauiNavigationHelper.NavigationLib.Utility
 {
     internal static class UriUtility
     {

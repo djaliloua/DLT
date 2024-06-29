@@ -82,6 +82,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MauiNavigationHelper\MauiNavigationHelper.csproj" />
     <ProjectReference Include="..\MVVM\MVVM.csproj" />
     <ProjectReference Include="..\Patterns\Patterns.csproj" />
   </ItemGroup>

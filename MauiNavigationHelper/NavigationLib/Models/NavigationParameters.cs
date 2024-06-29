@@ -1,6 +1,6 @@
 ﻿using System.Web;
 
-namespace PurchaseManagement.NavigationLib.Models
+namespace MauiNavigationHelper.NavigationLib.Models
 {
     public class NavigationParameters : Dictionary<string, object>
     {

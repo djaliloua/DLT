@@ -1,8 +1,8 @@
-﻿namespace PurchaseManagement.NavigationLib.Utility
+﻿namespace MauiNavigationHelper.NavigationLib.Utility
 {
-    internal static class MauiPageUtility
+    public static class MauiPageUtility
     {
-        internal static Page GetTopPage()
+        public static Page GetTopPage()
         {
             var navigationStack = Application.Current.MainPage?.Navigation.NavigationStack;
 
@@ -23,7 +23,7 @@
             return null;
         }
 
-        internal static object GetTopPageBindingContext()
+        public static object GetTopPageBindingContext()
         {
             return GetTopPage()?.BindingContext;
         }

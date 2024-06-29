@@ -1,6 +1,6 @@
-﻿using PurchaseManagement.NavigationLib.Models;
+﻿using MauiNavigationHelper.NavigationLib.Models;
 
-namespace PurchaseManagement.NavigationLib.Abstractions
+namespace MauiNavigationHelper.NavigationLib.Abstractions
 {
     public interface INavigatedEvents
     {

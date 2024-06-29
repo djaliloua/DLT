@@ -1,7 +1,7 @@
-﻿using PurchaseManagement.NavigationLib.Abstractions;
-using PurchaseManagement.NavigationLib.Services;
+﻿using MauiNavigationHelper.NavigationLib.Abstractions;
+using MauiNavigationHelper.NavigationLib.Services;
 
-namespace PurchaseManagement.NavigationLib.Models
+namespace MauiNavigationHelper.NavigationLib.Models
 {
     public static class BackButtonNavigator
     {

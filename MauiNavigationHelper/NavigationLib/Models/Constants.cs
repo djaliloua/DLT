@@ -1,4 +1,4 @@
-﻿namespace PurchaseManagement.NavigationLib.Models
+﻿namespace MauiNavigationHelper.NavigationLib.Models
 {
     internal static class Constants
     {

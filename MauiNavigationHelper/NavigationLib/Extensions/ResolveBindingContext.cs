@@ -1,4 +1,4 @@
-﻿namespace PurchaseManagement.NavigationLib.Extensions
+﻿namespace MauiNavigationHelper.NavigationLib.Extensions
 {
     public class ResolveBindingContext : IMarkupExtension
     {
