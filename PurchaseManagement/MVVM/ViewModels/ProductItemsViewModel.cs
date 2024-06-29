@@ -13,6 +13,7 @@ using Patterns;
 using AutoMapper;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using PurchaseManagement.Commons.Notifications;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

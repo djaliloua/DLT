@@ -9,6 +9,7 @@ using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Validations;
 using FluentValidation.Results;
 using PurchaseManagement.Utilities;
+using PurchaseManagement.Commons.Notifications;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {

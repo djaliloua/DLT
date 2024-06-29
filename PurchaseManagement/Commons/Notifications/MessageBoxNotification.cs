@@ -1,4 +1,4 @@
-﻿namespace PurchaseManagement.Commons
+﻿namespace PurchaseManagement.Commons.Notifications
 {
     public class MessageBoxNotification : INotification
     {

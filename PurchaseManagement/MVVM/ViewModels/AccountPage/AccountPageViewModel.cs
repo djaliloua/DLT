@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 using CommunityToolkit.Maui.Storage;
 using System.Globalization;
 using System.Diagnostics;
+using PurchaseManagement.Commons.Notifications;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
@@ -58,7 +59,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         }
         private async void OnExportToPdfCommand(object parameter)
         {
-            await toastNotification.ShowNotification("Hello pdf");
+            await Task.Delay(1);
             exportContext.ExportTo("", AccountListViewViewModel.GetItems());
         }
         //private void Init()

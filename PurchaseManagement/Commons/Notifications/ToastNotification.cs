@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 
-namespace PurchaseManagement.Commons
+namespace PurchaseManagement.Commons.Notifications
 {
     public class ToastNotification : INotification
     {
