@@ -12,7 +12,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             using (SQLiteConnection connection = new SQLiteConnection(ConstantPath.DatabasePurchase, ConstantPath.Flags))
             {
                 connection.CreateTable<T>();
-                connection.Delete<T>(item);
+                connection.Delete(item);
             }
         }
 
