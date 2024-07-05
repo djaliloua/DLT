@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
 using PurchaseManagement.DataAccessLayer.Abstractions;
@@ -9,9 +8,10 @@ using System.Diagnostics;
 using PurchaseManagement.Commons;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
+using Mapster;
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchasesDTO
+    public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseDto
     {
         public TItem GetItemByDate()
         {
@@ -32,7 +32,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
 
     }
-    public class MainViewModel: LaodableMainViewModel<PurchasesDTO>
+    public class MainViewModel: LaodableMainViewModel<PurchaseDto>
     {
         #region Private Properties
         private readonly INavigationService navigationService;
@@ -50,7 +50,6 @@ namespace PurchaseManagement.MVVM.ViewModels
                 DateTime = value;
             });
         }
-        private Mapper mapper;
         private bool _isSavebtnEnabled;
         public bool IsSavebtnEnabled
         {
@@ -72,7 +71,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             _purchaseDB = db;   
             _statisticsDB = statisticsDB;
             this.navigationService = navigationService;
-            mapper = MapperConfig.InitializeAutomapper();   
             IsSavebtnEnabled = true;
             _ = LoadItems();
             CommandSetup();
@@ -112,10 +110,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Add(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(GetItemByDate() is PurchasesDTO purchase)
+            if(GetItemByDate() is PurchaseDto purchase)
             {
                 ProductStatistics stat = await _statisticsDB.GetItemById(purchase.Id);
-                purchase_proxy_item = Factory.CreateObject(mapper.Map<ProductStatisticsDto>(stat));
+                purchase_proxy_item = Factory.CreateObject(stat.Adapt<ProductStatisticsDto>());
             }
             else
             {
@@ -132,7 +130,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             ShowActivity();
             IEnumerable<Purchase> _purchases = await _purchaseDB.GetAllItems();
-            var data = _purchases.Select(mapper.Map<PurchasesDTO>).ToList();
+            var data = _purchases.Adapt<List<PurchaseDto>>();
             SetItems(data);
             HideActivity();
         }

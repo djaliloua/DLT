@@ -71,8 +71,8 @@ namespace PurchaseManagement.MVVM.Models.DTOs
                     IsLocation = true;
             });
         }
-        private PurchasesDTO _purchases;
-        public PurchasesDTO Purchase
+        private PurchaseDto _purchases;
+        public PurchaseDto Purchase
         {
             get => _purchases;
             set => UpdateObservable(ref _purchases, value);
