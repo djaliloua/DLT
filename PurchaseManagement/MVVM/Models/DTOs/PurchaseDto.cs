@@ -4,7 +4,7 @@ using MVVM;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
-    public class PurchasesDTO:BaseViewModel
+    public class PurchaseDto:BaseViewModel
     {
         private int _purchase_Id;
         public int Id

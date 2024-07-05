@@ -4,6 +4,7 @@ using SkiaSharp.Views.Maui.Controls.Hosting;
 using Microsoft.Extensions.Logging;
 using MauiNavigationHelper.NavigationLib.Services;
 using PurchaseManagement.ExtensionMethods;
+using Mapster;
 
 
 namespace PurchaseManagement
@@ -44,7 +45,7 @@ handlers.AddHandler(typeof(ListView), typeof(CustomListView));
             var serviceProvider = builder.Build();
             var scope = serviceProvider.Services.CreateScope();
             ServiceResolver.RegisterScope(scope);
-
+            TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
             return serviceProvider;
         }
     }

@@ -2,7 +2,6 @@
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
-using AutoMapper;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
@@ -10,6 +9,7 @@ using PurchaseManagement.Validations;
 using FluentValidation.Results;
 using PurchaseManagement.Utilities;
 using PurchaseManagement.Commons.Notifications;
+using Mapster;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -38,7 +38,6 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         #region Private Methods
         public int Counter = 0;
-        Mapper mapper = MapperConfig.InitializeAutomapper();
         private readonly IPurchaseRepository _purchaseDB;
         private readonly IGenericRepository<ProductStatistics> _statisticsDB;
         private readonly IProductRepository _productRepository;
@@ -96,7 +95,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
-                if(!await UpdateProductItem(mapper.Map<Purchase>(ViewModelLocator.ProductItemsViewModel.Purchases)))
+                if(!await UpdateProductItem(ViewModelLocator.ProductItemsViewModel.Purchases.Adapt<Purchase>()))
                 {
                     return;
                 }
@@ -136,7 +135,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             ValidationResult validationResult = productValidation.Validate(PurchaseItem);
             if(validationResult.IsValid)
             {
-                Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
+                Product m_purchase_item = PurchaseItem.Adapt<Product>();
                 await _productRepository.SaveOrUpdateItem(m_purchase_item);
                 var stat = await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(purchase.PurchaseStatistics);
                 await _statisticsDB.SaveOrUpdateItem(stat);
@@ -157,7 +156,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void AddNewProducts(Purchase purchase)
         {
             // Update DB
-            Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
+            Product m_purchase_item = PurchaseItem.Adapt<Product>();
             m_purchase_item.PurchaseId = purchase.Id;
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
             await _statisticsDB.SaveOrUpdateItem(await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(purchase.PurchaseStatistics));
@@ -168,9 +167,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void UpdateUI()
         {
             var purchase = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            Update(mapper.Map<PurchasesDTO>(purchase));
+            Update(purchase.Adapt<PurchaseDto>());
         }
-        private void Update(PurchasesDTO newObj)
+        private void Update(PurchaseDto newObj)
         {
             ViewModelLocator.MainViewModel.UpdateItem(newObj);
         }
@@ -178,7 +177,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             purchase = await _purchaseDB.SaveOrUpdateItem(purchase);
             ProductStatistics m_purchaseStatistics = new(purchase.Id, 1, PurchaseItem.Item_Price, PurchaseItem.Item_Quantity);
-            Product m_purchase_item = mapper.Map<Product>(PurchaseItem);
+            Product m_purchase_item = PurchaseItem.Adapt<Product>();
 
             m_purchase_item.PurchaseId = purchase.Id;
             await _productRepository.SaveOrUpdateItem(m_purchase_item);
@@ -191,7 +190,7 @@ namespace PurchaseManagement.MVVM.ViewModels
 
             //
             var p = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            ViewModelLocator.MainViewModel.AddItem(mapper.Map<PurchasesDTO>(p));
+            ViewModelLocator.MainViewModel.AddItem(p.Adapt<PurchaseDto>());
         }
         
         #endregion
