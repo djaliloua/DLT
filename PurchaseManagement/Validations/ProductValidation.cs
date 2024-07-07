@@ -1,9 +1,9 @@
 ﻿using FluentValidation;
-using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.Validations
 {
-    public class ProductValidation:AbstractValidator<ProductDto>
+    public class ProductValidation:AbstractValidator<Product>
     {
         public ProductValidation()
         {

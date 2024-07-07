@@ -3,11 +3,8 @@ using System.Windows.Input;
 using PurchaseManagement.Commons;
 using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.MVVM.Models.DTOs;
-using System.Xml.Serialization;
-using CommunityToolkit.Maui.Storage;
-using System.Globalization;
-using System.Diagnostics;
-using PurchaseManagement.Commons.Notifications;
+using PurchaseManagement.Commons.Notifications.Abstractions;
+using PurchaseManagement.Commons.Notifications.Implementations;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {

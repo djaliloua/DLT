@@ -3,12 +3,11 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.Commons;
+using PurchaseManagement.Commons.Notifications.Abstractions;
+using PurchaseManagement.Commons.Notifications.Implementations;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Validations;
-using FluentValidation.Results;
 using PurchaseManagement.Utilities;
-using PurchaseManagement.Commons.Notifications;
 using Mapster;
 
 namespace PurchaseManagement.MVVM.ViewModels
@@ -89,7 +88,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
-                if(!await UpdateProductItem(await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate)))
+                if(!await MarketFormViewModelUtility.UpdateProductItem(await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate), 
+                    ProductItem.Adapt<Product>()))
                 {
                     return;
                 }
@@ -99,90 +99,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void OnSave(object sender)
         {
-            ValidationResult validationResult = productValidation.Validate(ProductItem);
-            if (validationResult.IsValid)
-            {
-                ShowActivity();
-                //ViewModelLocator.MainViewModel.GetItemByDate() is PurchaseDto purchaseDto
-                if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purchase)
-                {
-                    AddNewProducts(purchase);
-                }
-                else
-                {
-                    SavePurchaseAndProductItem(new Purchase("test", ViewModelLocator.MainViewModel.SelectedDate));
-                }
-                Counter++;
-                await _toastNotification.ShowNotification($"{Counter}");
-                HideActivity();
-            }
-            else
-            {
-                await _toastNotification.ShowNotification(validationResult.Errors[0].ErrorMessage);
-            }
+            await MarketFormViewModelUtility.CreateAndAddProduct(ProductItem.Adapt<Product>());
         }
         #endregion
 
-        #region Private Methods
-        private async Task<bool> UpdateProductItem(Purchase purchase)
-        {
-            ValidationResult validationResult = productValidation.Validate(ProductItem);
-            if(validationResult.IsValid)
-            {
-                Product m_purchase_item = ProductItem.Adapt<Product>();
-                updateProduct(purchase, m_purchase_item);
-                
-                // Update UI
-                await SaveAndUpdateUI(purchase);
-            }
-            else
-            {
-                await _toastNotification.ShowNotification(validationResult.Errors[0].ErrorMessage);
-                return false;
-            }
-            return true;
-            
-        }
-        private void updateProduct(Purchase purchase, Product product)
-        {
-            for (int i = 0; i < purchase.Products.Count; i++)
-            {
-                if (purchase.Products[i].Id == product.Id)
-                    purchase.Products[i] = product;
-            }
-            purchase.UpdateStatistics();
-        }
-        private async void AddNewProducts(Purchase purchase)
-        {
-            // Update DB
-            Product m_product_item = ProductItem.Adapt<Product>();
-            purchase.Add(m_product_item);
-
-            //
-            await SaveAndUpdateUI(purchase);
-        }
-        private async void UpdateUI()
-        {
-            var purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            Update(purchase.Adapt<PurchaseDto>());
-        }
-        private void Update(PurchaseDto newObj)
-        {
-            ViewModelLocator.MainViewModel.UpdateItem(newObj);
-        }
-        private async Task SaveAndUpdateUI(Purchase purchase)
-        {
-            Purchase purchaseB = await _purchaseDB.SaveOrUpdateItemAsync(purchase);
-            PurchaseDto p = purchaseB.Adapt<PurchaseDto>();
-            ViewModelLocator.MainViewModel.SaveOrUpdateItem(p);
-        }
-        private async void SavePurchaseAndProductItem(Purchase purchase)
-        {
-            purchase.Add(ProductItem.Adapt<Product>());
-            await SaveAndUpdateUI(purchase);
-        }
-        
-        #endregion
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if(query.Count() > 0)

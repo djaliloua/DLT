@@ -1,4 +1,6 @@
-﻿namespace PurchaseManagement.Commons.Notifications
+﻿using PurchaseManagement.Commons.Notifications.Abstractions;
+
+namespace PurchaseManagement.Commons.Notifications.Implementations
 {
     public class MessageBoxNotification : INotification
     {

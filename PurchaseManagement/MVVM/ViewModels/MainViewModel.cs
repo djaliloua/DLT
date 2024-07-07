@@ -34,6 +34,11 @@ namespace PurchaseManagement.MVVM.ViewModels
             var data = GetItems().OrderByDescending(a => a.PurchaseDate).ToList();
             SetItems(data);
         }
+        public override void SetItems(IList<TItem> items)
+        {
+            var data = items.OrderByDescending(a => a.PurchaseDate).ToList();
+            base.SetItems(data);
+        }
 
     }
     public class MainViewModel: LaodableMainViewModel<PurchaseDto>

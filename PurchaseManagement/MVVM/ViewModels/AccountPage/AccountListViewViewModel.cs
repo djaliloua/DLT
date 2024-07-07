@@ -3,10 +3,9 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;
 using PurchaseManagement.MVVM.Models.Accounts;
-using PurchaseManagement.Commons;
 using Mapster;
-using MapsterMapper;
-using PurchaseManagement.Commons.Notifications;
+using PurchaseManagement.Commons.Notifications.Abstractions;
+using PurchaseManagement.Commons.Notifications.Implementations;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {

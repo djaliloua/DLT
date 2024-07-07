@@ -4,14 +4,14 @@ using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
-using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using MauiNavigationHelper.NavigationLib.Models;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Utilities;
 using Patterns;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using PurchaseManagement.Commons.Notifications;
+using PurchaseManagement.Commons.Notifications.Abstractions;
+using PurchaseManagement.Commons.Notifications.Implementations;
 using Mapster;
 
 namespace PurchaseManagement.MVVM.ViewModels
@@ -124,13 +124,12 @@ namespace PurchaseManagement.MVVM.ViewModels
                 Location location = await ProductViewModelUtility.GetCurrentLocation();
                 if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purch)
                 {
-                    // Update Product with its corresponding location
                     var loc = location.Adapt<ProductLocation>();
                     SelectedItem.ProductLocation = loc.Adapt<LocationDto>();
                     SelectedItem.IsLocation = SelectedItem.ProductLocation != null;
 
-                    updateProduct(purch, SelectedItem.Adapt<Product>());
-                    await SaveAndUpdateUI(purch);
+                    ViewModelUtility.UpdateProduct(purch, SelectedItem.Adapt<Product>());
+                    await ViewModelUtility.SaveAndUpdateUI(purch);
 
                     await _notification.ShowNotification("Got location");
                 }
@@ -139,20 +138,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             else
                 await _messageBox.ShowNotification("Please select the item first");
             HideActivity();
-        }
-        private void updateProduct(Purchase purchase, Product product)
-        {
-            for (int i = 0; i < purchase.Products.Count; i++)
-            {
-                if (purchase.Products[i].Id == product.Id)
-                    purchase.Products[i] = product;
-            }
-        }
-        private async Task SaveAndUpdateUI(Purchase purchase)
-        {
-            Purchase purchaseB = await _purchaseDB.SaveOrUpdateItemAsync(purchase);
-            PurchaseDto p = purchaseB.Adapt<PurchaseDto>();
-            ViewModelLocator.MainViewModel.SaveOrUpdateItem(p);
         }
         private async void OnEdit(object parameter)
         {
@@ -196,7 +181,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 {
                     Purchase purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
                     purchase.Remove(SelectedItem.Adapt<Product>());
-                    await SaveAndUpdateUI(purchase);
+                    await ViewModelUtility.SaveAndUpdateUI(purchase);
 
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
@@ -232,7 +217,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 if (p.Purchase is PurchaseDto purchaseX)
                 {
                     var purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    updateProduct(purchase, p.Adapt<Product>());
+                    ViewModelUtility.UpdateProduct(purchase, p.Adapt<Product>());
                     await _purchaseDB.SaveOrUpdateItemAsync(purchase);
                 }
             });

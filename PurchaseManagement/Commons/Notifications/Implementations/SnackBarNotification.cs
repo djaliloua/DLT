@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
+using PurchaseManagement.Commons.Notifications.Abstractions;
 
-namespace PurchaseManagement.Commons
+namespace PurchaseManagement.Commons.Notifications.Implementations
 {
     public class SnackBarNotification : INotification
     {

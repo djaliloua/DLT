@@ -1,4 +1,4 @@
-﻿namespace PurchaseManagement.Commons
+﻿namespace PurchaseManagement.Commons.Notifications.Abstractions
 {
     public interface INotification
     {
