@@ -44,8 +44,8 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class MainViewModel: LaodableMainViewModel<PurchaseDto>
     {
         #region Private Properties
-        private readonly INavigationService navigationService;
-        private readonly IPurchaseRepository _purchaseDB;
+        private readonly INavigationService _navigationService;
+        private readonly IPurchaseRepository _purchaseRepository;
         #endregion
 
         #region Public Properites
@@ -74,8 +74,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Constructor
         public MainViewModel(IPurchaseRepository db, INavigationService navigationService)
         {
-            _purchaseDB = db;   
-            this.navigationService = navigationService;
+            _purchaseRepository = db;   
+            _navigationService = navigationService;
             IsSavebtnEnabled = true;
             _ = LoadItems();
             CommandSetup();
@@ -103,7 +103,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                     {
                         { "purchase", SelectedItem }
                     };
-                    await navigationService.Navigate(nameof(ProductsPage), navigationParameters);
+                    await _navigationService.Navigate(nameof(ProductsPage), navigationParameters);
                 }
             }
             catch (Exception ex)
@@ -115,7 +115,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private async void On_Add(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(await _purchaseDB.GetPurchaseByDate(SelectedDate) is Purchase purchase)
+            if(await _purchaseRepository.GetPurchaseByDate(SelectedDate) is Purchase purchase)
             {
                 ProductStatistics stat = purchase.ProductStatistics;
                 purchase_proxy_item = Factory.CreateObject(stat.Adapt<ProductStatisticsDto>());
@@ -134,8 +134,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public override async Task LoadItems()
         {
             ShowActivity();
-            await Task.Delay(1);
-            IEnumerable<Purchase> _purchases = _purchaseDB.GetAllItems();
+            IEnumerable<Purchase> _purchases = await _purchaseRepository.GetAllItemsAsync();
             var data = _purchases.Adapt<List<PurchaseDto>>();
             SetItems(data);
             HideActivity();

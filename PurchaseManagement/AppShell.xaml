@@ -16,7 +16,7 @@
     </Shell.FlyoutHeader>
     <FlyoutItem FlyoutDisplayOptions="AsSingleItem"
                 Shell.NavBarHasShadow="True"
-                IsVisible="{OnPlatform Android=True, Default=False}"
+                IsVisible="{OnPlatform Android=True, Default=True}"
                 Title="Home">
         <FlyoutItem.FlyoutIcon>
             <FontImageSource FontFamily="MaterialRegular"
@@ -57,7 +57,7 @@
         </ShellContent>
     </FlyoutItem>
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems"
-                IsVisible="{OnPlatform Android=False, Default=True}"
+                IsVisible="{OnPlatform Android=True, Default=True}"
                 Title="Market">
         <ShellContent Title="Market"
                       ContentTemplate="{DataTemplate local:MainPage}"

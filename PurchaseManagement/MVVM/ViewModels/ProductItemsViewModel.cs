@@ -32,11 +32,11 @@ namespace PurchaseManagement.MVVM.ViewModels
     public class ProductItemsViewModel: PurchaseItemsViewModelLoadable<ProductDto>, INavigatedEvents
     {
         #region Private properties
-        private readonly INavigationService navigationService;
-        private readonly IPurchaseRepository _purchaseDB;
+        private readonly INavigationService _navigationService;
+        private readonly IPurchaseRepository _purchaseRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
-        private ExportContext<ProductDto> exportContext;
+        private ExportContext<ProductDto> _exportContext;
         #endregion
 
         #region Public Properties
@@ -83,12 +83,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ProductItemsViewModel(
             IPurchaseRepository purchaseDB,
             INavigationService navigationService,
-            ExportContext<ProductDto> context
-            )
+            ExportContext<ProductDto> context)
         {
-            _purchaseDB = purchaseDB;
-            exportContext = context;
-            this.navigationService = navigationService;
+            _purchaseRepository = purchaseDB;
+            _exportContext = context;
+            _navigationService = navigationService;
             _notification = new ToastNotification();
             _messageBox = new MessageBoxNotification();
             RegisterToMessage();
@@ -99,7 +98,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Handlers
         private async void OnBackCommand(object parameter)
         {
-            await navigationService.Navigate("..");
+            await _navigationService.Navigate("..");
         }
         public async void OnOpenAnalyticCommand(object parameter)
         {
@@ -107,12 +106,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 { "product", GetItems() }
             };
-            await navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
+            await _navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
             
         }
         private void OnExportToPdfCommand(object parameter)
         {
-            exportContext.ExportTo("", GetItems());
+            _exportContext.ExportTo("", GetItems());
         }
         private async void On_GetMap(object parameter)
         {
@@ -122,7 +121,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             if (IsSelected)
             {
                 Location location = await ProductViewModelUtility.GetCurrentLocation();
-                if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purch)
+                if (await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purch)
                 {
                     var loc = location.Adapt<ProductLocation>();
                     SelectedItem.ProductLocation = loc.Adapt<LocationDto>();
@@ -179,7 +178,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    Purchase purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    Purchase purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
                     purchase.Remove(SelectedItem.Adapt<Product>());
                     await ViewModelUtility.SaveAndUpdateUI(purchase);
 
@@ -204,7 +203,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 { "details", SelectedItem }
             };
                 //SelectedItem = null;
-                await navigationService.Navigate(nameof(PurchaseItemDetails), navigationParameters);
+                await _navigationService.Navigate(nameof(PurchaseItemDetails), navigationParameters);
             }
         }
         #endregion
@@ -216,9 +215,9 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if (p.Purchase is PurchaseDto purchaseX)
                 {
-                    var purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    var purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
                     ViewModelUtility.UpdateProduct(purchase, p.Adapt<Product>());
-                    await _purchaseDB.SaveOrUpdateItemAsync(purchase);
+                    await _purchaseRepository.SaveOrUpdateItemAsync(purchase);
                 }
             });
         }
@@ -237,7 +236,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         private async void UpdateUI()
         {
-            var purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            var purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             ViewModelLocator.MainViewModel.UpdateItem(purchase.Adapt<PurchaseDto>());
         }
         

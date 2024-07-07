@@ -1,11 +1,9 @@
 ﻿using FluentValidation.Results;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.MVVM.Models.MarketModels;
-using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Validations;
-using Mapster;
 using PurchaseManagement.Commons.Notifications.Implementations;
 
 namespace PurchaseManagement.Utilities

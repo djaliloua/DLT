@@ -7,17 +7,10 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public class AccountRepository : GenericRepository<Account>,IAccountRepository
     {
-        private readonly IGenericRepository<Account> _accountRepository;
-        public AccountRepository(IGenericRepository<Account> accountRepository)
-        {
-            _accountRepository = accountRepository;
-        }
-
         public override async Task<IEnumerable<Account>> GetAllItemsAsync()
         {
             return await _table.FromSql($"select *\r\nfrom Accounts acc\r\norder by acc.DateTime desc;").ToListAsync();
         }
-
         public async Task<IList<Statistics>> GetStatisticsAsync()
         {
             string sql = "select AC.DateTime, avg(AC.Money) AvgMoney, sum(AC.Money) TotalMoney, count(AC.Money) CountMoney\r\nfrom Accounts AC\r\ngroup by AC.Day\r\nOrder by AC.Day desc\r\n;";
