@@ -13,7 +13,7 @@ public partial class AppShell : Shell
 		Routing.RegisterRoute(nameof(DetailPage), typeof(DetailPage));
         // Debt pages
         Routing.RegisterRoute(nameof(DebtDetailsPage), typeof(DebtDetailsPage));
-        Routing.RegisterRoute(nameof(DebtSettingPage), typeof(DebtSettingPage));//c
+        Routing.RegisterRoute(nameof(DebtSettingPage), typeof(DebtSettingPage));
         Routing.RegisterRoute(nameof(DebtFormPage), typeof(DebtFormPage));
         // Shared pages
         Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));

@@ -1,18 +1,15 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using ManagPassWord.DataAcessLayer;
+using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
-using ManagPassWord.ViewModels.Debt;
 using MVVM;
 using System.Windows.Input;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Devices;
-using Microsoft.Maui.Storage;
 
 namespace ManagPassWord.ViewModels.Password
 {
     public class PasswordSettingViewModel:BaseViewModel
     {
         private string basePath = FileSystem.AppDataDirectory;
-        private readonly IRepository<User> _db;
+        private readonly IPasswordRepository _userRepository;
         private string temp;
         private string _fileName = "";
         public string FileName
@@ -28,9 +25,9 @@ namespace ManagPassWord.ViewModels.Password
         };
         public ICommand ExportCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
-        public PasswordSettingViewModel(IRepository<User> db)
+        public PasswordSettingViewModel(IPasswordRepository db)
         {
-            _db = db;
+            _userRepository = db;
             temp = Path.Combine(basePath, "passwords.csv");
             load();
             OpenCommand = new Command(open);
@@ -55,11 +52,11 @@ namespace ManagPassWord.ViewModels.Password
         }
         private async void export(object sender)
         {
-            var res = await _db.SaveToCsv();
+            var res = await _userRepository.SaveToCsv();
             if (res == 1)
             {
-                FileName = Path.Combine(UserRepository.folderName, "passwords.txt");
-                await MessageDialogs.ShowToast($"{UserRepository.folderName}");
+                //FileName = Path.Combine(UserRepository.folderName, "passwords.txt");
+                //await MessageDialogs.ShowToast($"{UserRepository.folderName}");
             }
 
         }

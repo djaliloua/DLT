@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using ManagPassWord.Data_AcessLayer;
+﻿using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
+using Mapster;
 using Patterns;
 using System.Windows.Input;
 
@@ -18,13 +18,12 @@ namespace ManagPassWord.ViewModels.Password
     }
     public class MainPageViewModel : LoadableMainPageViewModel<UserDTO>
     {
-        private readonly IRepository<User> repository;
-        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private readonly IPasswordRepository repository;
         public ICommand AddCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand SettingCommand { get; private set; }
         public ICommand AboutCommand { get; private set; }
-        public MainPageViewModel(IRepository<User> _db)
+        public MainPageViewModel(IPasswordRepository _db)
         {
             repository = _db;
             load();
@@ -47,9 +46,9 @@ namespace ManagPassWord.ViewModels.Password
         }
         public override async Task LoadItems()
         {
-            var repo = await repository.GetAll();
-            var data = repo.Select(mapper.Map<UserDTO>);
-            SetItems(data.ToList());
+            var repo = await repository.GetAllItemsAsync();
+            var data = repo.Adapt<List<UserDTO>>();
+            SetItems(data);
         }
         
         private async void On_Open(object sender)

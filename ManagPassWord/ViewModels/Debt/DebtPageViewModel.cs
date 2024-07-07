@@ -1,8 +1,9 @@
-﻿using AutoMapper;
-using ManagPassWord.Data_AcessLayer;
+﻿using ManagPassWord.DataAcessLayer;
+using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
 using ManagPassWord.Pages.Debt;
+using Mapster;
 using Patterns;
 using System.Windows.Input;
 
@@ -19,8 +20,7 @@ namespace ManagPassWord.ViewModels.Debt
     }
     public class DebtPageViewModel : LoadableDebtPageViewModel<DebtModelDTO>, IQueryAttributable
     {
-        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
-        private readonly IRepository<DebtModel> _db;
+        private readonly IGenericRepository<DebtModel> _debtRepository;
         private string _name;
         public string Name
         {
@@ -41,9 +41,9 @@ namespace ManagPassWord.ViewModels.Debt
         public ICommand SettingCommand { get; private set; }
         public ICommand AboutCommand { get; private set; }
         #endregion
-        public DebtPageViewModel(IRepository<DebtModel> db)
+        public DebtPageViewModel(IGenericRepository<DebtModel> db)
         {
-            _db = db;
+            _debtRepository = db;
             load();
             CommandSetups();
             MessagingCenter.Subscribe<DebtDetailsViewModel, DebtModelDTO>(this, "update", (sender, arg) =>
@@ -97,8 +97,8 @@ namespace ManagPassWord.ViewModels.Debt
         }
         public override async Task LoadItems()
         {
-            var repo = await _db.GetAll();
-            var data = repo.Select(mapper.Map<DebtModelDTO>).ToList();
+            var repo = await _debtRepository.GetAllItemsAsync();
+            var data = repo.Adapt<List<DebtModelDTO>>();
             SetItems(data);
         }
         

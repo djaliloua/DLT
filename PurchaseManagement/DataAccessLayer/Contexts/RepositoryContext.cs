@@ -14,7 +14,7 @@ namespace PurchaseManagement.DataAccessLayer.Contexts
         private string DatabasePurchase;
         public RepositoryContext()
         {
-            DatabasePurchase = Path.Combine(FileSystem.AppDataDirectory, "Purchase.db3");
+            DatabasePurchase = Path.Combine(FileSystem.AppDataDirectory, "Management.db3");
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

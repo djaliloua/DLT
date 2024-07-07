@@ -1,7 +1,4 @@
-﻿using MVVM;
-using System.Reflection;
-
-namespace ManagPassWord
+﻿namespace ManagPassWord
 {
     public static class Resolver
     {

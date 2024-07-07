@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using ManagPassWord.Data_AcessLayer;
+﻿using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
+using Mapster;
 using MVVM;
 using System.Windows.Input;
 
@@ -9,8 +9,7 @@ namespace ManagPassWord.ViewModels.Password
 {
     public class DetailViewModel : BaseViewModel, IQueryAttributable
     {
-        private readonly IRepository<User> _db;
-        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private readonly IPasswordRepository _db;
         private UserDTO _userDetail;
         public UserDTO UserDetail
         {
@@ -19,7 +18,7 @@ namespace ManagPassWord.ViewModels.Password
         }
         public ICommand EditCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
-        public DetailViewModel(IRepository<User> db)
+        public DetailViewModel(IPasswordRepository db)
         {
             _db = db;
             EditCommand = new Command(On_Edit);
@@ -31,7 +30,7 @@ namespace ManagPassWord.ViewModels.Password
             {
                 if (UserDetail.Id != 0)
                 {
-                    await _db.DeleteById(mapper.Map<User>(UserDetail));
+                    await _db.DeleteItemAsync(UserDetail.Adapt<User>());
                     ViewModelLocator.MainPageViewModel.DeleteItem(UserDetail);
                 }
                 await Shell.Current.GoToAsync("..");

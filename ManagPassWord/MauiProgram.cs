@@ -5,6 +5,7 @@ using Plugin.Fingerprint.Abstractions;
 using Plugin.Fingerprint;
 using CommunityToolkit.Maui;
 using ManagPassWord.ExtensionMethods;
+using Mapster;
 
 namespace ManagPassWord;
 public static class MauiProgram
@@ -16,8 +17,11 @@ public static class MauiProgram
         builder
             .UseUraniumUI()
             .UseMauiCommunityToolkit()
+            .ContextExtension()
             .ViewModelExtension()
             .PagesExtensions()
+            .RepositoryExtension()
+            .CommonsExtension()
             .UseUraniumUIMaterial()
             .UseMauiApp<App>()
             .ConfigureLifecycleEvents(events =>
@@ -49,7 +53,8 @@ events.AddAndroid(android => android
 #endif
         
         builder.Services.AddSingleton(typeof(IFingerprint), CrossFingerprint.Current);
-       
+        TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
+
         return builder.Build();
     }
 }

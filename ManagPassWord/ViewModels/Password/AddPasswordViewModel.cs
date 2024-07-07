@@ -1,7 +1,8 @@
-﻿using AutoMapper;
-using ManagPassWord.Data_AcessLayer;
+﻿using ManagPassWord.DataAcessLayer;
+using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
+using Mapster;
 using MVVM;
 using System.Windows.Input;
 
@@ -9,8 +10,7 @@ namespace ManagPassWord.ViewModels.Password
 {
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
-        private readonly IRepository<User> _db;
-        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private readonly IPasswordRepository _db;
         private UserDTO _user;
         public UserDTO User
         {
@@ -27,7 +27,7 @@ namespace ManagPassWord.ViewModels.Password
         private bool CanOpen => _current != null;
         public ICommand SaveCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
-        public AddPasswordViewModel(IRepository<User> db)
+        public AddPasswordViewModel(IPasswordRepository db)
         {
             _db = db;
             User = new();
@@ -50,8 +50,8 @@ namespace ManagPassWord.ViewModels.Password
                 {
                     if (User.IsValid())
                     {
-                        temp_item = await _db.SaveItemAsync(mapper.Map<User>(User));
-                        ViewModelLocator.MainPageViewModel.AddItem(mapper.Map<UserDTO>(temp_item));
+                        temp_item = await _db.SaveOrUpdateItemAsync(User.Adapt<User>());
+                        ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<UserDTO>());
                     }
                     else
                     {
@@ -61,8 +61,8 @@ namespace ManagPassWord.ViewModels.Password
                 }
                 else
                 {
-                    await _db.SaveItemAsync(mapper.Map<User>(User));
-                    ViewModelLocator.MainPageViewModel.UpdateItem(mapper.Map<UserDTO>(User));
+                    await _db.SaveOrUpdateItemAsync(User.Adapt<User>());
+                    ViewModelLocator.MainPageViewModel.UpdateItem(User.Adapt<UserDTO>());
                 }
                 await Shell.Current.GoToAsync("..");
             }

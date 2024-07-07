@@ -1,10 +1,8 @@
-﻿using AutoMapper;
-using ManagPassWord.Data_AcessLayer;
+﻿using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
+using Mapster;
 using MVVM;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Debt
@@ -48,8 +46,7 @@ namespace ManagPassWord.ViewModels.Debt
     }
     public class DebtDetailsViewModel:BaseViewModel, IQueryAttributable
     {
-        private readonly IRepository<DebtModel> _db;
-        private readonly Mapper mapper = MapperConfig.InitializeAutomapper();
+        private readonly IGenericRepository<DebtModel> _db;
         private DebtModelDTO debt = new();
         public DebtModelDTO DebtDetails
         {
@@ -63,7 +60,7 @@ namespace ManagPassWord.ViewModels.Debt
         #endregion
 
         #region Constructor
-        public DebtDetailsViewModel(IRepository<DebtModel> db)
+        public DebtDetailsViewModel(IGenericRepository<DebtModel> db)
         {
             _db = db;
             CommandSetup();
@@ -83,7 +80,7 @@ namespace ManagPassWord.ViewModels.Debt
             
             if(DebtDetails != null)
             {
-                if (await _db.SaveItemAsync(mapper.Map<DebtModel>(DebtDetails)) is DebtModel debt && debt.Id != 0)
+                if (await _db.SaveOrUpdateItemAsync(DebtDetails.Adapt<DebtModel>()) is DebtModel debt && debt.Id != 0)
                 {
                     MessagingCenter.Send(this, "update", debt);
                     
@@ -97,7 +94,7 @@ namespace ManagPassWord.ViewModels.Debt
             {
                 if (DebtDetails.Id != 0)
                 {
-                    await _db.DeleteById(mapper.Map<DebtModel>(DebtDetails));
+                    await _db.DeleteItemAsync(DebtDetails.Adapt<DebtModel>());
                     await Shell.Current.GoToAsync("..");
                     ViewModelLocator.DebtPageViewModel.DeleteItem(DebtDetails);
                 }

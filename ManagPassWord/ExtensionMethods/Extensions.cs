@@ -1,11 +1,14 @@
-﻿using ManagPassWord.Data_AcessLayer;
+﻿using ManagPassWord.DataAcessLayer.Implementations;
+using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
+using Mapster;
 using ManagPassWord.Pages.Debt;
 using ManagPassWord.ViewModels;
 using ManagPassWord.ViewModels.Debt;
 using ManagPassWord.ViewModels.Password;
 using ManagPassWord.Views;
+using ManagPassWord.DataAcessLayer.Contexts;
 
 namespace ManagPassWord.ExtensionMethods
 {
@@ -42,10 +45,28 @@ namespace ManagPassWord.ExtensionMethods
             mauiAppBuilder.Services.AddSingleton<PasswordSettingViewModel>();
             mauiAppBuilder.Services.AddSingleton<DebtFormViewModel>();
 
-            //Repositories
-            mauiAppBuilder.Services.AddSingleton<IRepository<User>, UserRepository>();
-            mauiAppBuilder.Services.AddTransient<IRepository<DebtModel>, DebtRepository>();
+            
+            //
+            
 
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder ContextExtension(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddScoped<RepositoryContext>();
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder RepositoryExtension(this MauiAppBuilder mauiAppBuilder)
+        {
+            //Repositories
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<User>, GenericRepository<User>>();
+            mauiAppBuilder.Services.AddTransient<IGenericRepository<DebtModel>, GenericRepository<DebtModel>>();
+            mauiAppBuilder.Services.AddScoped<IPasswordRepository, PasswordRepository>();
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder CommonsExtension(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddMapster();
             return mauiAppBuilder;
         }
     }

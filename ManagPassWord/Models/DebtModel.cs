@@ -1,5 +1,4 @@
 ﻿using MVVM;
-using SQLite;
 
 namespace ManagPassWord.Models
 {
@@ -74,12 +73,9 @@ namespace ManagPassWord.Models
         private string amount = "";
         public DebtModelDTO Clone() => MemberwiseClone() as DebtModelDTO;
     }
-    [Table("Debts")]
-    public class DebtModel
+
+    public class DebtModel:BaseEntity
     {
-        [PrimaryKey, AutoIncrement]
-        public int Id { get; set; }
-        [MaxLength(100)]
         public string Name
         {
             get => name;
@@ -88,7 +84,6 @@ namespace ManagPassWord.Models
                 name = value;
             }
         }
-        [MaxLength(250)]
         public string Description
         {
             get => description;
