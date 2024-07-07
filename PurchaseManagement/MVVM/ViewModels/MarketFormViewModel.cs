@@ -39,8 +39,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Private Methods
         public int Counter = 0;
         private readonly IPurchaseRepository _purchaseDB;
-        private readonly IGenericRepository<ProductStatistics> _statisticsDB;
-        private readonly IProductRepository _productRepository;
         private readonly INotification _toastNotification;
         private ProductValidation productValidation = new();
         #endregion
@@ -53,13 +51,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Constructor
-        public MarketFormViewModel(IPurchaseRepository db,
-            IGenericRepository<ProductStatistics> statisticsDB,
-            IProductRepository productRepository)
+        public MarketFormViewModel(IPurchaseRepository db)
         {
             _purchaseDB = db;
-            _statisticsDB = statisticsDB;
-            _productRepository = productRepository;
             _toastNotification = new ToastNotification();
             IsSavebtnEnabled = true;
             CommandSetup();

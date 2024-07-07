@@ -19,7 +19,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             _context = ServiceLocator.ViewModelLocator.GetService<RepositoryContext>();
             _table = _context.Set<T>();
-            //_context.Database.EnsureDeleted();
             _context.Database.EnsureCreated();
         }
         public virtual void DeleteItem(T item)

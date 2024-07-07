@@ -70,7 +70,7 @@ namespace Patterns
         {
             return _items.Contains(item);
         }
-        public void SetItems(IList<TItem> items)
+        public virtual void SetItems(IList<TItem> items)
         {
             Items = new ObservableCollection<TItem>(items);
             Notify();

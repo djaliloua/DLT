@@ -20,8 +20,12 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         protected override void Reorder()
         {
-            var data = Items.OrderByDescending(item => item.Id).ToList();
-            SetItems(data);
+          
+        }
+        public override void SetItems(IList<TItem> items)
+        {
+            var data = items.OrderByDescending(item => item.Id).ToList();
+            base.SetItems(data);
         }
 
     }
@@ -30,9 +34,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Private properties
         private readonly INavigationService navigationService;
         private readonly IPurchaseRepository _purchaseDB;
-        private readonly IGenericRepository<ProductStatistics> _statisticsDB;
-        private readonly IGenericRepository<MarketModels.ProductLocation> _locationRepository;
-        private readonly IProductRepository _productRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
         private ExportContext<ProductDto> exportContext;
@@ -79,19 +80,15 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Constructor
-        public ProductItemsViewModel(IProductRepository productRepository,
-            IGenericRepository<ProductStatistics> statisticsDB,
+        public ProductItemsViewModel(
             IPurchaseRepository purchaseDB,
             INavigationService navigationService,
-            ExportContext<ProductDto> context,
-            IGenericRepository<MarketModels.ProductLocation> locationRepository)
+            ExportContext<ProductDto> context
+            )
         {
-            _productRepository = productRepository;
-            _statisticsDB = statisticsDB;
             _purchaseDB = purchaseDB;
             exportContext = context;
             this.navigationService = navigationService;
-            _locationRepository = locationRepository;
             _notification = new ToastNotification();
             _messageBox = new MessageBoxNotification();
             RegisterToMessage();
