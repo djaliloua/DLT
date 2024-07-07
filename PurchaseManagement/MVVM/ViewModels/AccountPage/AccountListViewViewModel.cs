@@ -18,7 +18,6 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         private INotification _snackBarNotification;
         private INotification _toastNotification;
         private INotification _messageBox;
-        private IMapper mapper;
         #endregion
 
         #region Properties
@@ -36,10 +35,9 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository _accountRepository, IMapper _mapper)
+        public AccountListViewViewModel(IAccountRepository _accountRepository)
         {
             accountRepository = _accountRepository;
-            mapper = _mapper;
             SetupNotification();
             Init();
             SetupComands();
