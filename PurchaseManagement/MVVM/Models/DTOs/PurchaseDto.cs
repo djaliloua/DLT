@@ -1,6 +1,7 @@
 ﻿
 
 using MVVM;
+using System.Collections.ObjectModel;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
 {
@@ -24,20 +25,15 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _purchase_Date;
             set => UpdateObservable(ref _purchase_Date, value);
         }
-        private IList<ProductDto> _purchase_Items;
-        public IList<ProductDto> Products
+        private ObservableCollection<ProductDto> _purchase_Items;
+        public ObservableCollection<ProductDto> Products
         {
             get => _purchase_Items;
             set => UpdateObservable(ref _purchase_Items, value);
         }
-        private int purchase_Stat_Id;
-        public int ProductStatId
-        {
-            get => purchase_Stat_Id;
-            set => UpdateObservable(ref purchase_Stat_Id, value);
-        }
+
         private ProductStatisticsDto _purchaseSatistics;
-        public ProductStatisticsDto PurchaseStatistics
+        public ProductStatisticsDto ProductStatistics
         {
             get => _purchaseSatistics;
             set => UpdateObservable(ref _purchaseSatistics, value);

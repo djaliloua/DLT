@@ -14,14 +14,14 @@ namespace PurchaseManagement.Utilities
         public static async Task<ProductStatistics> CreateOrUpdatePurchaseStatistics(ProductStatistics item)
         {
             item ??= new();
-            item.PurchaseCount = await CountPurchaseItems(item.Purchase_Id);
-            item.TotalPrice = await GetTotalValue(item.Purchase_Id, "Price");
-            item.TotalQuantity = await GetTotalValue(item.Purchase_Id, "Quantity");
+            //item.PurchaseCount = await CountPurchaseItems(item.Purchase_Id);
+            //item.TotalPrice = await GetTotalValue(item.Purchase_Id, "Price");
+            //item.TotalQuantity = await GetTotalValue(item.Purchase_Id, "Quantity");
             return item;
         }
         private static async Task<double> GetTotalValue(int id, string colname)
         {
-            var d = await _productRepository.GetAllItemById(id);
+            var d = await _productRepository.GetAllItemByIdAsync(id);
             double result = 0;
             if (colname == "Price")
                 result = d.Sum(x => x.Item_Price);
@@ -31,7 +31,7 @@ namespace PurchaseManagement.Utilities
         }
         private static async Task<int> CountPurchaseItems(int purchase_id)
         {
-            IList<Product> items = await _productRepository.GetAllItemById(purchase_id);
+            IList<Product> items = await _productRepository.GetAllItemByIdAsync(purchase_id);
             return items.Count();
         }
     }

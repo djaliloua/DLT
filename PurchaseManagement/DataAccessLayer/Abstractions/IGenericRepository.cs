@@ -1,10 +1,18 @@
 ﻿namespace PurchaseManagement.DataAccessLayer.Abstractions
 {
-    public interface IGenericRepository<TItem> where TItem : class
+    public interface IGenericRepository<TItem>:IGenericRepositoryAsync<TItem> where TItem : class
     {
-        Task<TItem> GetItemById(int id);
-        Task<IEnumerable<TItem>> GetAllItems();
-        Task<TItem> SaveOrUpdateItem(TItem item);
-        Task DeleteItem(TItem item);
+        TItem GetItemById(int id);
+        IEnumerable<TItem> GetAllItems();
+        TItem SaveOrUpdateItem(TItem item);
+        void DeleteItem(TItem item);
+    }
+    public interface IGenericRepositoryAsync<TItem> where TItem : class
+    {
+        Task<TItem> GetItemByIdAsync(int id);
+        Task<IEnumerable<TItem>> GetAllItemsAsync();
+        Task<TItem> SaveOrUpdateItemAsync(TItem item);
+        Task DeleteItemAsync(TItem item);
+       
     }
 }

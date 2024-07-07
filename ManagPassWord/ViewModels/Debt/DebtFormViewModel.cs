@@ -27,7 +27,7 @@ namespace ManagPassWord.ViewModels.Debt
         private async void On_Save(object sender)
         {
             DebtModel debtitem = await _db.SaveItemAsync(mapper.Map<DebtModel>(Debt));
-            ViewModelLocator.DebtPageViewModel.AddOrUpdateItem(mapper.Map<DebtModelDTO>(debtitem));
+            ViewModelLocator.DebtPageViewModel.SaveOrUpdateItem(mapper.Map<DebtModelDTO>(debtitem));
             await Shell.Current.GoToAsync("..");
         }
 

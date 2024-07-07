@@ -12,7 +12,7 @@ namespace Patterns.Abstractions
         int NumberOfItems { get; set; }
         void SetItems(IList<TItem> items);
         ObservableCollection<TItem> GetItems();
-        void AddOrUpdateItem(TItem item);
+        void SaveOrUpdateItem(TItem item);
         void DeleteAllItems();
         void SelectedItemCallBack(TItem item);
         void ItemsCallBack(IList<TItem> item);

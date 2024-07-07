@@ -48,7 +48,7 @@ namespace ManagPassWord.ViewModels.Debt
             CommandSetups();
             MessagingCenter.Subscribe<DebtDetailsViewModel, DebtModelDTO>(this, "update", (sender, arg) =>
             {
-                AddOrUpdateItem(arg);
+                SaveOrUpdateItem(arg);
             });
         }
         private void CommandSetups()

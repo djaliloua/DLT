@@ -2,8 +2,6 @@
 {
     public class Account:BaseEntity
     {
-        //[PrimaryKey, AutoIncrement]
-        //public int Id { get; set; }
         public double Money { get; set; }
         public DateTime DateTime { get; set; }
         public string Day { get; set; }

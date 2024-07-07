@@ -1,10 +1,10 @@
-﻿using SQLite;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace PurchaseManagement.MVVM.Models
 {
     public abstract class BaseEntity
     {
-        [PrimaryKey, AutoIncrement]
+        [Key]
         public int Id { get; set; }
     }
 }

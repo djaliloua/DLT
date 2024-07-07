@@ -3,7 +3,6 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using Patterns;
 using PurchaseManagement.MVVM.Models.Accounts;
-using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.Commons;
 using Mapster;
 using MapsterMapper;
@@ -102,7 +101,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         public override async Task LoadItems()
         {
             ShowActivity();
-            IEnumerable<Account> data = await accountRepository.GetAllItems();
+            IEnumerable<Account> data =  await accountRepository.GetAllItemsAsync();
             var dt = data.Adapt<List<AccountDTO>>();
             SetItems(dt);
             HideActivity();
@@ -123,7 +122,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             
             if (!ItemExist(item))
             {
-                var newAccount = await accountRepository.SaveOrUpdateItem(item.Adapt<Account>());
+                var newAccount = await accountRepository.SaveOrUpdateItemAsync(item.Adapt<Account>());
                 base.AddItem(newAccount.Adapt<AccountDTO>());
                 await _toastNotification.ShowNotification($"{newAccount.Money} added");
             }
@@ -141,7 +140,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
                     var acount = item.Adapt<Account>();
-                    await accountRepository.DeleteItem(acount);
+                    await accountRepository.DeleteItemAsync(acount);
                     base.DeleteItem(item);
                     await _toastNotification.ShowNotification($"{item.Money} deleted");
                 }

@@ -75,12 +75,13 @@ namespace Patterns
             Items = new ObservableCollection<TItem>(items);
             Notify();
         }
-        public virtual void AddOrUpdateItem(TItem item)
+        public virtual void SaveOrUpdateItem(TItem item)
         {
-            if (!Items.Contains(item))
+            if (!ItemExist(item))
                 AddItem(item);
             else
                 UpdateItem(item);
+            
             Notify();
         }
         public void DeleteAllItems()
@@ -113,6 +114,7 @@ namespace Patterns
                 Items.RemoveAt(index);
                 Items.Insert(index, item);
             }
+            Reorder();
         }
 
         public virtual ObservableCollection<TItem> GetItems()

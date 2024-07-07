@@ -18,6 +18,7 @@ namespace PurchaseManagement
             builder
                 .PagesExtensions()
                 .UtilityExtension()
+                .ContextExtension()
                 .RepositoryExtension()
                 .ViewModelsExtension()
                 .UseMauiCommunityToolkit()

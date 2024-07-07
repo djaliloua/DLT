@@ -1,14 +1,7 @@
-﻿using SQLite;
-
-namespace PurchaseManagement.MVVM.Models.MarketModels
+﻿namespace PurchaseManagement.MVVM.Models.MarketModels
 {
-    [Table("Location")]
-    public class Location:BaseEntity
+    public class ProductLocation:BaseEntity
     {
-        //[PrimaryKey, AutoIncrement]
-        //public int Location_Id { get; set; }
-        public int Purchase_Item_Id { get; set; }
-        public int Purchase_Id { get; set; }
         public double? Course { get; set; }
         public double? Speed { get; set; }
         public bool ReducedAccuracy { get; set; }
@@ -19,5 +12,7 @@ namespace PurchaseManagement.MVVM.Models.MarketModels
         public double Latitude { get; set; }
         public AltitudeReferenceSystem AltitudeReferenceSystem { get; set; }
         public bool IsFromMockProvider { get; set; }
+        public int ProductId { get; set; }
+        public virtual Product Product { get; set; }
     }
 }

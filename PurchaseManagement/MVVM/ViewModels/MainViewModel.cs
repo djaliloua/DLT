@@ -9,6 +9,7 @@ using PurchaseManagement.Commons;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
 using Mapster;
+
 namespace PurchaseManagement.MVVM.ViewModels
 {
     public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseDto
@@ -24,7 +25,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             TItem item1 = GetItemByDate();
             return base.Index(item1);
         }
-        
+        public override bool ItemExist(TItem item)
+        {
+            return Items.FirstOrDefault(x => x.Id==item.Id) != null;
+        }
         protected override void Reorder()
         {
             var data = GetItems().OrderByDescending(a => a.PurchaseDate).ToList();
@@ -112,7 +116,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             ProductDto purchase_proxy_item;
             if(GetItemByDate() is PurchaseDto purchase)
             {
-                ProductStatistics stat = await _statisticsDB.GetItemById(purchase.Id);
+                ProductStatistics stat = _statisticsDB.GetItemById(purchase.Id);
                 purchase_proxy_item = Factory.CreateObject(stat.Adapt<ProductStatisticsDto>());
             }
             else
@@ -129,7 +133,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         public override async Task LoadItems()
         {
             ShowActivity();
-            IEnumerable<Purchase> _purchases = await _purchaseDB.GetAllItems();
+            await Task.Delay(1);
+            IEnumerable<Purchase> _purchases = _purchaseDB.GetAllItems();
             var data = _purchases.Adapt<List<PurchaseDto>>();
             SetItems(data);
             HideActivity();

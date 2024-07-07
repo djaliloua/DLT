@@ -4,6 +4,7 @@ namespace PurchaseManagement.DataAccessLayer.Abstractions
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<IList<Product>> GetAllItemById(int id);
+        IList<Product> GetAllItemById(int id);
+        Task<IList<Product>> GetAllItemByIdAsync(int id);
     }
 }

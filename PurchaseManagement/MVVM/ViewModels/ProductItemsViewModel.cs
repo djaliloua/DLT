@@ -1,7 +1,6 @@
 ﻿using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
-using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
@@ -32,7 +31,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private readonly INavigationService navigationService;
         private readonly IPurchaseRepository _purchaseDB;
         private readonly IGenericRepository<ProductStatistics> _statisticsDB;
-        private readonly IGenericRepository<MarketModels.Location> _locationRepository;
+        private readonly IGenericRepository<MarketModels.ProductLocation> _locationRepository;
         private readonly IProductRepository _productRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
@@ -85,7 +84,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             IPurchaseRepository purchaseDB,
             INavigationService navigationService,
             ExportContext<ProductDto> context,
-            IGenericRepository<MarketModels.Location> locationRepository)
+            IGenericRepository<MarketModels.ProductLocation> locationRepository)
         {
             _productRepository = productRepository;
             _statisticsDB = statisticsDB;
@@ -125,27 +124,38 @@ namespace PurchaseManagement.MVVM.ViewModels
             SelectedItem = productDto;
             if (IsSelected)
             {
-                Microsoft.Maui.Devices.Sensors.Location location = await ProductViewModelUtility.GetCurrentLocation();
-                if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase)
+                Location location = await ProductViewModelUtility.GetCurrentLocation();
+                if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purch)
                 {
                     // Update Product with its corresponding location
-                    var loc = location.Adapt<MarketModels.Location>();
-                    SelectedItem.Location = loc.Adapt<LocationDto>();
-                    loc.Purchase_Id = SelectedItem.PurchaseId;
-                    loc.Purchase_Item_Id = SelectedItem.Id;
-                    SelectedItem.IsLocation = SelectedItem.Location != null;
-                    loc = await _locationRepository.SaveOrUpdateItem(loc);
-                    SelectedItem.Location_Id = loc.Id;
-                    await _productRepository.SaveOrUpdateItem(SelectedItem.Adapt<Product>());
+                    var loc = location.Adapt<ProductLocation>();
+                    SelectedItem.ProductLocation = loc.Adapt<LocationDto>();
+                    SelectedItem.IsLocation = SelectedItem.ProductLocation != null;
+
+                    updateProduct(purch, SelectedItem.Adapt<Product>());
+                    await SaveAndUpdateUI(purch);
+
                     await _notification.ShowNotification("Got location");
-                    // Update UI
-                    UpdateUI();
                 }
 
             }
             else
                 await _messageBox.ShowNotification("Please select the item first");
             HideActivity();
+        }
+        private void updateProduct(Purchase purchase, Product product)
+        {
+            for (int i = 0; i < purchase.Products.Count; i++)
+            {
+                if (purchase.Products[i].Id == product.Id)
+                    purchase.Products[i] = product;
+            }
+        }
+        private async Task SaveAndUpdateUI(Purchase purchase)
+        {
+            Purchase purchaseB = await _purchaseDB.SaveOrUpdateItemAsync(purchase);
+            PurchaseDto p = purchaseB.Adapt<PurchaseDto>();
+            ViewModelLocator.MainViewModel.SaveOrUpdateItem(p);
         }
         private async void OnEdit(object parameter)
         {
@@ -171,8 +181,8 @@ namespace PurchaseManagement.MVVM.ViewModels
             if (IsSelected)
             {
                 
-                if (SelectedItem.Location != null)
-                    await ProductViewModelUtility.NavigateToBuilding25(SelectedItem.Location.Adapt<Microsoft.Maui.Devices.Sensors.Location>());
+                if (SelectedItem.ProductLocation != null)
+                    await ProductViewModelUtility.NavigateToBuilding25(SelectedItem.ProductLocation.Adapt<Location>());
                 else
                     await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
             }
@@ -187,21 +197,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    await _productRepository.DeleteItem(SelectedItem.Adapt<Product>());
-                    // Update Stat
-                    ProductStatistics purchaseStatistics = await _statisticsDB.GetItemById(SelectedItem.PurchaseId);
-                    await _statisticsDB.SaveOrUpdateItem(await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(purchaseStatistics));
-                    //
-                    if(SelectedItem.Location_Id != 0)
-                    {
-                        MarketModels.Location loc = await _locationRepository.GetItemById(SelectedItem.Location_Id);
-                        if (loc != null)
-                            await _locationRepository.DeleteItem(loc);
-                    }
+                    Purchase purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    purchase.Remove(SelectedItem.Adapt<Product>());
+                    await SaveAndUpdateUI(purchase);
 
-                    // Update UI
-                    var p = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    ViewModelLocator.MainViewModel.UpdateItem(p.Adapt<PurchaseDto>());
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
                     
@@ -233,12 +232,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             WeakReferenceMessenger.Default.Register<ProductDto, string>(this, "update", async (sender, p) =>
             {
-                if (p.Purchase is PurchaseDto purchase)
+                if (p.Purchase is PurchaseDto purchaseX)
                 {
-                    p.PurchaseId = purchase.Id;
-                    await _productRepository.SaveOrUpdateItem(p.Adapt<Product>());
-                    var purchaseX = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    ViewModelLocator.MainViewModel.UpdateItem(purchaseX.Adapt<PurchaseDto>());
+                    var purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    updateProduct(purchase, p.Adapt<Product>());
+                    await _purchaseDB.SaveOrUpdateItemAsync(purchase);
                 }
             });
         }
@@ -257,7 +255,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         private async void UpdateUI()
         {
-            var purchase = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            var purchase = await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             ViewModelLocator.MainViewModel.UpdateItem(purchase.Adapt<PurchaseDto>());
         }
         

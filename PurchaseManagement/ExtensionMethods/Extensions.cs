@@ -15,6 +15,7 @@ using MauiNavigationHelper.NavigationLib.Services;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.Commons.ExportFileStrategies;
+using PurchaseManagement.DataAccessLayer.Contexts;
 
 
 namespace PurchaseManagement.ExtensionMethods
@@ -36,12 +37,17 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
             mauiAppBuilder.Services.AddSingleton<IProductRepository, ProductRepository>();
             mauiAppBuilder.Services.AddSingleton<IPurchaseRepository, PurchaseRepository>();
-            mauiAppBuilder.Services.AddSingleton<IGenericRepository<MarketModels.Location>, GenericRepository<MarketModels.Location>>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<MarketModels.ProductLocation>, GenericRepository<MarketModels.ProductLocation>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<ProductStatistics>, GenericRepository<ProductStatistics>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<Product>, GenericRepository<Product>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<Purchase>, GenericRepository<Purchase>>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepository<Account>, GenericRepository<Account>>();
 
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder ContextExtension(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddScoped<RepositoryContext>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder ViewModelsExtension(this MauiAppBuilder mauiAppBuilder)

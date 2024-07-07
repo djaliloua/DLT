@@ -1,54 +1,53 @@
-﻿using PurchaseManagement.DataAccessLayer.Abstractions;
-using SQLite;
-using SQLiteNetExtensions.Attributes;
+﻿using System.Collections.ObjectModel;
 
 namespace PurchaseManagement.MVVM.Models.MarketModels
 {
-    [Table("Purchases")]
     public class Purchase:BaseEntity
     {
         public string Title { get; set; }
         public string PurchaseDate { get; set; }
-        private IList<Product> _products;
-        [OneToMany(nameof(Id))]
-        public IList<Product> Products
-        {
-            get => _products;
-            set => _products = value;
-        }
-
-        [ForeignKey(typeof(ProductStatistics))]
-        public int ProductStatId { get; set; }
-        [OneToOne]
-        public ProductStatistics PurchaseStatistics { get; set; }
+        public virtual IList<Product> Products { get; set; } = new List<Product>();
+        public virtual ProductStatistics ProductStatistics { get; set; }
         public Purchase(string title, DateTime dt)
         {
             Title = title;
             PurchaseDate = dt.ToString("yyyy-MM-dd");
         }
+        public void Add(Product product)
+        {
+            Products.Add(product);
+            UpdateStatistics();
+        }
+        public void Remove(Product product)
+        {
+            Product p = Products.FirstOrDefault(p => p.Id==product.Id);  
+            int index = Products.IndexOf(p);
+            if(index >= 0)
+            {
+                Products.RemoveAt(index);
+            }
+            UpdateStatistics();
+        }
+        private double GetTotalValue(int id, string colname)
+        {
+            double result = 0;
+            if (colname == "Price")
+                result = Products.Sum(x => x.Item_Price);
+            else
+                result = Products.Sum(x => x.Item_Quantity);
+            return result;
+        }
+        public void UpdateStatistics()
+        {
+            ProductStatistics ??= new ProductStatistics();
+            ProductStatistics.Id = Id;
+            ProductStatistics.PurchaseCount = Products.Count;
+            ProductStatistics.TotalPrice = GetTotalValue(Id, "Price");
+            ProductStatistics.TotalQuantity = GetTotalValue(Id, "Quantity");
+        }
         public Purchase()
         {
 
-        }
-        public async Task LoadPurchaseStatistics(IGenericRepository<ProductStatistics> repository)
-        {
-            if (PurchaseStatistics == null)
-            {
-                PurchaseStatistics = await repository.GetItemById(Id);
-            }
-        }
-        public async Task LoadProducts(IProductRepository productRepository, IGenericRepository<MarketModels.Location> locationRepository)
-        {
-            if (Products == null)
-            {
-                Products ??= new List<Product>();
-                foreach (var item in await productRepository.GetAllItemById(Id))
-                {
-                    item.Purchase = this;
-                    await item.LoadLoacation(locationRepository);
-                    Products.Add(item);
-                }
-            }
         }
         public Purchase Clone() => MemberwiseClone() as Purchase;
     }
