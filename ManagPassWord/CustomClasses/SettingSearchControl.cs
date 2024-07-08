@@ -35,7 +35,7 @@ namespace ManagPassWord.CustomClasses
             // The following route works because route names are unique in this app.
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
-                            { "debt", (DebtModel)item }
+                            { "debt", (DebtModelDTO)item }
                         };
             await Shell.Current.GoToAsync(nameof(DebtDetailsPage), navigationParameter);
         }

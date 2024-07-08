@@ -1,4 +1,4 @@
-﻿using ManagPassWord.DataAcessLayer;
+﻿using CommunityToolkit.Mvvm.Messaging;
 using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
 using ManagPassWord.Pages;
@@ -9,7 +9,7 @@ using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Debt
 {
-    
+
     public abstract class LoadableDebtPageViewModel<TItem> : Loadable<TItem> where TItem : DebtModelDTO
     {
         protected override void Reorder()
@@ -46,10 +46,12 @@ namespace ManagPassWord.ViewModels.Debt
             _debtRepository = db;
             load();
             CommandSetups();
-            MessagingCenter.Subscribe<DebtDetailsViewModel, DebtModelDTO>(this, "update", (sender, arg) =>
+           
+            WeakReferenceMessenger.Default.Register<DebtModelDTO, string>(this, "update", (sender, arg) =>
             {
                 SaveOrUpdateItem(arg);
-            });
+            }
+            );
         }
         private void CommandSetups()
         {

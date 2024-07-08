@@ -65,7 +65,7 @@ namespace ManagPassWord.DataAcessLayer.Implementations
         {
             if (item.Id != 0)
             {
-                _context.Entry(item).OriginalValues.SetValues(item);
+                _context.Entry(item).State = EntityState.Modified;
             }
             else
             {
@@ -79,7 +79,7 @@ namespace ManagPassWord.DataAcessLayer.Implementations
         {
             if (item.Id != 0)
             {
-                _context.Entry(item).OriginalValues.SetValues(item);
+                _context.Entry(item).State = EntityState.Modified;
             }
             else
             {

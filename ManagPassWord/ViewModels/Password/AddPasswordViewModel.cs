@@ -38,7 +38,6 @@ namespace ManagPassWord.ViewModels.Password
         private async void On_Back(object sender)
         {
             await Shell.Current.GoToAsync("..");
-            //ClearFields();
         }
 
         private async void On_Save(object sender)
@@ -61,7 +60,7 @@ namespace ManagPassWord.ViewModels.Password
                 }
                 else
                 {
-                    await _db.SaveOrUpdateItemAsync(User.Adapt<User>());
+                    await _db.SaveOrUpdateItemAsync(await Update(User));
                     ViewModelLocator.MainPageViewModel.UpdateItem(User.Adapt<UserDTO>());
                 }
                 await Shell.Current.GoToAsync("..");
@@ -97,12 +96,14 @@ namespace ManagPassWord.ViewModels.Password
                 User.Site = _current.Site;
             }
         }
-        private void update()
+        public async Task<User> Update(UserDTO m)
         {
-            _current.Note = User.Note;
-            _current.Username = User.Username;
-            _current.Password = User.Password;
-            _current.Site = User.Site;
+            User user = await _db.GetItemByIdAsync(m.Id);
+            user.Note = User.Note;
+            user.Username = User.Username;
+            user.Password = User.Password;
+            user.Site = User.Site;
+            return user;
         }
 
     }

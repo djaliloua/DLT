@@ -2,48 +2,12 @@
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
+using CommunityToolkit.Mvvm.Messaging;
 using MVVM;
 using System.Windows.Input;
 
 namespace ManagPassWord.ViewModels.Debt
 {
-    public interface IPublisher<TItem>
-    {
-        event Action<TItem> Published;
-        void OnPublished(TItem item);
-    }
-    public class Publisher<TItem> : IPublisher<TItem>
-    {
-        public event Action<TItem> Published;
-
-        public void OnPublished(TItem item)
-        {
-            Published?.Invoke(item);
-        }
-    }
-    public interface ISubscriber<IItem>
-    {
-        void Subscribe(IItem obj);
-    }
-    public class Subscriber<TItem> : ISubscriber<TItem>
-    {
-        private readonly IPublisher<TItem> _publisher;
-        public Subscriber(IPublisher<TItem> publisher)
-        {
-            _publisher = publisher;
-            _publisher.Published += _publisher_Published;
-        }
-
-        private void _publisher_Published(TItem obj)
-        {
-            Subscribe(obj);
-        }
-
-        public void Subscribe(TItem obj)
-        {
-            throw new NotImplementedException();
-        }
-    }
     public class DebtDetailsViewModel:BaseViewModel, IQueryAttributable
     {
         private readonly IGenericRepository<DebtModel> _db;
@@ -75,15 +39,25 @@ namespace ManagPassWord.ViewModels.Debt
             SaveCommand = new Command(On_Save);
             DeleteCommand = new Command(On_Delete);
         }
+        private async Task<DebtModel> Update(DebtModelDTO model)
+        {
+            DebtModel debtModel = await _db.GetItemByIdAsync(model.Id);
+            debtModel.Amount = model.Amount;
+            debtModel.DebtDate = model.DebtDate;
+            debtModel.PayementDate = model.PayementDate;
+            debtModel.Description = model.Description;
+            debtModel.Name = model.Name;
+            debtModel.IsCompleted = model.IsCompleted;
+            return debtModel;
+        }
         private async void On_Save(object sender)
         {
             
-            if(DebtDetails != null)
+            if (DebtDetails != null)
             {
-                if (await _db.SaveOrUpdateItemAsync(DebtDetails.Adapt<DebtModel>()) is DebtModel debt && debt.Id != 0)
+                if (await _db.SaveOrUpdateItemAsync(await Update(DebtDetails)) is DebtModel debt && debt.Id != 0)
                 {
-                    MessagingCenter.Send(this, "update", debt);
-                    
+                    WeakReferenceMessenger.Default.Send(debt, "update");
                     await MessageDialogs.ShowToast($"{DebtDetails.Name} has been updated");
                 }
             }

@@ -1,5 +1,4 @@
-﻿using ManagPassWord.DataAcessLayer;
-using ManagPassWord.DataAcessLayer.Abstractions;
+﻿using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
