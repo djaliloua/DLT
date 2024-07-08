@@ -77,7 +77,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             _purchaseRepository = db;   
             _navigationService = navigationService;
             IsSavebtnEnabled = true;
-            _ = LoadItems();
+            Init();
             CommandSetup();
         }
         #endregion
@@ -91,7 +91,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Handlers
-
+        private async void Init()
+        {
+            await LoadItems();
+        }
         private async void On_DoubleClick(object sender)
         {
             try

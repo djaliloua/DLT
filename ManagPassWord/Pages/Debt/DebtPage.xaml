@@ -70,8 +70,7 @@
                 <RowDefinition Height="30" />
                 <RowDefinition Height="auto" />
                 <RowDefinition  />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <Label Text="Debt" />
             <BoxView Color="{StaticResource Surface}"
@@ -136,20 +135,18 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Grid Grid.Row="4"
-                  Margin="20"
-                  HorizontalOptions="End">
-
-                <Button HorizontalOptions="End"
-                        Command="{Binding AddCommand}"
-                        Grid.Column="2">
-
-                    <Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialRegular"
-                                         Glyph="{x:Static m:MaterialRound.Add}" />
-                    </Button.ImageSource>
-                </Button>
-            </Grid>
+            <Button HorizontalOptions="End"
+                    VerticalOptions="End"
+                    Margin="0,0,30,30"
+                    ZIndex="50"
+                    WidthRequest="100"
+                    Command="{Binding AddCommand}"
+                    Grid.Row="3">
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialRegular"
+                                     Glyph="{x:Static m:MaterialRound.Add}" />
+                </Button.ImageSource>
+            </Button>
         </Grid>
     </ScrollView>
 </ContentPage>
