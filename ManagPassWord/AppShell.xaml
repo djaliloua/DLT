@@ -17,6 +17,7 @@
                       ContentTemplate="{DataTemplate local:MainPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="MaterialRegular"
+                                 Color="LightBlue"
                                  Glyph="{x:Static m:MaterialRound.Password}" />
             </ShellContent.Icon>
         </ShellContent>
@@ -26,6 +27,7 @@
                       ContentTemplate="{DataTemplate local:DebtPage}">
             <ShellContent.Icon>
                 <FontImageSource FontFamily="MaterialRegular"
+                                 Color="LightBlue"
                                  Glyph="{x:Static m:MaterialRound.Money}" />
             </ShellContent.Icon>
         </ShellContent>
