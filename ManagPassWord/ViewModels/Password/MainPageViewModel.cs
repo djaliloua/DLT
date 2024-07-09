@@ -18,40 +18,40 @@ namespace ManagPassWord.ViewModels.Password
     }
     public class MainPageViewModel : LoadableMainPageViewModel<UserDTO>
     {
-        private readonly IPasswordRepository repository;
+        private readonly IPasswordRepository _passwordRepository;
+
+        #region Commands
         public ICommand AddCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand SettingCommand { get; private set; }
         public ICommand AboutCommand { get; private set; }
+        #endregion
+
+        #region Constructor
         public MainPageViewModel(IPasswordRepository _db)
         {
-            repository = _db;
+            _passwordRepository = _db;
             load();
-            AddCommand = new Command(On_Add);
-            OpenCommand = new Command(On_Open);
-            SettingCommand = new Command(On_Setting);
-            AboutCommand = new Command(On_About);
+            CommandSetup();
         }
-        private async void On_About(object sender)
-        {
-            await Shell.Current.GoToAsync(nameof(AboutPage));
-        }
-        private async void On_Setting(object sender)
-        {
-            await Shell.Current.GoToAsync(nameof(SettingPage));
-        }
+        #endregion
+
+        #region Private methods
         private async void load()
         {
-            await LoadItems();
+            await Task.Run(LoadItems);
         }
-        public override async Task LoadItems()
+        private void CommandSetup()
         {
-            var repo = await repository.GetAllItemsAsync();
-            var data = repo.Adapt<List<UserDTO>>();
-            SetItems(data);
+            AddCommand = new Command(OnAdd);
+            OpenCommand = new Command(OnOpen);
+            SettingCommand = new Command(OnSetting);
+            AboutCommand = new Command(OnAbout);
         }
-        
-        private async void On_Open(object sender)
+        #endregion
+
+        #region Handlers
+        private async void OnOpen(object sender)
         {
             if (IsSelected)
             {
@@ -63,7 +63,7 @@ namespace ManagPassWord.ViewModels.Password
                 await Shell.Current.GoToAsync(nameof(DetailPage), navigationParameter);
             }
         }
-        private async void On_Add(object sender)
+        private async void OnAdd(object sender)
         {
             SelectedItem = null;
             var navigationParameter = new Dictionary<string, object>
@@ -72,8 +72,28 @@ namespace ManagPassWord.ViewModels.Password
                             { "isedit", false }
                         };
             await Shell.Current.GoToAsync(nameof(AddPassworPage), navigationParameter);
-           
+
         }
+        private async void OnAbout(object sender)
+        {
+            await Shell.Current.GoToAsync(nameof(AboutPage));
+        }
+        private async void OnSetting(object sender)
+        {
+            await Shell.Current.GoToAsync(nameof(SettingPage));
+        }
+        #endregion
+
+        public override async Task LoadItems()
+        {
+            ShowActivity();
+            var repo = await _passwordRepository.GetAllItemsAsync();
+            var data = repo.Adapt<List<UserDTO>>();
+            SetItems(data);
+            HideActivity();
+        }
+        
+       
         
     }
 }

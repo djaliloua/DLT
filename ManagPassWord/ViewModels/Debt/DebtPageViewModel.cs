@@ -21,6 +21,8 @@ namespace ManagPassWord.ViewModels.Debt
     public class DebtPageViewModel : LoadableDebtPageViewModel<DebtModelDTO>, IQueryAttributable
     {
         private readonly IGenericRepository<DebtModel> _debtRepository;
+
+        #region Properties
         private string _name;
         public string Name
         {
@@ -33,6 +35,7 @@ namespace ManagPassWord.ViewModels.Debt
             get => _amount;
             set => UpdateObservable(ref _amount, value);
         }
+        #endregion
 
         #region Commands
         public ICommand AddCommand { get; private set; }
@@ -41,12 +44,20 @@ namespace ManagPassWord.ViewModels.Debt
         public ICommand SettingCommand { get; private set; }
         public ICommand AboutCommand { get; private set; }
         #endregion
+
+        #region Constructor
         public DebtPageViewModel(IGenericRepository<DebtModel> db)
         {
             _debtRepository = db;
             load();
             CommandSetups();
-           
+            RegisterMessages();
+        }
+        #endregion
+
+        #region Private methods
+        private void RegisterMessages()
+        {
             WeakReferenceMessenger.Default.Register<DebtModelDTO, string>(this, "update", (sender, arg) =>
             {
                 SaveOrUpdateItem(arg);
@@ -55,26 +66,28 @@ namespace ManagPassWord.ViewModels.Debt
         }
         private void CommandSetups()
         {
-            AddCommand = new Command(On_Add);
-            OpenCommand = new Command(On_Open);
-            GoSearchCommand = new Command(On_GoSearch);
-            SettingCommand = new Command(On_Setting);
-            AboutCommand = new Command(On_About);
+            AddCommand = new Command(OnAdd);
+            OpenCommand = new Command(OnOpen);
+            GoSearchCommand = new Command(OnGoSearch);
+            SettingCommand = new Command(OnSetting);
+            AboutCommand = new Command(OnAbout);
         }
+        #endregion
 
-        private async void On_About(object sender)
+        #region Handlers
+        private async void OnAbout(object sender)
         {
             await Shell.Current.GoToAsync(nameof(AboutPage));
         }
-        private async void On_Setting(object sender)
+        private async void OnSetting(object sender)
         {
             await Shell.Current.GoToAsync(nameof(DebtSettingPage));
         }
-        private async void On_GoSearch(object sender)
+        private async void OnGoSearch(object sender)
         {
             await Shell.Current.GoToAsync(nameof(SearchPage));
         }
-        private async void On_Open(object sender)
+        private async void OnOpen(object sender)
         {
             if (IsSelected)
             {
@@ -85,7 +98,7 @@ namespace ManagPassWord.ViewModels.Debt
                 await Shell.Current.GoToAsync(nameof(DebtDetailsPage), navigationParameter);
             }
         }
-        private async void On_Add(object sender)
+        private async void OnAdd(object sender)
         {
             Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
@@ -93,9 +106,10 @@ namespace ManagPassWord.ViewModels.Debt
                         };
             await Shell.Current.GoToAsync(nameof(DebtFormPage), navigationParameter);
         }
+        #endregion
         private async void load()
         {
-            await LoadItems();
+            await Task.Run(LoadItems);
         }
         public override async Task LoadItems()
         {

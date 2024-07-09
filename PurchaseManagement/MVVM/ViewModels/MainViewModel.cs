@@ -93,7 +93,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Handlers
         private async void Init()
         {
-            await LoadItems();
+            await Task.Run(LoadItems);
         }
         private async void On_DoubleClick(object sender)
         {

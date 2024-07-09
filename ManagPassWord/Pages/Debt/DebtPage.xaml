@@ -70,7 +70,30 @@
 
         </Grid.RowDefinitions>
         <Label Text="Debt" />
-
+        <ActivityIndicator IsRunning="{Binding IsActivity}"
+                           Color="Blue"
+                           Grid.Row="1"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HeightRequest="80"
+                           WidthRequest="80"
+                           x:Name="activity"
+                           ZIndex="10">
+            <ActivityIndicator.Triggers>
+                <DataTrigger TargetType="ActivityIndicator"
+                             Binding="{Binding IsActivity}"
+                             Value="True">
+                    <Setter Property="IsVisible"
+                            Value="Visible" />
+                </DataTrigger>
+                <DataTrigger TargetType="ActivityIndicator"
+                             Binding="{Binding IsActivity}"
+                             Value="False">
+                    <Setter Property="IsVisible"
+                            Value="Hidden" />
+                </DataTrigger>
+            </ActivityIndicator.Triggers>
+        </ActivityIndicator>
         <ListView  Grid.Row="1"
                    RowHeight="150"
                    x:Name="listview"

@@ -62,16 +62,20 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         }
         private async void Init()
         {
-            await LoadItems();
-            await GetMax()
-                .ContinueWith(async (t) =>
-                {
-                    if (!IsEmpty)
+            await Task.Run(async () =>
+            {
+                await LoadItems();
+                await GetMax()
+                    .ContinueWith(async (t) =>
                     {
-                        await _snackBarNotification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                        if (!IsEmpty)
+                        {
+                            await _snackBarNotification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                        }
                     }
-                }
-                );
+                    );
+            });
+            
         }
         private void SetupComands()
         {
