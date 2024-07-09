@@ -1,10 +1,8 @@
-﻿using ManagPassWord.DataAcessLayer;
-using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.Models;
+﻿using ManagPassWord.DataAcessLayer.Abstractions;
 using MVVM;
 using System.Windows.Input;
 
-namespace ManagPassWord.ViewModels.Password
+namespace ManagPassWord.MVVM.ViewModels.Password
 {
     public class PasswordSettingViewModel:BaseViewModel
     {

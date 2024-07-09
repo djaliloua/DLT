@@ -1,4 +1,4 @@
-﻿using ManagPassWord.Models;
+﻿using ManagPassWord.MVVM.Models;
 using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.DataAcessLayer.Contexts;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,7 @@
 ﻿using MVVM;
 using System.Windows.Input;
 
-namespace ManagPassWord.ViewModels.Debt
+namespace ManagPassWord.MVVM.ViewModels.Debt
 {
     public class DebtSettingViewModel:BaseViewModel
     {

@@ -1,7 +1,6 @@
-﻿using ManagPassWord.ViewModels.Password;
-using MVVM;
+﻿using MVVM;
 
-namespace ManagPassWord.ViewModels
+namespace ManagPassWord.MVVM.ViewModels
 {
     public class SettingViewModel:BaseViewModel
     {

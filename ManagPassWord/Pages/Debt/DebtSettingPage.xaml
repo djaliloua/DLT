@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ManagPassWord.Pages.Debt.DebtSettingPage"
-             xmlns:local="clr-namespace:ManagPassWord.Views"
+             xmlns:local="clr-namespace:ManagPassWord.MVVM.Views"
              Title="DebtSettingPage">
     <VerticalStackLayout>
         <local:DebtSettingView />

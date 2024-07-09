@@ -1,13 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.Models;
+using ManagPassWord.MVVM.Models;
 using ManagPassWord.Pages;
 using ManagPassWord.Pages.Debt;
 using Mapster;
 using Patterns;
 using System.Windows.Input;
 
-namespace ManagPassWord.ViewModels.Debt
+namespace ManagPassWord.MVVM.ViewModels.Debt
 {
 
     public abstract class LoadableDebtPageViewModel<TItem> : Loadable<TItem> where TItem : DebtModelDTO

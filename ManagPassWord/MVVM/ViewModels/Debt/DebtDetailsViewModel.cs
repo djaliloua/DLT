@@ -1,12 +1,12 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.Models;
+using ManagPassWord.MVVM.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
 using CommunityToolkit.Mvvm.Messaging;
 using MVVM;
 using System.Windows.Input;
 
-namespace ManagPassWord.ViewModels.Debt
+namespace ManagPassWord.MVVM.ViewModels.Debt
 {
     public class DebtDetailsViewModel:BaseViewModel, IQueryAttributable
     {

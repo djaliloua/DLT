@@ -1,16 +1,15 @@
-﻿using ManagPassWord.DataAcessLayer;
-using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.Models;
+﻿using ManagPassWord.DataAcessLayer.Abstractions;
+using ManagPassWord.MVVM.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
 using MVVM;
 using System.Windows.Input;
 
-namespace ManagPassWord.ViewModels.Password
+namespace ManagPassWord.MVVM.ViewModels.Password
 {
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
-        private readonly IPasswordRepository _db;
+        private readonly IPasswordRepository _passwordRepository;
         private UserDTO _user;
         public UserDTO User
         {
@@ -29,18 +28,18 @@ namespace ManagPassWord.ViewModels.Password
         public ICommand BackCommand { get; private set; }
         public AddPasswordViewModel(IPasswordRepository db)
         {
-            _db = db;
+            _passwordRepository = db;
             User = new();
-            SaveCommand = new Command(On_Save);
-            BackCommand = new Command(On_Back);
+            SaveCommand = new Command(OnSave);
+            BackCommand = new Command(OnBack);
         }
 
-        private async void On_Back(object sender)
+        private async void OnBack(object sender)
         {
             await Shell.Current.GoToAsync("..");
         }
 
-        private async void On_Save(object sender)
+        private async void OnSave(object sender)
         {
             User temp_item;
             try
@@ -49,7 +48,7 @@ namespace ManagPassWord.ViewModels.Password
                 {
                     if (User.IsValid())
                     {
-                        temp_item = await _db.SaveOrUpdateItemAsync(User.Adapt<User>());
+                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(User.Adapt<User>());
                         ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<UserDTO>());
                     }
                     else
@@ -60,7 +59,7 @@ namespace ManagPassWord.ViewModels.Password
                 }
                 else
                 {
-                    await _db.SaveOrUpdateItemAsync(await Update(User));
+                    await _passwordRepository.SaveOrUpdateItemAsync(await Update(User));
                     ViewModelLocator.MainPageViewModel.UpdateItem(User.Adapt<UserDTO>());
                 }
                 await Shell.Current.GoToAsync("..");
@@ -98,7 +97,7 @@ namespace ManagPassWord.ViewModels.Password
         }
         public async Task<User> Update(UserDTO m)
         {
-            User user = await _db.GetItemByIdAsync(m.Id);
+            User user = await _passwordRepository.GetItemByIdAsync(m.Id);
             user.Note = User.Note;
             user.Username = User.Username;
             user.Password = User.Password;

@@ -1,7 +1,6 @@
 ﻿using MVVM;
-using Microsoft.Maui.ApplicationModel;
 
-namespace ManagPassWord.ViewModels
+namespace ManagPassWord.MVVM.ViewModels
 {
     public class AboutViewModel:BaseViewModel
     {

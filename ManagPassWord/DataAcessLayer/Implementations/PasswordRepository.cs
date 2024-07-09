@@ -1,5 +1,5 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.Models;
+using ManagPassWord.MVVM.Models;
 
 namespace ManagPassWord.DataAcessLayer.Implementations
 {

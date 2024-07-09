@@ -1,13 +1,13 @@
 ﻿using ManagPassWord.DataAcessLayer.Implementations;
 using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.Models;
+using ManagPassWord.MVVM.Models;
 using ManagPassWord.Pages;
 using Mapster;
 using ManagPassWord.Pages.Debt;
-using ManagPassWord.ViewModels;
-using ManagPassWord.ViewModels.Debt;
-using ManagPassWord.ViewModels.Password;
-using ManagPassWord.Views;
+using ManagPassWord.MVVM.ViewModels;
+using ManagPassWord.MVVM.ViewModels.Debt;
+using ManagPassWord.MVVM.ViewModels.Password;
+using ManagPassWord.MVVM.Views;
 using ManagPassWord.DataAcessLayer.Contexts;
 
 namespace ManagPassWord.ExtensionMethods

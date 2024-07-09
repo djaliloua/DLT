@@ -1,4 +1,4 @@
-﻿using ManagPassWord.Models;
+﻿using ManagPassWord.MVVM.Models;
 
 namespace ManagPassWord.DataAcessLayer.Abstractions
 {

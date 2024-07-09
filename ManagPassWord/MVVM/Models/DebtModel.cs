@@ -1,6 +1,6 @@
 ﻿using MVVM;
 
-namespace ManagPassWord.Models
+namespace ManagPassWord.MVVM.Models
 {
     public class DebtModelDTO:BaseViewModel
     {

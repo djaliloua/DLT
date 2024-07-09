@@ -1,5 +1,5 @@
-﻿using ManagPassWord.Models;
-using ManagPassWord.ViewModels.Password;
+﻿using ManagPassWord.MVVM.Models;
+using ManagPassWord.MVVM.ViewModels.Password;
 
 namespace ManagPassWord.CustomClasses
 {

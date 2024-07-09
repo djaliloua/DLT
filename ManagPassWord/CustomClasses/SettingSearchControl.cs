@@ -1,6 +1,6 @@
-﻿using ManagPassWord.Models;
+﻿using ManagPassWord.MVVM.Models;
 using ManagPassWord.Pages.Debt;
-using ManagPassWord.ViewModels.Debt;
+using ManagPassWord.MVVM.ViewModels.Debt;
 
 namespace ManagPassWord.CustomClasses
 {

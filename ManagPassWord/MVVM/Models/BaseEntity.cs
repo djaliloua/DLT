@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ManagPassWord.Models
+namespace ManagPassWord.MVVM.Models
 {
     public class BaseEntity
     {

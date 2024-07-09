@@ -1,5 +1,5 @@
 using ManagPassWord.ServiceLocators;
-using ManagPassWord.ViewModels.Password;
+using ManagPassWord.MVVM.ViewModels.Password;
 
 namespace ManagPassWord;
 
@@ -12,9 +12,7 @@ public partial class AddPassworPage : ContentPage
     protected override bool OnBackButtonPressed()
     {
         MainPageViewModel mainPageViewModel = ViewModelLocator.MainPageViewModel;
-        //_ = mainPageViewModel.LoadItems();
         AddPasswordViewModel addPasswordViewModel = (AddPasswordViewModel)BindingContext;
-        //addPasswordViewModel.ClearFields();
         return base.OnBackButtonPressed();
     }
 }

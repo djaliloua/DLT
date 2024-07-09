@@ -1,6 +1,6 @@
 ﻿using MVVM;
 
-namespace ManagPassWord.ViewModels
+namespace ManagPassWord.MVVM.ViewModels
 {
     public class SearchViewModel:BaseViewModel
     {

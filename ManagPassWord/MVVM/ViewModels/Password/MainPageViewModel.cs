@@ -1,11 +1,11 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.Models;
+using ManagPassWord.MVVM.Models;
 using ManagPassWord.Pages;
 using Mapster;
 using Patterns;
 using System.Windows.Input;
 
-namespace ManagPassWord.ViewModels.Password
+namespace ManagPassWord.MVVM.ViewModels.Password
 {
     public abstract class LoadableMainPageViewModel<TItem> : Loadable<TItem> where TItem : UserDTO
     {

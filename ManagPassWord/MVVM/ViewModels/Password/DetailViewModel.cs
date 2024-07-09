@@ -1,11 +1,11 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.Models;
+using ManagPassWord.MVVM.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
 using MVVM;
 using System.Windows.Input;
 
-namespace ManagPassWord.ViewModels.Password
+namespace ManagPassWord.MVVM.ViewModels.Password
 {
     public class DetailViewModel : BaseViewModel, IQueryAttributable
     {
