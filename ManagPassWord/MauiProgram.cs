@@ -18,6 +18,7 @@ public static class MauiProgram
             .UseUraniumUI()
             .UseMauiCommunityToolkit()
             .ContextExtension()
+            .LoadBIExtension()
             .ViewModelExtension()
             .PagesExtensions()
             .RepositoryExtension()

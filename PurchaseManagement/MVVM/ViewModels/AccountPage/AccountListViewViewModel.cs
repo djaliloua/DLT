@@ -1,15 +1,22 @@
 ﻿using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
-using Patterns;
 using PurchaseManagement.MVVM.Models.Accounts;
 using Mapster;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
+using Patterns.Implementations;
+using Patterns.Abstractions;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
-    
+    public class LoadAccountService : ILoadService<AccountDTO>
+    {
+        public IList<AccountDTO> Reorder(IList<AccountDTO> items)
+        {
+            return items.OrderByDescending(a => a.DateTime).ToList();
+        }
+    }
     public class AccountListViewViewModel : Loadable<AccountDTO>
     {
         #region Private methods
@@ -34,7 +41,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository repo)
+        public AccountListViewViewModel(IAccountRepository repo, ILoadService<AccountDTO> loadService):base(loadService)
         {
             _accountRepository = repo;
             SetupNotification();
@@ -62,9 +69,12 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         }
         private async void Init()
         {
+            ShowActivity();
             await Task.Run(async () =>
             {
-                await LoadItems();
+                IEnumerable<Account> data = await _accountRepository.GetAllItemsAsync();
+                var dt = data.Adapt<List<AccountDTO>>();
+                await LoadItems(dt);
                 await GetMax()
                     .ContinueWith(async (t) =>
                     {
@@ -75,7 +85,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                     }
                     );
             });
-            
+            HideActivity();
         }
         private void SetupComands()
         {
@@ -94,20 +104,20 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Overriden methods
-        protected override void Reorder()
-        {
-            var data = Items.OrderByDescending(a => a.DateTime).ToList();
-            SetItems(data);
-        }
-        public override async Task LoadItems()
-        {
-            ShowActivity();
-            IEnumerable<Account> data =  await _accountRepository.GetAllItemsAsync();
-            var dt = data.Adapt<List<AccountDTO>>();
-            SetItems(dt);
-            HideActivity();
+        //protected override void Reorder()
+        //{
+        //    var data = Items.OrderByDescending(a => a.DateTime).ToList();
+        //    SetItems(data);
+        //}
+        //public override async Task LoadItems()
+        //{
+        //    ShowActivity();
+        //    IEnumerable<Account> data =  await _accountRepository.GetAllItemsAsync();
+        //    var dt = data.Adapt<List<AccountDTO>>();
+        //    SetItems(dt);
+        //    HideActivity();
 
-        }
+        //}
         #endregion
 
         #region Handlers

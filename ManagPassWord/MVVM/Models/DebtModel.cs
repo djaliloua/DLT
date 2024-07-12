@@ -21,10 +21,10 @@ namespace ManagPassWord.MVVM.Models
             get => description;
             set => UpdateObservable(ref description, value);
         }
-        public string Amount
+        public double Amount
         {
-            get => amount;
-            set => UpdateObservable(ref amount, value); 
+            get => _amount;
+            set => UpdateObservable(ref _amount, value); 
         }
 
         public bool IsCompleted
@@ -56,7 +56,7 @@ namespace ManagPassWord.MVVM.Models
             Name = name;
             DebtDate = dbtDate;
         }
-        public DebtModelDTO(string name, string amount)
+        public DebtModelDTO(string name, double amount)
         {
             Name = name;
             Amount = amount;
@@ -70,7 +70,7 @@ namespace ManagPassWord.MVVM.Models
         private bool isCompleted;
         private string name = "";
         private string description = "";
-        private string amount = "";
+        private double _amount;
         public DebtModelDTO Clone() => MemberwiseClone() as DebtModelDTO;
     }
 
@@ -93,13 +93,12 @@ namespace ManagPassWord.MVVM.Models
                
             }
         }
-        public string Amount
+        public double Amount
         {
-            get => amount;
+            get => _amount;
             set
             {
-                amount = value;
-                
+                _amount = value;
             }
         }
         
@@ -125,7 +124,7 @@ namespace ManagPassWord.MVVM.Models
             Name = name;
             DebtDate = dbtDate;
         }
-        public DebtModel(string name, string amount)
+        public DebtModel(string name, double amount)
         {
             Name = name;
             Amount = amount;
@@ -139,7 +138,7 @@ namespace ManagPassWord.MVVM.Models
         private bool isCompleted;
         private string name = "";
         private string description = "";
-        private string amount = "";
+        private double _amount;
         public DebtModel Clone() => MemberwiseClone() as DebtModel;
     }
    

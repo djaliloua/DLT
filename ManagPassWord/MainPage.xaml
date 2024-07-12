@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:triggersAction="clr-namespace:ManagPassWord.Triggers"
-             xmlns:local="clr-namespace:ManagPassWord.Views"
+             xmlns:local="clr-namespace:ManagPassWord.MVVM.Views"
              xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
              xmlns:custom="clr-namespace:ManagPassWord.CustomClasses"
              xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"

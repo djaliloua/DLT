@@ -9,6 +9,7 @@ using ManagPassWord.MVVM.ViewModels.Debt;
 using ManagPassWord.MVVM.ViewModels.Password;
 using ManagPassWord.MVVM.Views;
 using ManagPassWord.DataAcessLayer.Contexts;
+using Patterns.Abstractions;
 
 namespace ManagPassWord.ExtensionMethods
 {
@@ -67,6 +68,14 @@ namespace ManagPassWord.ExtensionMethods
         public static MauiAppBuilder CommonsExtension(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddMapster();
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder LoadBIExtension(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddScoped<ILoadService<UserDTO>, LoaddUserService>();
+            mauiAppBuilder.Services.AddScoped<ILoadService<DebtModelDTO>, LoadDebtService>();
+            
+
             return mauiAppBuilder;
         }
     }

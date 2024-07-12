@@ -5,20 +5,22 @@ using ManagPassWord.Pages;
 using ManagPassWord.Pages.Debt;
 using Mapster;
 using Patterns;
+using Patterns.Abstractions;
+using Patterns.Implementations;
 using System.Windows.Input;
 
 namespace ManagPassWord.MVVM.ViewModels.Debt
 {
 
-    public abstract class LoadableDebtPageViewModel<TItem> : Loadable<TItem> where TItem : DebtModelDTO
+   
+    public class LoadDebtService : ILoadService<DebtModelDTO>
     {
-        protected override void Reorder()
+        public IList<DebtModelDTO> Reorder(IList<DebtModelDTO> items)
         {
-            var data = Items.OrderByDescending(x => x.DebtDate);
-            SetItems(data.ToList());
+            return items.OrderByDescending(x => x.DebtDate).ToList();
         }
     }
-    public class DebtPageViewModel : LoadableDebtPageViewModel<DebtModelDTO>, IQueryAttributable
+    public class DebtPageViewModel : Loadable<DebtModelDTO>, IQueryAttributable
     {
         private readonly IGenericRepository<DebtModel> _debtRepository;
 
@@ -46,7 +48,8 @@ namespace ManagPassWord.MVVM.ViewModels.Debt
         #endregion
 
         #region Constructor
-        public DebtPageViewModel(IGenericRepository<DebtModel> db)
+        public DebtPageViewModel(IGenericRepository<DebtModel> db, 
+            ILoadService<DebtModelDTO> loadService):base(loadService)
         {
             _debtRepository = db;
             load();
@@ -109,13 +112,11 @@ namespace ManagPassWord.MVVM.ViewModels.Debt
         #endregion
         private async void load()
         {
-            await Task.Run(LoadItems);
-        }
-        public override async Task LoadItems()
-        {
+            ShowActivity();
             var repo = await _debtRepository.GetAllItemsAsync();
             var data = repo.Adapt<List<DebtModelDTO>>();
-            SetItems(data);
+            await Task.Run(async() => await LoadItems(data));
+            HideActivity();
         }
         
         public void ApplyQueryAttributes(IDictionary<string, object> query)

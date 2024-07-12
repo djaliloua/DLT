@@ -88,7 +88,7 @@ namespace ManagPassWord.MVVM.ViewModels.Debt
                         DebtDetails.Name = result;
                         break;
                     case "Amount":
-                        DebtDetails.Amount = result;
+                        DebtDetails.Amount = double.Parse(result);
                         break;
                 }
             OnPropertyChanged(nameof(DebtDetails));

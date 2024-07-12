@@ -2,18 +2,23 @@
 using PurchaseManagement.Pages;
 using System.Windows.Input;
 using PurchaseManagement.DataAccessLayer.Abstractions;
-using Patterns;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using System.Diagnostics;
 using PurchaseManagement.Commons;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
 using Mapster;
+using Patterns.Implementations;
+using Patterns.Abstractions;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public abstract class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseDto
+    public class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseDto
     {
+        public LaodableMainViewModel(ILoadService<TItem> loadService):base(loadService)
+        {
+            
+        }
         public TItem GetItemByDate()
         {
             TItem item = GetItems().FirstOrDefault(p => p.PurchaseDate.Equals($"{DateTime:yyyy-MM-dd}"));
@@ -29,23 +34,27 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             return Items.FirstOrDefault(x => x.Id==item.Id) != null;
         }
-        protected override void Reorder()
-        {
-            var data = GetItems().OrderByDescending(a => a.PurchaseDate).ToList();
-            SetItems(data);
-        }
-        public override void SetItems(IList<TItem> items)
+        
+        public override void SetItems(IEnumerable<TItem> items)
         {
             var data = items.OrderByDescending(a => a.PurchaseDate).ToList();
             base.SetItems(data);
         }
 
     }
+    public class LoadPurchaseService : ILoadService<PurchaseDto>
+    {
+        public IList<PurchaseDto> Reorder(IList<PurchaseDto> items)
+        {
+            return items.OrderByDescending(a => a.PurchaseDate).ToList();
+        }
+    }
     public class MainViewModel: LaodableMainViewModel<PurchaseDto>
     {
         #region Private Properties
         private readonly INavigationService _navigationService;
         private readonly IPurchaseRepository _purchaseRepository;
+        
         #endregion
 
         #region Public Properites
@@ -72,12 +81,14 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Constructor
-        public MainViewModel(IPurchaseRepository db, INavigationService navigationService)
+        public MainViewModel(IPurchaseRepository db, 
+            INavigationService navigationService, 
+            ILoadService<PurchaseDto> loadService):base(loadService)
         {
             _purchaseRepository = db;   
             _navigationService = navigationService;
             IsSavebtnEnabled = true;
-            Init();
+            _ = Init();
             CommandSetup();
         }
         #endregion
@@ -85,17 +96,19 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Private Methods
         private void CommandSetup()
         {
-            AddCommand = new Command(On_Add);
-            DoubleClickCommand = new Command(On_DoubleClick);
+            AddCommand = new Command(OnAdd);
+            DoubleClickCommand = new Command(OnDoubleClick);
         }
         #endregion
 
         #region Handlers
-        private async void Init()
+        private async Task Init()
         {
-            await Task.Run(LoadItems);
+            ShowActivity();
+            await Task.Run(async() => await LoadItems((await _purchaseRepository.GetAllItemsAsync()).Adapt<List<PurchaseDto>>()));
+            HideActivity();
         }
-        private async void On_DoubleClick(object sender)
+        private async void OnDoubleClick(object sender)
         {
             try
             {
@@ -115,7 +128,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             }
         }
         
-        private async void On_Add(object sender)
+        private async void OnAdd(object sender)
         {
             ProductDto purchase_proxy_item;
             if(await _purchaseRepository.GetPurchaseByDate(SelectedDate) is Purchase purchase)
@@ -132,17 +145,5 @@ namespace PurchaseManagement.MVVM.ViewModels
             await Shell.Current.GoToAsync(nameof(MarketFormPage), NavigationParametersTest.GetParameters());
         }
         #endregion
-
-        #region public Overriden methods
-        public override async Task LoadItems()
-        {
-            ShowActivity();
-            IEnumerable<Purchase> _purchases = await _purchaseRepository.GetAllItemsAsync();
-            var data = _purchases.Adapt<List<PurchaseDto>>();
-            SetItems(data);
-            HideActivity();
-        }
-        #endregion
-
     }
 }

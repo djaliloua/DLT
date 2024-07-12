@@ -50,7 +50,7 @@
                                           CommandParameter="{Binding Source={x:Reference amount}, Path=Text, StringFormat='Amount;{0}'}" />
                 </Label.GestureRecognizers>
             </Label>
-            <Label Text="{Binding DebtDetails.Amount}"
+            <Label Text="{Binding DebtDetails.Amount, StringFormat='{0:C0}'}"
                    Grid.Row="1"
                    x:Name="amount"
                    Grid.Column="1" />

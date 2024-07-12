@@ -10,7 +10,6 @@ namespace Patterns.Abstractions
         bool IsSelected { get; }
         int Counter { get; }
         int NumberOfItems { get; set; }
-        void SetItems(IList<TItem> items);
         ObservableCollection<TItem> GetItems();
         void SaveOrUpdateItem(TItem item);
         void DeleteAllItems();

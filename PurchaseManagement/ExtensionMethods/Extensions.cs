@@ -12,6 +12,7 @@ using MauiNavigationHelper.NavigationLib.Services;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Commons.ExportFileStrategies;
 using PurchaseManagement.DataAccessLayer.Contexts;
+using Patterns.Abstractions;
 
 
 namespace PurchaseManagement.ExtensionMethods
@@ -63,6 +64,14 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductDto>, ProductTxtStrategy>();
             mauiAppBuilder.Services.AddScoped<INavigationService, NavigationService>();
             mauiAppBuilder.Services.AddMapster();
+            return mauiAppBuilder;
+        }
+        public static MauiAppBuilder LoadBIExtension(this MauiAppBuilder mauiAppBuilder)
+        {
+            mauiAppBuilder.Services.AddScoped<ILoadService<AccountDTO>, LoadAccountService>();
+            mauiAppBuilder.Services.AddScoped<ILoadService<PurchaseDto>, LoadPurchaseService>();
+            mauiAppBuilder.Services.AddScoped<ILoadService<ProductDto>, LoadProductService>();
+
             return mauiAppBuilder;
         }
     }

@@ -13,21 +13,30 @@ using CommunityToolkit.Mvvm.Messaging;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
 using Mapster;
+using Patterns.Implementations;
+using Patterns.Abstractions;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public abstract class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: ProductDto
+    public class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: ProductDto
     {
-        protected override void Reorder()
+        public PurchaseItemsViewModelLoadable(ILoadService<TItem> loadService):base(loadService)
         {
-          
+
         }
-        public override void SetItems(IList<TItem> items)
+        public override void SetItems(IEnumerable<TItem> items)
         {
             var data = items.OrderByDescending(item => item.Id).ToList();
             base.SetItems(data);
         }
 
+    }
+    public class LoadProductService : ILoadService<ProductDto>
+    {
+        public IList<ProductDto> Reorder(IList<ProductDto> items)
+        {
+            return items;
+        }
     }
     public class ProductItemsViewModel: PurchaseItemsViewModelLoadable<ProductDto>, INavigatedEvents
     {
@@ -37,6 +46,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         private readonly INotification _notification;
         private readonly INotification _messageBox;
         private ExportContext<ProductDto> _exportContext;
+        private readonly ILoadService<ProductDto> _loadService;
         #endregion
 
         #region Public Properties
@@ -44,14 +54,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         public PurchaseDto Purchases
         {
             get => _puchases;
-            set
+            set => UpdateObservable(ref  _puchases, value, async() =>
             {
-                _puchases = value;
-                if (value != null)
-                {
-                    _ = LoadItems();
-                }
-            }
+                ShowActivity();
+                await LoadItems(Purchases.Products);
+                HideActivity();
+            });
         }
         private bool _isLocAvailable;
         public bool IsLocAvailable
@@ -83,7 +91,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ProductItemsViewModel(
             IPurchaseRepository purchaseDB,
             INavigationService navigationService,
-            ExportContext<ProductDto> context)
+            ExportContext<ProductDto> context,
+            ILoadService<ProductDto> loadService
+            ):base(loadService)
         {
             _purchaseRepository = purchaseDB;
             _exportContext = context;
@@ -245,13 +255,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         public void ResetSelectedItem()
         {
             SelectedItem = null;
-        }
-        public override async Task LoadItems()
-        {
-            ShowActivity();
-            await Task.Delay(1);
-            SetItems(Purchases.Products);
-            HideActivity();
         }
 
         public Task OnNavigatedTo(NavigationParameters parameters)

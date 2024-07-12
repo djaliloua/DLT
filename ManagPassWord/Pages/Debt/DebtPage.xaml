@@ -139,7 +139,7 @@
                                            VerticalOptions="Center"
                                            VerticalTextAlignment="Center"
                                            Grid.Row="1" />
-                                    <Label Text="{Binding Amount, StringFormat='{0:C0}'}"
+                                    <Label Text="{Binding Amount, StringFormat='{0:C2}'}"
                                            HorizontalOptions="Start"
                                            VerticalOptions="Center"
                                            VerticalTextAlignment="Center"
