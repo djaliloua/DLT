@@ -46,7 +46,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         private readonly INotification _notification;
         private readonly INotification _messageBox;
         private ExportContext<ProductDto> _exportContext;
-        private readonly ILoadService<ProductDto> _loadService;
         #endregion
 
         #region Public Properties

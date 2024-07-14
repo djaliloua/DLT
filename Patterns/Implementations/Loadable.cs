@@ -39,7 +39,7 @@ namespace Patterns.Implementations
         public int NumberOfItems
         {
             get => _numberOfItems;
-            set => UpdateObservable(ref _numberOfItems, value);
+            set => UpdateObservable(ref _numberOfItems, value, () => NumberOfItemsChanged(value));
         }
         private bool _isActivity;
         public bool IsActivity
@@ -54,11 +54,19 @@ namespace Patterns.Implementations
             set => UpdateObservable(ref _items, value, () => ItemsCallBack(value));
         }
 
+        #region Protected Methods
+        protected virtual void NumberOfItemsChanged(int count)
+        {
+
+        }
+        #endregion
+
         #region Public Methods
         public virtual void SelectedItemCallBack(TItem item)
         {
 
         }
+        
         public Task LoadItems(IEnumerable<TItem> items)
         {
             SetItems(items);
@@ -75,6 +83,7 @@ namespace Patterns.Implementations
         public virtual void SetItems(IEnumerable<TItem> items)
         {
             Items = new ObservableCollection<TItem>(items);
+            NumberOfItems = Items.Count;
         }
         public virtual void SaveOrUpdateItem(TItem item)
         {
@@ -83,17 +92,18 @@ namespace Patterns.Implementations
             else
                 UpdateItem(item);
             
-            Notify();
         }
-        public void DeleteAllItems()
+        public virtual void DeleteAllItems()
         {
             Items.Clear();
             Counter = Items.Count;
+            SetItems(Items);
         }
         public virtual void DeleteItem(TItem item)
         {
             Items.Remove(item);
             Counter = Items.Count;
+            SetItems(Items);
         }
 
         public virtual void AddItem(TItem item)
