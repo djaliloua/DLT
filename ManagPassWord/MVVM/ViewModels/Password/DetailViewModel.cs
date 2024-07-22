@@ -10,8 +10,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
     public class DetailViewModel : BaseViewModel, IQueryAttributable
     {
         private readonly IPasswordRepository _db;
-        private UserDTO _userDetail;
-        public UserDTO UserDetail
+        private WebDto _userDetail;
+        public WebDto UserDetail
         {
             get => _userDetail;
             set => UpdateObservable(ref _userDetail, value);
@@ -30,7 +30,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             {
                 if (UserDetail.Id != 0)
                 {
-                    await _db.DeleteItemAsync(UserDetail.Adapt<User>());
+                    await _db.DeleteItemAsync(UserDetail.Adapt<Web>());
                     ViewModelLocator.MainPageViewModel.DeleteItem(UserDetail);
                 }
                 await Shell.Current.GoToAsync("..");
@@ -50,7 +50,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         {
             if (query.Count > 0)
             {
-                UserDetail = query["user"] as UserDTO;
+                UserDetail = query["user"] as WebDto;
             }
         }
     }

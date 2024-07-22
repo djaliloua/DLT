@@ -4,45 +4,9 @@
              x:Class="ManagPassWord.AddPassworPage"
              xmlns:converters="clr-namespace:ManagPassWord.Converters"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:input="clr-namespace:InputKit.Shared.Controls;assembly=InputKit.Maui"
              xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
-             BindingContext="{x:Static locator:ViewModelLocator.AddPasswordViewModel}"
-            >
-    <ContentPage.Resources>
-        <converters:ConverterBoolToBool x:Key="boolTobool"/>
-        <Style TargetType="Entry">
-            <Setter Property="VerticalOptions"
-                    Value="Center" />
-            <Setter Property="Margin"
-                    Value="15" />
-            <Setter Property="VerticalTextAlignment"
-                    Value="Center" />
-        </Style>
-        <Style TargetType="Button">
-          
-            <Style.Triggers>
-                <DataTrigger TargetType="Button"
-                             Binding="{Binding Source={x:Reference site}, Path=Text.Length}"
-                             Value="0">
-                    <Setter Property="IsVisible"
-                            Value="False" />
-                   
-                </DataTrigger>
-                <DataTrigger TargetType="Button"
-                             Binding="{Binding Source={x:Reference password}, Path=Text.Length}"
-                             Value="0">
-                    <Setter Property="IsVisible"
-                            Value="False" />
-
-                </DataTrigger>
-                <DataTrigger TargetType="Button"
-                             Binding="{Binding Source={x:Reference site}, Path=IsVisible}"
-                             Value="false">
-                    <Setter Property="Text"
-                            Value="Update" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-    </ContentPage.Resources>
+             BindingContext="{x:Static locator:ViewModelLocator.AddPasswordViewModel}">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding BackCommand}"/>
     </Shell.BackButtonBehavior>
@@ -83,51 +47,15 @@
             </Button>
         </Grid>
     </Shell.TitleView>
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-       
-        <material:TextField Title="Site"
-                            Grid.Row="0"
-                            x:Name="site"
-                            IsVisible="{Binding IsEditPage, Converter={x:StaticResource boolTobool}}"
-                            Margin="15"
-                            Text="{Binding User.Site}">
-          
-        </material:TextField>
-      
-        <material:TextField Title="Site"
-                            Grid.Row="0"
-                            Margin="15"
-                            Text="{Binding User.Site}" />
-        
-        <material:TextField Title="UserName"
-                            Grid.Row="1"
-                            Margin="15"
-                            x:Name="username"
-                            Text="{Binding User.Username}" />
-       
+    <input:FormView SubmitCommand="{Binding SaveCommand}" Spacing="20" Margin="20">
+        <material:TextField Title="Url" Text="{Binding Url}"/>
+        <material:TextField Title="Username" Text="{Binding Password.Username}"/>
         <material:TextField Title="Password"
-                            Grid.Row="2"
-                            Margin="15"
-                            x:Name="password"
-                            Text="{Binding User.Password}"
-                            IsPassword="True">
-            <material:TextField.Attachments>
-                <material:TextFieldPasswordShowHideAttachment />
-                
-            </material:TextField.Attachments>
-        </material:TextField>
-     
+                            Text="{Binding Password.PasswordName}" />
         <material:TextField Title="Note"
-                            Grid.Row="3"
-                            HeightRequest="150"
-                            Margin="15"
-                            Text="{Binding User.Note}" />
-    </Grid>
-    
+                            Text="{Binding Password.Note}" />
+        <Button Text="Submit"
+                input:FormView.IsSubmitButton="True" />
+    </input:FormView>
+
 </ContentPage>

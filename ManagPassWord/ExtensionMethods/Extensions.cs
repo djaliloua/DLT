@@ -60,7 +60,7 @@ namespace ManagPassWord.ExtensionMethods
         public static MauiAppBuilder RepositoryExtension(this MauiAppBuilder mauiAppBuilder)
         {
             //Repositories
-            mauiAppBuilder.Services.AddSingleton<IGenericRepository<User>, GenericRepository<User>>();
+            mauiAppBuilder.Services.AddSingleton<IGenericRepository<Web>, GenericRepository<Web>>();
             mauiAppBuilder.Services.AddTransient<IGenericRepository<DebtModel>, GenericRepository<DebtModel>>();
             mauiAppBuilder.Services.AddScoped<IPasswordRepository, PasswordRepository>();
             return mauiAppBuilder;
@@ -72,7 +72,7 @@ namespace ManagPassWord.ExtensionMethods
         }
         public static MauiAppBuilder LoadBIExtension(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddScoped<ILoadService<UserDTO>, LoaddUserService>();
+            mauiAppBuilder.Services.AddScoped<ILoadService<WebDto>, LoaddUserService>();
             mauiAppBuilder.Services.AddScoped<ILoadService<DebtModelDTO>, LoadDebtService>();
             
 

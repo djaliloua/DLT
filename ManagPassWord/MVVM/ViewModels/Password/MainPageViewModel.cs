@@ -9,14 +9,14 @@ using System.Windows.Input;
 
 namespace ManagPassWord.MVVM.ViewModels.Password
 {
-    public class LoaddUserService : ILoadService<UserDTO>
+    public class LoaddUserService : ILoadService<WebDto>
     {
-        public IList<UserDTO> Reorder(IList<UserDTO> items)
+        public IList<WebDto> Reorder(IList<WebDto> items)
         {
             return items.OrderByDescending(item => item.Id).ToList();
         }
     }
-    public class MainPageViewModel : Loadable<UserDTO>
+    public class MainPageViewModel : Loadable<WebDto>
     {
         private readonly IPasswordRepository _passwordRepository;
 
@@ -28,7 +28,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #endregion
 
         #region Constructor
-        public MainPageViewModel(IPasswordRepository _db, ILoadService<UserDTO> loadService):base(loadService)
+        public MainPageViewModel(IPasswordRepository _db, ILoadService<WebDto> loadService):base(loadService)
         {
             _passwordRepository = _db;
             load();
@@ -41,7 +41,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         {
             ShowActivity();
             var repo = await _passwordRepository.GetAllItemsAsync();
-            var data = repo.Adapt<List<UserDTO>>();
+            var data = repo.Adapt<List<WebDto>>();
             await Task.Run(async() => await LoadItems(data));
             HideActivity();
         }
@@ -72,7 +72,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             SelectedItem = null;
             var navigationParameter = new Dictionary<string, object>
                         {
-                            { "user", new UserDTO() },
+                            { "user", new WebDto() },
                             { "isedit", false }
                         };
             await Shell.Current.GoToAsync(nameof(AddPassworPage), navigationParameter);

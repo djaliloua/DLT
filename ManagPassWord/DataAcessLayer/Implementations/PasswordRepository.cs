@@ -3,7 +3,7 @@ using ManagPassWord.MVVM.Models;
 
 namespace ManagPassWord.DataAcessLayer.Implementations
 {
-    public class PasswordRepository : GenericRepository<User>, IPasswordRepository
+    public class PasswordRepository : GenericRepository<Web>, IPasswordRepository
     {
         public Task<int> SaveToCsv()
         {

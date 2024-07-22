@@ -10,13 +10,25 @@ namespace ManagPassWord.MVVM.ViewModels.Password
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
         private readonly IPasswordRepository _passwordRepository;
-        private UserDTO _user;
-        public UserDTO User
+        private WebDto _user;
+        public WebDto User
         {
             get => _user;
             set => UpdateObservable(ref _user, value);
         }
-        private UserDTO _current;
+        private string _url = "google.com";
+        public string Url
+        {
+            get => _url;
+            set => UpdateObservable(ref _url, value);
+        }
+        private PasswordDto _password = new PasswordDto();
+        public PasswordDto Password
+        {
+            get => _password;
+            set => UpdateObservable(ref _password, value);
+        }
+        private WebDto _current;
         private bool _isEditPage;
         public bool IsEditPage
         {
@@ -41,15 +53,15 @@ namespace ManagPassWord.MVVM.ViewModels.Password
 
         private async void OnSave(object sender)
         {
-            User temp_item;
+            Web temp_item;
             try
             {
                 if (!IsEditPage)
                 {
                     if (User.IsValid())
                     {
-                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(User.Adapt<User>());
-                        ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<UserDTO>());
+                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(User.Adapt<Web>());
+                        ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<WebDto>());
                     }
                     else
                     {
@@ -60,7 +72,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
                 else
                 {
                     await _passwordRepository.SaveOrUpdateItemAsync(await Update(User));
-                    ViewModelLocator.MainPageViewModel.UpdateItem(User.Adapt<UserDTO>());
+                    ViewModelLocator.MainPageViewModel.UpdateItem(User.Adapt<WebDto>());
                 }
                 await Shell.Current.GoToAsync("..");
             }
@@ -73,14 +85,14 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         }
         public void ClearFields()
         {
-            User.Reset();
+            //User.Reset();
         }
 
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if (query.Count > 0)
             {
-                User = query["user"] as UserDTO;
+                User = query["user"] as WebDto;
                 IsEditPage = (bool)query["isedit"];
                 setFields();
             }
@@ -89,19 +101,15 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         {
             if (IsEditPage && CanOpen)
             {
-                User.Note = _current.Note;
-                User.Username = _current.Username ?? string.Empty;
-                User.Password = _current.Password;
-                User.Site = _current.Site;
+               
+                User.Url = _current.Url;
             }
         }
-        public async Task<User> Update(UserDTO m)
+        public async Task<Web> Update(WebDto m)
         {
-            User user = await _passwordRepository.GetItemByIdAsync(m.Id);
-            user.Note = User.Note;
-            user.Username = User.Username;
-            user.Password = User.Password;
-            user.Site = User.Site;
+            Web user = await _passwordRepository.GetItemByIdAsync(m.Id);
+            
+            user.Url = User.Url;
             return user;
         }
 
