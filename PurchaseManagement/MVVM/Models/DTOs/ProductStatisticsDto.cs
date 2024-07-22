@@ -34,6 +34,12 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _totalQuantity;
             set => UpdateObservable(ref _totalQuantity, value);
         }
+        private PurchaseDto _purchases;
+        public PurchaseDto Purchase
+        {
+            get => _purchases;
+            set => UpdateObservable(ref _purchases, value);
+        }
         public ProductStatisticsDto(int p_id, int p_count, double total_price, double total_quantity)
         {
             Purchase_Id = p_id;

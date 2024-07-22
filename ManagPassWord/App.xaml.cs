@@ -1,8 +1,4 @@
-﻿using ManagPassWord.Models;
-using Plugin.Fingerprint.Abstractions;
-using Plugin.Fingerprint;
-
-namespace ManagPassWord;
+﻿namespace ManagPassWord;
 
 public partial class App : Application
 {

@@ -18,8 +18,10 @@ namespace PurchaseManagement
             builder
                 .PagesExtensions()
                 .UtilityExtension()
+                .ContextExtension()
                 .RepositoryExtension()
                 .ViewModelsExtension()
+                .LoadBIExtension()
                 .UseMauiCommunityToolkit()
                 .UseMauiApp<App>()
                 .UseUraniumUI()

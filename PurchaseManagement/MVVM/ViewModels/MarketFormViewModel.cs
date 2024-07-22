@@ -3,12 +3,11 @@ using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.Commons;
+using PurchaseManagement.Commons.Notifications.Abstractions;
+using PurchaseManagement.Commons.Notifications.Implementations;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Validations;
-using FluentValidation.Results;
 using PurchaseManagement.Utilities;
-using PurchaseManagement.Commons.Notifications;
 using Mapster;
 
 namespace PurchaseManagement.MVVM.ViewModels
@@ -17,7 +16,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     {
         #region Public Properties
         private ProductDto _purchaseItem;
-        public ProductDto PurchaseItem
+        public ProductDto ProductItem
         {
             get => _purchaseItem;
             set => UpdateObservable(ref _purchaseItem, value);
@@ -39,8 +38,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Private Methods
         public int Counter = 0;
         private readonly IPurchaseRepository _purchaseDB;
-        private readonly IGenericRepository<ProductStatistics> _statisticsDB;
-        private readonly IProductRepository _productRepository;
         private readonly INotification _toastNotification;
         private ProductValidation productValidation = new();
         #endregion
@@ -53,13 +50,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Constructor
-        public MarketFormViewModel(IPurchaseRepository db,
-            IGenericRepository<ProductStatistics> statisticsDB,
-            IProductRepository productRepository)
+        public MarketFormViewModel(IPurchaseRepository db)
         {
             _purchaseDB = db;
-            _statisticsDB = statisticsDB;
-            _productRepository = productRepository;
             _toastNotification = new ToastNotification();
             IsSavebtnEnabled = true;
             CommandSetup();
@@ -95,7 +88,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
-                if(!await UpdateProductItem(ViewModelLocator.ProductItemsViewModel.Purchases.Adapt<Purchase>()))
+                if(!await MarketFormViewModelUtility.UpdateProductItem(await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate), 
+                    ProductItem.Adapt<Product>()))
                 {
                     return;
                 }
@@ -105,102 +99,17 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void OnSave(object sender)
         {
-            ValidationResult validationResult = productValidation.Validate(PurchaseItem);
-            if (validationResult.IsValid)
-            {
-                ShowActivity();
-                Purchase purchase = new Purchase("test", ViewModelLocator.MainViewModel.SelectedDate);
-                if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purchases)
-                {
-                    AddNewProducts(purchases);
-                }
-                else
-                {
-                    SavePurchaseAndProductItem(purchase);
-                }
-                Counter++;
-                await _toastNotification.ShowNotification($"{Counter}");
-                HideActivity();
-            }
-            else
-            {
-                await _toastNotification.ShowNotification(validationResult.Errors[0].ErrorMessage);
-            }
+            await MarketFormViewModelUtility.CreateAndAddProduct(ProductItem.Adapt<Product>());
         }
         #endregion
 
-        #region Private Methods
-        private async Task<bool> UpdateProductItem(Purchase purchase)
-        {
-            ValidationResult validationResult = productValidation.Validate(PurchaseItem);
-            if(validationResult.IsValid)
-            {
-                Product m_purchase_item = PurchaseItem.Adapt<Product>();
-                await _productRepository.SaveOrUpdateItem(m_purchase_item);
-                var stat = await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(purchase.PurchaseStatistics);
-                await _statisticsDB.SaveOrUpdateItem(stat);
-
-
-                // Update UI
-                UpdateUI();
-            }
-            else
-            {
-                await _toastNotification.ShowNotification(validationResult.Errors[0].ErrorMessage);
-                return false;
-            }
-            return true;
-            
-        }
-
-        private async void AddNewProducts(Purchase purchase)
-        {
-            // Update DB
-            Product m_purchase_item = PurchaseItem.Adapt<Product>();
-            m_purchase_item.PurchaseId = purchase.Id;
-            await _productRepository.SaveOrUpdateItem(m_purchase_item);
-            await _statisticsDB.SaveOrUpdateItem(await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(purchase.PurchaseStatistics));
-
-            // UI
-            UpdateUI();
-        }
-        private async void UpdateUI()
-        {
-            var purchase = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            Update(purchase.Adapt<PurchaseDto>());
-        }
-        private void Update(PurchaseDto newObj)
-        {
-            ViewModelLocator.MainViewModel.UpdateItem(newObj);
-        }
-        private async void SavePurchaseAndProductItem(Purchase purchase)
-        {
-            purchase = await _purchaseDB.SaveOrUpdateItem(purchase);
-            ProductStatistics m_purchaseStatistics = new(purchase.Id, 1, PurchaseItem.Item_Price, PurchaseItem.Item_Quantity);
-            Product m_purchase_item = PurchaseItem.Adapt<Product>();
-
-            m_purchase_item.PurchaseId = purchase.Id;
-            await _productRepository.SaveOrUpdateItem(m_purchase_item);
-            //
-            m_purchaseStatistics = await _statisticsDB.SaveOrUpdateItem(await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(m_purchaseStatistics));
-            // Update Statistics
-            purchase.PurchaseStatistics = m_purchaseStatistics;
-            purchase.ProductStatId = m_purchaseStatistics.Id;
-            await _purchaseDB.SaveOrUpdateItem(purchase);
-
-            //
-            var p = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            ViewModelLocator.MainViewModel.AddItem(p.Adapt<PurchaseDto>());
-        }
-        
-        #endregion
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             if(query.Count() > 0)
             {
                 IsSave = (bool)query["IsSave"];
-                PurchaseItem = query["Purchase_ItemsDTO"] as ProductDto;
-                Counter = PurchaseItem.Counter;
+                ProductItem = query["Purchase_ItemsDTO"] as ProductDto;
+                Counter = ProductItem.Counter;
             }
         }
     }

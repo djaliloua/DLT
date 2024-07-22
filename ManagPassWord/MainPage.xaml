@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:triggersAction="clr-namespace:ManagPassWord.Triggers"
-             xmlns:local="clr-namespace:ManagPassWord.Views"
+             xmlns:local="clr-namespace:ManagPassWord.MVVM.Views"
              xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
              xmlns:custom="clr-namespace:ManagPassWord.CustomClasses"
              xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
@@ -44,76 +44,92 @@
                      Command="{Binding AboutCommand}"
                      Order="Secondary" />
     </ContentPage.ToolbarItems>
-    <ScrollView>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition  />
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-                <Label Text="Password Manager" />
-            </Grid>
-            <ListView Grid.Row="1"
-                      x:Name="listview"
-                      ItemsSource="{Binding Items}"
-                      SelectedItem="{Binding SelectedItem}"
-                      SeparatorVisibility="Default"
-                      VerticalScrollBarVisibility="Never"
-                      RowHeight="100"
-                      Margin="10">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <SwipeView>
-                                <SwipeView.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="2"
-                                                          BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
-                                                          Command="{Binding OpenCommand}">
-                                    </TapGestureRecognizer>
-                                </SwipeView.GestureRecognizers>
-                                <Frame>
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <Label FontSize="Default"
-                                               FontAttributes="Bold"
-                                               Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}" />
-                                        <Label FontSize="Default"
-                                               FontAttributes="Bold"
-                                               Text="{Binding Site, StringFormat=' {0}', FallbackValue='No Value'}"
-                                               Grid.Row="1" />
-                                    </Grid>
-                                </Frame>
-                            </SwipeView>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <Grid Grid.Row="2"
-                  Margin="10">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="auto" />
-                </Grid.ColumnDefinitions>
-
-                <Button FontAttributes="Bold"
-                        HorizontalOptions="End"
-                        StyleClass="Elevation4"
-                        Command="{Binding AddCommand}"
-                        Grid.Column="1">
-                    <Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialRegular"
-                                         Glyph="{x:Static m:MaterialRound.Add}" />
-                    </Button.ImageSource>
-                </Button>
-            </Grid>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Label Text="Password Manager" />
         </Grid>
-    </ScrollView>
+        <ActivityIndicator IsRunning="{Binding IsActivity}"
+                           Color="Blue"
+                           Grid.Row="1"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HeightRequest="80"
+                           WidthRequest="80"
+                           x:Name="activity"
+                           ZIndex="10">
+            <ActivityIndicator.Triggers>
+                <DataTrigger TargetType="ActivityIndicator"
+                             Binding="{Binding IsActivity}"
+                             Value="True">
+                    <Setter Property="IsVisible"
+                            Value="Visible" />
+                </DataTrigger>
+                <DataTrigger TargetType="ActivityIndicator"
+                             Binding="{Binding IsActivity}"
+                             Value="False">
+                    <Setter Property="IsVisible"
+                            Value="Hidden" />
+                </DataTrigger>
+            </ActivityIndicator.Triggers>
+        </ActivityIndicator>
+        <ListView Grid.Row="1"
+                  x:Name="listview"
+                  ItemsSource="{Binding Items}"
+                  SelectedItem="{Binding SelectedItem}"
+                  SeparatorVisibility="Default"
+                  VerticalScrollBarVisibility="Never"
+                  RowHeight="100"
+                  Margin="10">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <SwipeView>
+                            <SwipeView.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                      BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
+                                                      Command="{Binding OpenCommand}">
+                                </TapGestureRecognizer>
+                            </SwipeView.GestureRecognizers>
+                            <Frame>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
+                                    <Label FontSize="Default"
+                                           FontAttributes="Bold"
+                                           Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}" />
+                                    <Label FontSize="Default"
+                                           FontAttributes="Bold"
+                                           Text="{Binding Site, StringFormat=' {0}', FallbackValue='No Value'}"
+                                           Grid.Row="1" />
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button FontAttributes="Bold"
+                Grid.Row="1"
+                Margin="0,0,30,50"
+                HorizontalOptions="End"
+                ZIndex="50"
+                VerticalOptions="End"
+                WidthRequest="100"
+                Command="{Binding AddCommand}">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Add}" />
+            </Button.ImageSource>
+        </Button>
+    </Grid>
 </ContentPage>

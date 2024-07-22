@@ -1,42 +1,51 @@
 ﻿using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
-using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.MarketModels;
-using MarketModels = PurchaseManagement.MVVM.Models.MarketModels;
 using MauiNavigationHelper.NavigationLib.Models;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Utilities;
 using Patterns;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using PurchaseManagement.Commons.Notifications;
+using PurchaseManagement.Commons.Notifications.Abstractions;
+using PurchaseManagement.Commons.Notifications.Implementations;
 using Mapster;
+using Patterns.Implementations;
+using Patterns.Abstractions;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
-    public abstract class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: ProductDto
+    public class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: ProductDto
     {
-        protected override void Reorder()
+        public PurchaseItemsViewModelLoadable(ILoadService<TItem> loadService):base(loadService)
         {
-            var data = Items.OrderByDescending(item => item.Id).ToList();
-            SetItems(data);
+
+        }
+        public override void SetItems(IEnumerable<TItem> items)
+        {
+            var data = items.OrderByDescending(item => item.Id).ToList();
+            base.SetItems(data);
         }
 
+    }
+    public class LoadProductService : ILoadService<ProductDto>
+    {
+        public IList<ProductDto> Reorder(IList<ProductDto> items)
+        {
+            return items;
+        }
     }
     public class ProductItemsViewModel: PurchaseItemsViewModelLoadable<ProductDto>, INavigatedEvents
     {
         #region Private properties
-        private readonly INavigationService navigationService;
-        private readonly IPurchaseRepository _purchaseDB;
-        private readonly IGenericRepository<ProductStatistics> _statisticsDB;
-        private readonly IGenericRepository<MarketModels.Location> _locationRepository;
-        private readonly IProductRepository _productRepository;
+        private readonly INavigationService _navigationService;
+        private readonly IPurchaseRepository _purchaseRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
-        private ExportContext<ProductDto> exportContext;
+        private ExportContext<ProductDto> _exportContext;
         #endregion
 
         #region Public Properties
@@ -44,14 +53,12 @@ namespace PurchaseManagement.MVVM.ViewModels
         public PurchaseDto Purchases
         {
             get => _puchases;
-            set
+            set => UpdateObservable(ref  _puchases, value, async() =>
             {
-                _puchases = value;
-                if (value != null)
-                {
-                    _ = LoadItems();
-                }
-            }
+                ShowActivity();
+                await LoadItems(Purchases.Products);
+                HideActivity();
+            });
         }
         private bool _isLocAvailable;
         public bool IsLocAvailable
@@ -80,19 +87,16 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Constructor
-        public ProductItemsViewModel(IProductRepository productRepository,
-            IGenericRepository<ProductStatistics> statisticsDB,
+        public ProductItemsViewModel(
             IPurchaseRepository purchaseDB,
             INavigationService navigationService,
             ExportContext<ProductDto> context,
-            IGenericRepository<MarketModels.Location> locationRepository)
+            ILoadService<ProductDto> loadService
+            ):base(loadService)
         {
-            _productRepository = productRepository;
-            _statisticsDB = statisticsDB;
-            _purchaseDB = purchaseDB;
-            exportContext = context;
-            this.navigationService = navigationService;
-            _locationRepository = locationRepository;
+            _purchaseRepository = purchaseDB;
+            _exportContext = context;
+            _navigationService = navigationService;
             _notification = new ToastNotification();
             _messageBox = new MessageBoxNotification();
             RegisterToMessage();
@@ -103,7 +107,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         #region Handlers
         private async void OnBackCommand(object parameter)
         {
-            await navigationService.Navigate("..");
+            await _navigationService.Navigate("..");
         }
         public async void OnOpenAnalyticCommand(object parameter)
         {
@@ -111,12 +115,12 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 { "product", GetItems() }
             };
-            await navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
+            await _navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
             
         }
         private void OnExportToPdfCommand(object parameter)
         {
-            exportContext.ExportTo("", GetItems());
+            _exportContext.ExportTo("", GetItems());
         }
         private async void On_GetMap(object parameter)
         {
@@ -125,21 +129,17 @@ namespace PurchaseManagement.MVVM.ViewModels
             SelectedItem = productDto;
             if (IsSelected)
             {
-                Microsoft.Maui.Devices.Sensors.Location location = await ProductViewModelUtility.GetCurrentLocation();
-                if (await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase)
+                Location location = await ProductViewModelUtility.GetCurrentLocation();
+                if (await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purch)
                 {
-                    // Update Product with its corresponding location
-                    var loc = location.Adapt<MarketModels.Location>();
-                    SelectedItem.Location = loc.Adapt<LocationDto>();
-                    loc.Purchase_Id = SelectedItem.PurchaseId;
-                    loc.Purchase_Item_Id = SelectedItem.Id;
-                    SelectedItem.IsLocation = SelectedItem.Location != null;
-                    loc = await _locationRepository.SaveOrUpdateItem(loc);
-                    SelectedItem.Location_Id = loc.Id;
-                    await _productRepository.SaveOrUpdateItem(SelectedItem.Adapt<Product>());
+                    var loc = location.Adapt<ProductLocation>();
+                    SelectedItem.ProductLocation = loc.Adapt<LocationDto>();
+                    SelectedItem.IsLocation = SelectedItem.ProductLocation != null;
+
+                    ViewModelUtility.UpdateProduct(purch, SelectedItem.Adapt<Product>());
+                    await ViewModelUtility.SaveAndUpdateUI(purch);
+
                     await _notification.ShowNotification("Got location");
-                    // Update UI
-                    UpdateUI();
                 }
 
             }
@@ -171,8 +171,8 @@ namespace PurchaseManagement.MVVM.ViewModels
             if (IsSelected)
             {
                 
-                if (SelectedItem.Location != null)
-                    await ProductViewModelUtility.NavigateToBuilding25(SelectedItem.Location.Adapt<Microsoft.Maui.Devices.Sensors.Location>());
+                if (SelectedItem.ProductLocation != null)
+                    await ProductViewModelUtility.NavigateToBuilding25(SelectedItem.ProductLocation.Adapt<Location>());
                 else
                     await Shell.Current.DisplayAlert("Message", "Get location", "Cancel");
             }
@@ -187,21 +187,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    await _productRepository.DeleteItem(SelectedItem.Adapt<Product>());
-                    // Update Stat
-                    ProductStatistics purchaseStatistics = await _statisticsDB.GetItemById(SelectedItem.PurchaseId);
-                    await _statisticsDB.SaveOrUpdateItem(await StatisticRepoUtility.CreateOrUpdatePurchaseStatistics(purchaseStatistics));
-                    //
-                    if(SelectedItem.Location_Id != 0)
-                    {
-                        MarketModels.Location loc = await _locationRepository.GetItemById(SelectedItem.Location_Id);
-                        if (loc != null)
-                            await _locationRepository.DeleteItem(loc);
-                    }
+                    Purchase purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    purchase.Remove(SelectedItem.Adapt<Product>());
+                    await ViewModelUtility.SaveAndUpdateUI(purchase);
 
-                    // Update UI
-                    var p = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    ViewModelLocator.MainViewModel.UpdateItem(p.Adapt<PurchaseDto>());
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
                     
@@ -223,7 +212,7 @@ namespace PurchaseManagement.MVVM.ViewModels
                 { "details", SelectedItem }
             };
                 //SelectedItem = null;
-                await navigationService.Navigate(nameof(PurchaseItemDetails), navigationParameters);
+                await _navigationService.Navigate(nameof(PurchaseItemDetails), navigationParameters);
             }
         }
         #endregion
@@ -233,12 +222,11 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             WeakReferenceMessenger.Default.Register<ProductDto, string>(this, "update", async (sender, p) =>
             {
-                if (p.Purchase is PurchaseDto purchase)
+                if (p.Purchase is PurchaseDto purchaseX)
                 {
-                    p.PurchaseId = purchase.Id;
-                    await _productRepository.SaveOrUpdateItem(p.Adapt<Product>());
-                    var purchaseX = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    ViewModelLocator.MainViewModel.UpdateItem(purchaseX.Adapt<PurchaseDto>());
+                    var purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    ViewModelUtility.UpdateProduct(purchase, p.Adapt<Product>());
+                    await _purchaseRepository.SaveOrUpdateItemAsync(purchase);
                 }
             });
         }
@@ -257,7 +245,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         
         private async void UpdateUI()
         {
-            var purchase = await _purchaseDB.GetFullPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+            var purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
             ViewModelLocator.MainViewModel.UpdateItem(purchase.Adapt<PurchaseDto>());
         }
         
@@ -266,13 +254,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         public void ResetSelectedItem()
         {
             SelectedItem = null;
-        }
-        public override async Task LoadItems()
-        {
-            ShowActivity();
-            await Task.Delay(1);
-            SetItems(Purchases.Products);
-            HideActivity();
         }
 
         public Task OnNavigatedTo(NavigationParameters parameters)

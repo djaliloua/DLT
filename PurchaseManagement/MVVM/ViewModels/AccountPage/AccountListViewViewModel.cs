@@ -1,25 +1,29 @@
 ﻿using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
-using Patterns;
 using PurchaseManagement.MVVM.Models.Accounts;
-using PurchaseManagement.ServiceLocator;
-using PurchaseManagement.Commons;
 using Mapster;
-using MapsterMapper;
-using PurchaseManagement.Commons.Notifications;
+using PurchaseManagement.Commons.Notifications.Abstractions;
+using PurchaseManagement.Commons.Notifications.Implementations;
+using Patterns.Implementations;
+using Patterns.Abstractions;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
-    
+    public class LoadAccountService : ILoadService<AccountDTO>
+    {
+        public IList<AccountDTO> Reorder(IList<AccountDTO> items)
+        {
+            return items.OrderByDescending(a => a.DateTime).ToList();
+        }
+    }
     public class AccountListViewViewModel : Loadable<AccountDTO>
     {
         #region Private methods
-        private readonly IAccountRepository accountRepository;
+        private readonly IAccountRepository _accountRepository;
         private INotification _snackBarNotification;
         private INotification _toastNotification;
         private INotification _messageBox;
-        private IMapper mapper;
         #endregion
 
         #region Properties
@@ -37,15 +41,14 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository _accountRepository, IMapper _mapper)
+        public AccountListViewViewModel(IAccountRepository repo, ILoadService<AccountDTO> loadService):base(loadService)
         {
-            accountRepository = _accountRepository;
-            mapper = _mapper;
+            _accountRepository = repo;
             SetupNotification();
             Init();
             SetupComands();
         }
-#endregion
+        #endregion
 
         #region Private methods
         public override bool ItemExist(AccountDTO newAccount)
@@ -66,16 +69,23 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         }
         private async void Init()
         {
-            await LoadItems();
-            await GetMax()
-                .ContinueWith(async (t) =>
-                {
-                    if (!IsEmpty)
+            ShowActivity();
+            await Task.Run(async () =>
+            {
+                IEnumerable<Account> data = await _accountRepository.GetAllItemsAsync();
+                var dt = data.Adapt<List<AccountDTO>>();
+                await LoadItems(dt);
+                await GetMax()
+                    .ContinueWith(async (t) =>
                     {
-                        await _snackBarNotification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                        if (!IsEmpty)
+                        {
+                            await _snackBarNotification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                        }
                     }
-                }
-                );
+                    );
+            });
+            HideActivity();
         }
         private void SetupComands()
         {
@@ -84,7 +94,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         private async Task GetMax()
         {
             MaxMin max = new();
-            IList<MaxMin> val = await accountRepository.GetMaxAsync();
+            IList<MaxMin> val = await _accountRepository.GetMaxAsync();
             if (val.Count == 1)
             {
                 max = val[0];
@@ -94,20 +104,20 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Overriden methods
-        protected override void Reorder()
-        {
-            var data = Items.OrderByDescending(a => a.DateTime).ToList();
-            SetItems(data);
-        }
-        public override async Task LoadItems()
-        {
-            ShowActivity();
-            IEnumerable<Account> data = await accountRepository.GetAllItems();
-            var dt = data.Adapt<List<AccountDTO>>();
-            SetItems(dt);
-            HideActivity();
+        //protected override void Reorder()
+        //{
+        //    var data = Items.OrderByDescending(a => a.DateTime).ToList();
+        //    SetItems(data);
+        //}
+        //public override async Task LoadItems()
+        //{
+        //    ShowActivity();
+        //    IEnumerable<Account> data =  await _accountRepository.GetAllItemsAsync();
+        //    var dt = data.Adapt<List<AccountDTO>>();
+        //    SetItems(dt);
+        //    HideActivity();
 
-        }
+        //}
         #endregion
 
         #region Handlers
@@ -123,7 +133,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             
             if (!ItemExist(item))
             {
-                var newAccount = await accountRepository.SaveOrUpdateItem(item.Adapt<Account>());
+                var newAccount = await _accountRepository.SaveOrUpdateItemAsync(item.Adapt<Account>());
                 base.AddItem(newAccount.Adapt<AccountDTO>());
                 await _toastNotification.ShowNotification($"{newAccount.Money} added");
             }
@@ -141,7 +151,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
                     var acount = item.Adapt<Account>();
-                    await accountRepository.DeleteItem(acount);
+                    await _accountRepository.DeleteItemAsync(acount);
                     base.DeleteItem(item);
                     await _toastNotification.ShowNotification($"{item.Money} deleted");
                 }

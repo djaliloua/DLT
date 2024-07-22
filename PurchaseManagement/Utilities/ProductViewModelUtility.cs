@@ -4,7 +4,7 @@ namespace PurchaseManagement.Utilities
 {
     public static class ProductViewModelUtility
     {
-        public static async Task NavigateToBuilding25(Microsoft.Maui.Devices.Sensors.Location location)
+        public static async Task NavigateToBuilding25(Location location)
         {
             try
             {

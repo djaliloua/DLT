@@ -34,24 +34,24 @@
         <VerticalStackLayout Spacing="15">
             <material:TextField Title="Product"
                                 x:Name="product"
-                                Text="{Binding PurchaseItem.Item_Name}">
+                                Text="{Binding ProductItem.Item_Name}">
                 <!--<validation:RequiredValidation />-->
             </material:TextField>
             <material:TextField Title="Price"
                                 Keyboard="Numeric"
                                 x:Name="price"
-                                Text="{Binding PurchaseItem.Item_Price}">
+                                Text="{Binding ProductItem.Item_Price}">
                 <!--<validation:RequiredValidation />-->
             </material:TextField>
             <material:TextField Title="Quantity"
                                 Keyboard="Numeric"
                                 x:Name="quantity"
-                                Text="{Binding PurchaseItem.Item_Quantity}">
+                                Text="{Binding ProductItem.Item_Quantity}">
                 <!--<validation:RequiredValidation />-->
             </material:TextField>
             <material:TextField Title="Note"
-                                Text="{Binding PurchaseItem.Item_Description}" />
-            <material:CheckBox IsChecked="{Binding PurchaseItem.IsPurchased}"/>
+                                Text="{Binding ProductItem.Item_Description}" />
+            <material:CheckBox IsChecked="{Binding ProductItem.IsPurchased}"/>
         </VerticalStackLayout>
         <ActivityIndicator IsRunning="{Binding IsActivity}"
                            Color="Blue"

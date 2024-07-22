@@ -1,0 +1,91 @@
+﻿using ManagPassWord.DataAcessLayer.Abstractions;
+using ManagPassWord.MVVM.Models;
+using ManagPassWord.Pages;
+using Mapster;
+using Patterns;
+using Patterns.Abstractions;
+using Patterns.Implementations;
+using System.Windows.Input;
+
+namespace ManagPassWord.MVVM.ViewModels.Password
+{
+    public class LoaddUserService : ILoadService<UserDTO>
+    {
+        public IList<UserDTO> Reorder(IList<UserDTO> items)
+        {
+            return items.OrderByDescending(item => item.Id).ToList();
+        }
+    }
+    public class MainPageViewModel : Loadable<UserDTO>
+    {
+        private readonly IPasswordRepository _passwordRepository;
+
+        #region Commands
+        public ICommand AddCommand { get; private set; }
+        public ICommand OpenCommand { get; private set; }
+        public ICommand SettingCommand { get; private set; }
+        public ICommand AboutCommand { get; private set; }
+        #endregion
+
+        #region Constructor
+        public MainPageViewModel(IPasswordRepository _db, ILoadService<UserDTO> loadService):base(loadService)
+        {
+            _passwordRepository = _db;
+            load();
+            CommandSetup();
+        }
+        #endregion
+
+        #region Private methods
+        private async void load()
+        {
+            ShowActivity();
+            var repo = await _passwordRepository.GetAllItemsAsync();
+            var data = repo.Adapt<List<UserDTO>>();
+            await Task.Run(async() => await LoadItems(data));
+            HideActivity();
+        }
+        private void CommandSetup()
+        {
+            AddCommand = new Command(OnAdd);
+            OpenCommand = new Command(OnOpen);
+            SettingCommand = new Command(OnSetting);
+            AboutCommand = new Command(OnAbout);
+        }
+        #endregion
+
+        #region Handlers
+        private async void OnOpen(object sender)
+        {
+            if (IsSelected)
+            {
+                var navigationParameter = new Dictionary<string, object>
+                        {
+                            { "user", SelectedItem },
+                            { "isedit", false },
+                        };
+                await Shell.Current.GoToAsync(nameof(DetailPage), navigationParameter);
+            }
+        }
+        private async void OnAdd(object sender)
+        {
+            SelectedItem = null;
+            var navigationParameter = new Dictionary<string, object>
+                        {
+                            { "user", new UserDTO() },
+                            { "isedit", false }
+                        };
+            await Shell.Current.GoToAsync(nameof(AddPassworPage), navigationParameter);
+
+        }
+        private async void OnAbout(object sender)
+        {
+            await Shell.Current.GoToAsync(nameof(AboutPage));
+        }
+        private async void OnSetting(object sender)
+        {
+            await Shell.Current.GoToAsync(nameof(SettingPage));
+        }
+        #endregion
+    }
+}

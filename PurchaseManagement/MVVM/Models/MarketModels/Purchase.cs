@@ -1,26 +1,17 @@
-﻿using PurchaseManagement.DataAccessLayer.Abstractions;
-using SQLite;
-using SQLiteNetExtensions.Attributes;
+﻿using PurchaseManagement.Utilities;
 
 namespace PurchaseManagement.MVVM.Models.MarketModels
 {
-    [Table("Purchases")]
     public class Purchase:BaseEntity
     {
+        #region Properties
         public string Title { get; set; }
         public string PurchaseDate { get; set; }
-        private IList<Product> _products;
-        [OneToMany(nameof(Id))]
-        public IList<Product> Products
-        {
-            get => _products;
-            set => _products = value;
-        }
+        public virtual IList<Product> Products { get; set; } = new List<Product>();
+        public virtual ProductStatistics ProductStatistics { get; set; }
+        #endregion
 
-        [ForeignKey(typeof(ProductStatistics))]
-        public int ProductStatId { get; set; }
-        [OneToOne]
-        public ProductStatistics PurchaseStatistics { get; set; }
+        #region Constructor
         public Purchase(string title, DateTime dt)
         {
             Title = title;
@@ -30,25 +21,21 @@ namespace PurchaseManagement.MVVM.Models.MarketModels
         {
 
         }
-        public async Task LoadPurchaseStatistics(IGenericRepository<ProductStatistics> repository)
+        #endregion
+        public void Add(Product product)
         {
-            if (PurchaseStatistics == null)
-            {
-                PurchaseStatistics = await repository.GetItemById(Id);
-            }
+            Products.Add(product);
+            PurchaseUtility.UpdateStatistics(this);
         }
-        public async Task LoadProducts(IProductRepository productRepository, IGenericRepository<MarketModels.Location> locationRepository)
+        public void Remove(Product product)
         {
-            if (Products == null)
+            Product p = Products.FirstOrDefault(p => p.Id==product.Id);  
+            int index = Products.IndexOf(p);
+            if(index >= 0)
             {
-                Products ??= new List<Product>();
-                foreach (var item in await productRepository.GetAllItemById(Id))
-                {
-                    item.Purchase = this;
-                    await item.LoadLoacation(locationRepository);
-                    Products.Add(item);
-                }
+                Products.RemoveAt(index);
             }
+            PurchaseUtility.UpdateStatistics(this);
         }
         public Purchase Clone() => MemberwiseClone() as Purchase;
     }

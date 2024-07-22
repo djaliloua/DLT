@@ -63,93 +63,105 @@
                      Command="{Binding AboutCommand}"
                      Order="Secondary" />
     </ContentPage.ToolbarItems>
-    <ScrollView>
-        <Grid Margin="15">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="30" />
-                <RowDefinition Height="auto" />
-                <RowDefinition  />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-            </Grid.RowDefinitions>
-            <Label Text="Debt" />
-            <BoxView Color="{StaticResource Surface}"
-                     Grid.Row="1" />
-            
-            <BoxView Color="{StaticResource Surface}"
-                     Grid.Row="2" />
-            <ListView  Grid.Row="3"
-                       RowHeight="150"
-                       x:Name="listview"
-                       SeparatorVisibility="Default"
-                       VerticalScrollBarVisibility="Never"
-                       SelectedItem="{Binding SelectedItem}"
-                       ItemsSource="{Binding Items}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <SwipeView>
-                                <SwipeView.GestureRecognizers>
-                                    <TapGestureRecognizer NumberOfTapsRequired="2"
-                                                          BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
-                                                          Command="{Binding OpenCommand}">
-                                    </TapGestureRecognizer>
-                                </SwipeView.GestureRecognizers>
-                                <Frame CornerRadius="15">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+
+        </Grid.RowDefinitions>
+        <Label Text="Debt" />
+        <ActivityIndicator IsRunning="{Binding IsActivity}"
+                           Color="Blue"
+                           Grid.Row="1"
+                           VerticalOptions="Center"
+                           HorizontalOptions="Center"
+                           HeightRequest="80"
+                           WidthRequest="80"
+                           x:Name="activity"
+                           ZIndex="10">
+            <ActivityIndicator.Triggers>
+                <DataTrigger TargetType="ActivityIndicator"
+                             Binding="{Binding IsActivity}"
+                             Value="True">
+                    <Setter Property="IsVisible"
+                            Value="Visible" />
+                </DataTrigger>
+                <DataTrigger TargetType="ActivityIndicator"
+                             Binding="{Binding IsActivity}"
+                             Value="False">
+                    <Setter Property="IsVisible"
+                            Value="Hidden" />
+                </DataTrigger>
+            </ActivityIndicator.Triggers>
+        </ActivityIndicator>
+        <ListView  Grid.Row="1"
+                   RowHeight="150"
+                   x:Name="listview"
+                   SeparatorVisibility="Default"
+                   VerticalScrollBarVisibility="Never"
+                   SelectedItem="{Binding SelectedItem}"
+                   ItemsSource="{Binding Items}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <SwipeView>
+                            <SwipeView.GestureRecognizers>
+                                <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                      BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
+                                                      Command="{Binding OpenCommand}">
+                                </TapGestureRecognizer>
+                            </SwipeView.GestureRecognizers>
+                            <Frame>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                        <RowDefinition />
+                                    </Grid.RowDefinitions>
                                     <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition />
-                                                <ColumnDefinition />
-                                            </Grid.ColumnDefinitions>
-                                            <Label HorizontalOptions="Start"
-                                                   VerticalOptions="Center"
-                                                   VerticalTextAlignment="Center"
-                                                   Text="{Binding DebtDate, 
-                                            StringFormat='{0:dd}/{0:MM}/{0:yyyy}'}" />
-                                            <Label Text="{Binding IsCompleted,Converter={StaticResource conv}}"
-                                                   HorizontalOptions="End"
-                                                   VerticalOptions="Center"
-                                                   Grid.Column="1">
-                                            </Label>
-                                        </Grid>
-                                        <Label Text="{Binding Name}"
-                                               HorizontalOptions="Start"
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Label HorizontalOptions="Start"
                                                VerticalOptions="Center"
                                                VerticalTextAlignment="Center"
-                                               Grid.Row="1" />
-                                        <Label Text="{Binding Amount, StringFormat='{0:C0}'}"
-                                               HorizontalOptions="Start"
+                                               Text="{Binding DebtDate, 
+                                    StringFormat='{0:dd}/{0:MM}/{0:yyyy}'}" />
+                                        <Label Text="{Binding IsCompleted,Converter={StaticResource conv}}"
+                                               HorizontalOptions="End"
                                                VerticalOptions="Center"
-                                               VerticalTextAlignment="Center"
-                                               Grid.Row="2" />
+                                               Grid.Column="1">
+                                        </Label>
                                     </Grid>
-                                </Frame>
-                            </SwipeView>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <Grid Grid.Row="4"
-                  Margin="20"
-                  HorizontalOptions="End">
-
-                <Button HorizontalOptions="End"
-                        Command="{Binding AddCommand}"
-                        Grid.Column="2">
-
-                    <Button.ImageSource>
-                        <FontImageSource FontFamily="MaterialRegular"
-                                         Glyph="{x:Static m:MaterialRound.Add}" />
-                    </Button.ImageSource>
-                </Button>
-            </Grid>
-        </Grid>
-    </ScrollView>
+                                    <Label Text="{Binding Name}"
+                                           HorizontalOptions="Start"
+                                           VerticalOptions="Center"
+                                           VerticalTextAlignment="Center"
+                                           Grid.Row="1" />
+                                    <Label Text="{Binding Amount, StringFormat='{0:C2}'}"
+                                           HorizontalOptions="Start"
+                                           VerticalOptions="Center"
+                                           VerticalTextAlignment="Center"
+                                           Grid.Row="2" />
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button HorizontalOptions="End"
+                VerticalOptions="End"
+                Margin="0,0,30,30"
+                ZIndex="50"
+                WidthRequest="100"
+                Command="{Binding AddCommand}"
+                Grid.Row="1">
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Add}" />
+            </Button.ImageSource>
+        </Button>
+    </Grid>
 </ContentPage>

@@ -62,7 +62,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             set => _location_id = value;
         }
         private LocationDto _location;
-        public LocationDto Location
+        public LocationDto ProductLocation
         {
             get => _location;
             set => UpdateObservable(ref _location, value, () =>
