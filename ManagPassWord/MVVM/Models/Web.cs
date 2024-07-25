@@ -3,6 +3,37 @@ using MVVM;
 
 namespace ManagPassWord.MVVM.Models
 {
+    public static class Extension
+    {
+        public static Web ToWeb(this WebDto webDto)
+        {
+            Web web = new Web();
+            web.Id = webDto.Id;
+            web.Url = webDto.Url;
+            web.Passwords = webDto.Passwords.ToListPasswords();
+            return web;
+        }
+        public static IList<Password> ToListPasswords(this IList<PasswordDto> passwords)
+        {
+            List<Password> passwords1 = new List<Password>();
+            foreach (var password in passwords)
+            {
+                passwords1.Add(password.ToPassword());
+            }
+            return passwords1;
+        }
+        public static Password ToPassword(this PasswordDto pass)
+        {
+            Password password = new();
+            //password.Web = pass.Web.ToWeb();
+            password.Note = pass.Note;
+            password.PasswordName = pass.PasswordName;
+            password.Date = pass.Date;  
+            password.Username = pass.UserName;
+            password.Id = pass.Id;
+            return password;
+        }
+    }
     public class WebDto: BaseViewModel
     {
         private int _id;
@@ -17,7 +48,12 @@ namespace ManagPassWord.MVVM.Models
             get => _site;
             set => UpdateObservable(ref _site, value);
         }
-        private IList<PasswordDto> Passwords { get; set; }
+        private IList<PasswordDto> _passwords;
+        public IList<PasswordDto> Passwords
+        {
+            get => _passwords;
+            set => UpdateObservable(ref _passwords, value);
+        }
         
         public WebDto(string site)
         {
@@ -35,6 +71,11 @@ namespace ManagPassWord.MVVM.Models
         {
             return Url;
         }
+        public void Add(PasswordDto password)
+        {
+            Passwords ??= new List<PasswordDto>();
+            Passwords.Add(password);
+        }
         
     }
 
@@ -42,7 +83,7 @@ namespace ManagPassWord.MVVM.Models
     public class Web:BaseEntity
     {
         public string Url { get; set; }
-        public virtual IList<Password> Passwords { get; set; }
+        public virtual IList<Password> Passwords { get; set; } = new List<Password>();
 
         public Web(string site)
         {
@@ -55,6 +96,11 @@ namespace ManagPassWord.MVVM.Models
         public override string ToString()
         {
             return Url;
+        }
+        public void Add(Password password)
+        {
+            Passwords ??= new List<Password>();
+            Passwords.Add(password);
         }
     }
 

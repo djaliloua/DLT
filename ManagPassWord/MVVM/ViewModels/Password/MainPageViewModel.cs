@@ -15,8 +15,30 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         {
             return items.OrderByDescending(item => item.Id).ToList();
         }
+        
     }
-    public class MainPageViewModel : Loadable<WebDto>
+    public class LoadableWebDto: Loadable<WebDto>
+    {
+        public LoadableWebDto(ILoadService<WebDto> loadService):base(loadService)
+        {
+            
+        }
+        public override bool ItemExist(WebDto item)
+        {
+            return Items.FirstOrDefault(w => w.Url == item.Url) != null;
+        }
+        protected override int Index(WebDto item)
+        {
+            WebDto w = GetWebElementByUrl(item.Url);
+            return base.Index(w);
+        }
+        public WebDto GetWebElementByUrl(string url)
+        {
+            return Items.FirstOrDefault(w => w.Url == url);
+        }
+        
+    }
+    public class MainPageViewModel : LoadableWebDto
     {
         private readonly IPasswordRepository _passwordRepository;
 
@@ -28,7 +50,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #endregion
 
         #region Constructor
-        public MainPageViewModel(IPasswordRepository _db, ILoadService<WebDto> loadService):base(loadService)
+        public MainPageViewModel(IPasswordRepository _db, 
+            ILoadService<WebDto> loadService):base(loadService)
         {
             _passwordRepository = _db;
             load();

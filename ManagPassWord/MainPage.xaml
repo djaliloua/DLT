@@ -106,10 +106,10 @@
                                     </Grid.RowDefinitions>
                                     <Label FontSize="Default"
                                            FontAttributes="Bold"
-                                           Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}" />
+                                           Text="{Binding Url, StringFormat=' {0}', FallbackValue='No Value'}" />
                                     <Label FontSize="Default"
                                            FontAttributes="Bold"
-                                           Text="{Binding Site, StringFormat=' {0}', FallbackValue='No Value'}"
+                                           Text="{Binding Passwords.Count, StringFormat=' {0} accounts', FallbackValue='No Value'}"
                                            Grid.Row="1" />
                                 </Grid>
                             </Frame>

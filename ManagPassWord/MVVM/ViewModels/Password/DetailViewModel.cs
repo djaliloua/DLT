@@ -21,7 +21,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         public DetailViewModel(IPasswordRepository db)
         {
             _db = db;
-            EditCommand = new Command(On_Edit);
+            EditCommand = new Command(OnEdit);
             DeleteCommand = new Command(delete);
         }
         private async void delete(object sender)
@@ -37,7 +37,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             }
 
         }
-        private async void On_Edit(object sender)
+        private async void OnEdit(object sender)
         {
             var navigationParameter = new Dictionary<string, object>
                         {

@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.MVVM.Models;
+using Pass=ManagPassWord.MVVM.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
 using MVVM;
@@ -7,6 +8,10 @@ using System.Windows.Input;
 
 namespace ManagPassWord.MVVM.ViewModels.Password
 {
+    public class WebFactory
+    {
+        
+    }
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
         private readonly IPasswordRepository _passwordRepository;
@@ -50,7 +55,25 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         {
             await Shell.Current.GoToAsync("..");
         }
+        private async Task<Web> GetTrackedEntity(Web web)
+        {
+            Web trackedEntity = await _passwordRepository.GetItemByUrl(Url);
+            trackedEntity.Passwords = web.Passwords;
+            //for (int i = 0; i < trackedEntity.Passwords.Count; i++)
+            //{
+            //    if (trackedEntity.Passwords[i].Id == web.Passwords[i].Id)
+            //    {
+            //        trackedEntity.Passwords[i].Note = web.Passwords[i].Note;
+            //        trackedEntity.Passwords[i].Date = web.Passwords[i].Date;
+            //        trackedEntity.Passwords[i].PasswordName = web.Passwords[i].PasswordName;
+            //        trackedEntity.Passwords[i].Username = web.Passwords[i].Username;
+            //        trackedEntity.Url = web.Url;
+            //        //trackedEntity.Passwords[i].Web = web.Passwords[i].Web;
+            //    }
+            //}
 
+            return trackedEntity;
+        }
         private async void OnSave(object sender)
         {
             Web temp_item;
@@ -58,13 +81,18 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             {
                 if (!IsEditPage)
                 {
-                    if (User.IsValid())
+                    if (await _passwordRepository.GetItemByUrl(Url) is Web web)
                     {
-                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(User.Adapt<Web>());
-                        ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<WebDto>());
+                        web.Add(Password.Adapt<Pass.Password>());
+                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                        ViewModelLocator.MainPageViewModel.UpdateItem(temp_item.Adapt<WebDto>());
                     }
                     else
                     {
+                        web = new Web(Url);
+                        web.Add(Password.Adapt<Pass.Password>());
+                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                        ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<WebDto>());
                         await Shell.Current.DisplayAlert("Error", "Site or Password field is or are empty.", "OK");
                         return;
                     }

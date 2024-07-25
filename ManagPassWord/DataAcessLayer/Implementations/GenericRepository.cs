@@ -65,7 +65,7 @@ namespace ManagPassWord.DataAcessLayer.Implementations
         {
             if (item.Id != 0)
             {
-                _context.Entry(item).State = EntityState.Modified;
+                _context.Entry(item).OriginalValues.SetValues(item);
             }
             else
             {
@@ -74,12 +74,11 @@ namespace ManagPassWord.DataAcessLayer.Implementations
             _context.SaveChanges();
             return item;
         }
-
         public virtual async Task<T> SaveOrUpdateItemAsync(T item)
         {
             if (item.Id != 0)
             {
-                _context.Entry(item).State = EntityState.Modified;
+                _context.Entry(item).OriginalValues.SetValues(item);
             }
             else
             {

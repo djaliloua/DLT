@@ -6,6 +6,7 @@
              xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
              BindingContext="{x:Static locator:ViewModelLocator.DetailViewModel}"
              Title="Details"
+             x:Name="main"
              >
     <ContentPage.Resources>
         <Style TargetType="material:TextField">
@@ -22,53 +23,63 @@
                     Value="150" />
         </Style>
     </ContentPage.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <material:TextField Title="Site"
-                            Grid.Row="0"
-                            Text="{Binding UserDetail.Site}" />
-        <BoxView StyleClass="Divider"
-                 Grid.Row="1"
-                 Margin="15" />
-        <material:TextField Title="UserName"
-                            Grid.Row="2"
-                            Text="{Binding UserDetail.Username}" />
-        
-        <material:TextField Title="Password"
-                            Grid.Row="3"
-                            Text="{Binding UserDetail.Password}"
-                            IsPassword="True">
-            <material:TextField.Attachments>
-                <material:TextFieldPasswordShowHideAttachment />
-            </material:TextField.Attachments>
-        </material:TextField>
-        
-        <material:TextField Title="Note"
-                            Grid.Row="4"
-                            HeightRequest="150"
-                            Text="{Binding UserDetail.Note}" />
-        <HorizontalStackLayout Grid.Row="5"
-                               HorizontalOptions="End"
-                               Margin="15">
-            <Button Text="Edit"
-                    StyleClass="ElevatedButton"
-                    FontFamily="OpenSansRegular"
-                    FontSize="Medium"
-                    Command="{Binding EditCommand}"
-                    Margin="10" />
-            <Button Text="Delete"
-                    StyleClass="ElevatedButton"
-                    FontFamily="OpenSansRegular"
-                    FontSize="Medium"
-                    Command="{Binding DeleteCommand}"
-                    Margin="10" />
-        </HorizontalStackLayout>
-    </Grid>
+    <ListView ItemsSource="{Binding Path=UserDetail.Passwords}" VerticalScrollBarVisibility="Never">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <Frame ZIndex="10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <material:TextField Title="Site"
+                                                Grid.Row="0"
+                                                Text="{Binding Web.Url}" />
+                            <BoxView StyleClass="Divider"
+                                     Grid.Row="1"
+                                     Margin="15" />
+                            <material:TextField Title="UserName"
+                                                Grid.Row="2"
+                                                Text="{Binding UserName}" />
+                            <material:TextField Title="Password"
+                                                Grid.Row="3"
+                                                Text="{Binding PasswordName}"
+                                                IsPassword="True">
+                                <material:TextField.Attachments>
+                                    <material:TextFieldPasswordShowHideAttachment />
+                                </material:TextField.Attachments>
+                            </material:TextField>
+                            <material:TextField Title="Note"
+                                                Grid.Row="4"
+                                                HeightRequest="150"
+                                                Text="{Binding Note}" />
+                            <HorizontalStackLayout Grid.Row="5"
+                                                   HorizontalOptions="End"
+                                                   Margin="15">
+                                <Button Text="Edit"
+                                        StyleClass="ElevatedButton"
+                                        FontFamily="OpenSansRegular"
+                                        FontSize="Medium"
+                                        BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                        Command="{Binding EditCommand}"
+                                        Margin="10" />
+                                <Button Text="Delete"
+                                        StyleClass="ElevatedButton"
+                                        FontFamily="OpenSansRegular"
+                                        BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                        FontSize="Medium"
+                                        Command="{Binding DeleteCommand}"
+                                        Margin="10" />
+                            </HorizontalStackLayout>
+                        </Grid>
+                    </Frame>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
 </ContentPage>
