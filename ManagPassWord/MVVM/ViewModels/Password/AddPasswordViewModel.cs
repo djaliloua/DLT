@@ -82,8 +82,6 @@ namespace ManagPassWord.MVVM.ViewModels.Password
                         web.Add(Password.Adapt<Pass.Password>());
                         temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
                         ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<WebDto>());
-                        await Shell.Current.DisplayAlert("Error", "Site or Password field is or are empty.", "OK");
-                        return;
                     }
                 }
                 else

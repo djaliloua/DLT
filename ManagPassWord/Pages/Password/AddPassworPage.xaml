@@ -58,7 +58,7 @@
         <material:TextField Title="Note"
                             Text="{Binding Password.Note}" />
         <Button Style="{StaticResource sub}"
-                input:FormView.IsSubmitButton="True" />
+                input:FormView.IsSubmitButton="True"/>
     </input:FormView>
 
 </ContentPage>
