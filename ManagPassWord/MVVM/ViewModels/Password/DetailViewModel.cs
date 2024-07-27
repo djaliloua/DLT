@@ -13,14 +13,14 @@ namespace ManagPassWord.MVVM.ViewModels.Password
     {
         public IList<PasswordDto> Reorder(IList<PasswordDto> items)
         {
-            return items;
+            return items.OrderByDescending(x => x.Id).ToList();
         }
     }
     public class DetailViewModel : Loadable<PasswordDto>, IQueryAttributable
     {
         private readonly IPasswordRepository _passwordRepository;
         private WebDto _userDetail;
-        public WebDto UserDetail
+        public WebDto WebSitePasswords
         {
             get => _userDetail;
             set => UpdateObservable(ref _userDetail, value, async() =>
@@ -42,6 +42,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         private async void OnDelete(object sender)
         {
             PasswordDto tempPassword = sender as PasswordDto;
+            SelectedItem = tempPassword;
             if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
             {
                 if (tempPassword.Id != 0)
@@ -50,6 +51,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
                     {
                         web.DeletePasswordItem(tempPassword);
                         await _passwordRepository.SaveOrUpdateItemAsync(web);
+                        DeleteItem(SelectedItem);
                         ViewModelLocator.MainPageViewModel.UpdateItem(web.Adapt<WebDto>());
                     }
                 }
@@ -68,7 +70,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         {
             if (query.Count > 0)
             {
-                UserDetail = query["user"] as WebDto;
+                WebSitePasswords = query["user"] as WebDto;
             }
         }
     }

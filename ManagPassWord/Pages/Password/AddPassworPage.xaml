@@ -10,43 +10,7 @@
     <Shell.BackButtonBehavior>
         <BackButtonBehavior Command="{Binding BackCommand}"/>
     </Shell.BackButtonBehavior>
-    <Shell.TitleView>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-            <Label Text=""
-                   VerticalOptions="End"
-                   Margin="15"
-                   FontSize="Subtitle"
-                   FontAttributes="Bold"
-                   TextColor="{DynamicResource White}"
-                   HorizontalOptions="Start" />
-            <Button Grid.Column="1"
-                    Text="Save"
-                    FontSize="Subtitle"
-                    FontAttributes="Bold"
-                    Command="{Binding SaveCommand}"
-                    VerticalOptions="End">
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button"
-                                 Binding="{Binding Source={x:Reference site}, Path=Text.Length}"
-                                 Value="0">
-                        <Setter Property="IsVisible"
-                                Value="False" />
-                    </DataTrigger>
-                    <DataTrigger TargetType="Button"
-                                 Binding="{Binding Source={x:Reference password}, Path=Text.Length}"
-                                 Value="0">
-                        <Setter Property="IsVisible"
-                                Value="False" />
-                    </DataTrigger>
-                </Button.Triggers>
-                
-            </Button>
-        </Grid>
-    </Shell.TitleView>
+    
     <input:FormView SubmitCommand="{Binding SaveCommand}" Spacing="20" Margin="20">
         <material:TextField Title="Url" Text="{Binding Url}"/>
         <material:TextField Title="Username" Text="{Binding Password.UserName}"/>

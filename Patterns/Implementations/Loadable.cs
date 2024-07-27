@@ -69,7 +69,7 @@ namespace Patterns.Implementations
         
         public Task LoadItems(IEnumerable<TItem> items)
         {
-            SetItems(items);
+            SetItems(_loadService.Reorder(items.ToList()));
             return Task.CompletedTask;
         }
         public virtual void ItemsCallBack(IList<TItem> item)
@@ -124,6 +124,7 @@ namespace Patterns.Implementations
                 Items.RemoveAt(index);
                 Items.Insert(index, item);
             }
+            Notify();
         }
 
         public virtual ObservableCollection<TItem> GetItems()

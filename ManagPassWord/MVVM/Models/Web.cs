@@ -104,7 +104,12 @@ namespace ManagPassWord.MVVM.Models
         }
         public void DeletePasswordItem(PasswordDto password)
         {
-            Passwords.RemoveAt(password.Id);
+            int index = Passwords.IndexOf(Passwords.Where(x => x.Id == password.Id).FirstOrDefault());
+            if(index > -1)
+            {
+                Passwords.RemoveAt(index);
+            }
+            
         }
         public void UpdatePasswordItem(Password password)
         {

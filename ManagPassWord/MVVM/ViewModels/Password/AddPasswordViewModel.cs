@@ -11,12 +11,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
         private readonly IPasswordRepository _passwordRepository;
-        private WebDto _user;
-        public WebDto User
-        {
-            get => _user;
-            set => UpdateObservable(ref _user, value);
-        }
+        
         private string _url = "google.com";
         public string Url
         {
@@ -42,7 +37,6 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         public AddPasswordViewModel(IPasswordRepository db)
         {
             _passwordRepository = db;
-            User = new();
             SaveCommand = new Command(OnSave);
             BackCommand = new Command(OnBack);
         }
@@ -104,35 +98,12 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             
             if (query.Count > 0)
             {
-                if(query.TryGetValue("user", out var User))
-                {
-                    User = query["user"] as WebDto;
-                }
                 if(query.TryGetValue("password", out var Pas))
                 {
                     Password = query["password"] as PasswordDto;
-                    Url = Password.Web.Url;
-
                 }
                 IsEditPage = (bool)query["isedit"];
-                setFields();
             }
         }
-        private void setFields()
-        {
-            if (IsEditPage && CanOpen)
-            {
-               
-                User.Url = _current.Url;
-            }
-        }
-        public async Task<Web> Update(WebDto m)
-        {
-            Web user = await _passwordRepository.GetItemByIdAsync(m.Id);
-            
-            user.Url = User.Url;
-            return user;
-        }
-
     }
 }
