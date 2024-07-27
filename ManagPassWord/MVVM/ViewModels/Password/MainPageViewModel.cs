@@ -2,7 +2,6 @@
 using ManagPassWord.MVVM.Models;
 using ManagPassWord.Pages;
 using Mapster;
-using Patterns;
 using Patterns.Abstractions;
 using Patterns.Implementations;
 using System.Windows.Input;

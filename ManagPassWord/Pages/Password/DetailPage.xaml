@@ -33,36 +33,33 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <Frame ZIndex="10">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition />
-                                    <RowDefinition Height="auto" />
-                                </Grid.RowDefinitions>
-                                <views:PasswordView x:Name="item" />
-                                <HorizontalStackLayout Grid.Row="1"
-                                                       HorizontalOptions="End"
-                                                       Margin="10">
-                                    <Button Text="Edit"
-                                            StyleClass="ElevatedButton"
-                                            FontFamily="OpenSansRegular"
-                                            FontSize="Medium"
-                                            CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
-                                            BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
-                                            Command="{Binding EditCommand}"
-                                            Margin="10" />
-                                    <Button Text="Delete"
-                                            StyleClass="ElevatedButton"
-                                            FontFamily="OpenSansRegular"
-                                            CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
-                                            BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
-                                            FontSize="Medium"
-                                            Command="{Binding DeleteCommand}"
-                                            Margin="10" />
-                                </HorizontalStackLayout>
-                            </Grid>
-
-                        </Frame>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="auto" />
+                            </Grid.RowDefinitions>
+                            <views:PasswordView x:Name="item" />
+                            <HorizontalStackLayout Grid.Row="1"
+                                                   HorizontalOptions="End"
+                                                   Margin="10">
+                                <Button Text="Edit"
+                                        StyleClass="ElevatedButton"
+                                        FontFamily="OpenSansRegular"
+                                        FontSize="Medium"
+                                        CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
+                                        BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                        Command="{Binding EditCommand}"
+                                        Margin="10" />
+                                <Button Text="Delete"
+                                        StyleClass="ElevatedButton"
+                                        FontFamily="OpenSansRegular"
+                                        CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
+                                        BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                        FontSize="Medium"
+                                        Command="{Binding DeleteCommand}"
+                                        Margin="10" />
+                            </HorizontalStackLayout>
+                        </Grid>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>

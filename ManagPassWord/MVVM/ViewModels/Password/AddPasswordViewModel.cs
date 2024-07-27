@@ -10,12 +10,15 @@ namespace ManagPassWord.MVVM.ViewModels.Password
 {
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
+        #region Private Properties
         private readonly IPasswordRepository _passwordRepository;
-        
+        #endregion
+
+        #region Public Properties
         private string _url = "google.com";
         public string Url
         {
-            get => _url;
+            get => _url.ToLower().Trim();
             set => UpdateObservable(ref _url, value);
         }
         private PasswordDto _password = new PasswordDto();
@@ -31,16 +34,30 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             get => _isEditPage;
             set => UpdateObservable(ref _isEditPage, value);
         }
-        private bool CanOpen => _current != null;
+        #endregion
+
+        #region Commands
         public ICommand SaveCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
+        #endregion
+
+        #region Constructor
         public AddPasswordViewModel(IPasswordRepository db)
         {
             _passwordRepository = db;
+            CommandSetup();
+        }
+        #endregion
+
+        #region Private methods
+        private void CommandSetup()
+        {
             SaveCommand = new Command(OnSave);
             BackCommand = new Command(OnBack);
         }
+        #endregion
 
+        #region Handlers
         private async void OnBack(object sender)
         {
             await Shell.Current.GoToAsync("..");
@@ -48,6 +65,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         private async void OnSave(object sender)
         {
             Web temp_item;
+            Password.CreateUpdateDate();
             try
             {
                 if (!IsEditPage)
@@ -86,13 +104,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             }
            
         }
-        private void UpdateProperties(Pass.Password srcPassword, Pass.Password targetPassword)
-        {
-            //targetPassword.Web = srcPassword.Web;
-            targetPassword.UserName = srcPassword.UserName;
-            targetPassword.Date = srcPassword.Date; 
-            targetPassword.PasswordName = srcPassword.PasswordName;
-        }
+        #endregion
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
             
