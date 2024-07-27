@@ -5,6 +5,7 @@
              x:Class="ManagPassWord.DetailPage"
              xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
              BindingContext="{x:Static locator:ViewModelLocator.DetailViewModel}"
+             xmlns:views="clr-namespace:ManagPassWord.MVVM.Views"
              Title="Details"
              x:Name="main"
              >
@@ -25,45 +26,23 @@
     </ContentPage.Resources>
     <Grid>
         <ListView ItemsSource="{Binding Path=Items}"
+                  RowHeight="500"
+                  HasUnevenRows="True"
                   SelectedItem="{Binding SelectedItem}"
                   VerticalScrollBarVisibility="Never">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Frame ZIndex="10">
-                            <Grid x:Name="item">
+                            <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
+                                    <RowDefinition />
                                     <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
-                                <material:TextField Title="Site"
-                                                    Grid.Row="0"
-                                                    Text="{Binding Web.Url}" />
-                                <BoxView StyleClass="Divider"
-                                         Grid.Row="1"
-                                         Margin="15" />
-                                <material:TextField Title="UserName"
-                                                    Grid.Row="2"
-                                                    Text="{Binding UserName}" />
-                                <material:TextField Title="Password"
-                                                    Grid.Row="3"
-                                                    Text="{Binding PasswordName}"
-                                                    IsPassword="True">
-                                    <material:TextField.Attachments>
-                                        <material:TextFieldPasswordShowHideAttachment />
-                                    </material:TextField.Attachments>
-                                </material:TextField>
-                                <material:TextField Title="Note"
-                                                    Grid.Row="4"
-                                                    HeightRequest="150"
-                                                    Text="{Binding Note}" />
-                                <HorizontalStackLayout Grid.Row="5"
+                                <views:PasswordView x:Name="item" />
+                                <HorizontalStackLayout Grid.Row="1"
                                                        HorizontalOptions="End"
-                                                       Margin="15">
+                                                       Margin="10">
                                     <Button Text="Edit"
                                             StyleClass="ElevatedButton"
                                             FontFamily="OpenSansRegular"
@@ -82,6 +61,7 @@
                                             Margin="10" />
                                 </HorizontalStackLayout>
                             </Grid>
+
                         </Frame>
                     </ViewCell>
                 </DataTemplate>
