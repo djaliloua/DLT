@@ -74,7 +74,7 @@ namespace ManagPassWord.ExtensionMethods
         {
             mauiAppBuilder.Services.AddScoped<ILoadService<WebDto>, LoaddUserService>();
             mauiAppBuilder.Services.AddScoped<ILoadService<DebtModelDTO>, LoadDebtService>();
-            
+            mauiAppBuilder.Services.AddScoped<ILoadService<PasswordDto>, LoadPasswordService>();
 
             return mauiAppBuilder;
         }

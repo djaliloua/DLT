@@ -29,7 +29,7 @@ namespace ManagPassWord.MVVM.Models
             password.Note = pass.Note;
             password.PasswordName = pass.PasswordName;
             password.Date = pass.Date;  
-            password.Username = pass.UserName;
+            password.UserName = pass.UserName;
             password.Id = pass.Id;
             return password;
         }
@@ -102,6 +102,24 @@ namespace ManagPassWord.MVVM.Models
             Passwords ??= new List<Password>();
             Passwords.Add(password);
         }
+        public void DeletePasswordItem(PasswordDto password)
+        {
+            Passwords.RemoveAt(password.Id);
+        }
+        public void UpdatePasswordItem(Password password)
+        {
+            for(int i = 0; i < Passwords.Count; i++)
+            {
+                if(password.Id == Passwords[i].Id)
+                {
+                    Passwords[i].Note = password.Note;
+                    Passwords[i].PasswordName = password.PasswordName;
+                    Passwords[i].UserName = password.UserName;
+                    Passwords[i].Date = password.Date;
+                    break;
+                }
+            }
+        }
     }
 
     public class PasswordDto:BaseViewModel
@@ -142,7 +160,7 @@ namespace ManagPassWord.MVVM.Models
     }
     public class Password:BaseEntity
     {
-        public string Username { get; set; } 
+        public string UserName { get; set; } 
         public string PasswordName { get; set; } 
         public string Note { get; set; } 
         public DateOnly Date { get; set; }  

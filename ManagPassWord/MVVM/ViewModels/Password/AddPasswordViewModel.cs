@@ -8,10 +8,6 @@ using System.Windows.Input;
 
 namespace ManagPassWord.MVVM.ViewModels.Password
 {
-    public class WebFactory
-    {
-        
-    }
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
         private readonly IPasswordRepository _passwordRepository;
@@ -55,25 +51,6 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         {
             await Shell.Current.GoToAsync("..");
         }
-        private async Task<Web> GetTrackedEntity(Web web)
-        {
-            Web trackedEntity = await _passwordRepository.GetItemByUrl(Url);
-            trackedEntity.Passwords = web.Passwords;
-            //for (int i = 0; i < trackedEntity.Passwords.Count; i++)
-            //{
-            //    if (trackedEntity.Passwords[i].Id == web.Passwords[i].Id)
-            //    {
-            //        trackedEntity.Passwords[i].Note = web.Passwords[i].Note;
-            //        trackedEntity.Passwords[i].Date = web.Passwords[i].Date;
-            //        trackedEntity.Passwords[i].PasswordName = web.Passwords[i].PasswordName;
-            //        trackedEntity.Passwords[i].Username = web.Passwords[i].Username;
-            //        trackedEntity.Url = web.Url;
-            //        //trackedEntity.Passwords[i].Web = web.Passwords[i].Web;
-            //    }
-            //}
-
-            return trackedEntity;
-        }
         private async void OnSave(object sender)
         {
             Web temp_item;
@@ -99,8 +76,12 @@ namespace ManagPassWord.MVVM.ViewModels.Password
                 }
                 else
                 {
-                    await _passwordRepository.SaveOrUpdateItemAsync(await Update(User));
-                    ViewModelLocator.MainPageViewModel.UpdateItem(User.Adapt<WebDto>());
+                    if(await _passwordRepository.GetItemByUrl(Url) is Web web)
+                    {
+                        web.UpdatePasswordItem(Password.Adapt<Pass.Password>());
+                        var webdto = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                        ViewModelLocator.MainPageViewModel.UpdateItem(webdto.Adapt<WebDto>());
+                    }
                 }
                 await Shell.Current.GoToAsync("..");
             }
@@ -111,16 +92,28 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             }
            
         }
-        public void ClearFields()
+        private void UpdateProperties(Pass.Password srcPassword, Pass.Password targetPassword)
         {
-            //User.Reset();
+            //targetPassword.Web = srcPassword.Web;
+            targetPassword.UserName = srcPassword.UserName;
+            targetPassword.Date = srcPassword.Date; 
+            targetPassword.PasswordName = srcPassword.PasswordName;
         }
-
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
+            
             if (query.Count > 0)
             {
-                User = query["user"] as WebDto;
+                if(query.TryGetValue("user", out var User))
+                {
+                    User = query["user"] as WebDto;
+                }
+                if(query.TryGetValue("password", out var Pas))
+                {
+                    Password = query["password"] as PasswordDto;
+                    Url = Password.Web.Url;
+
+                }
                 IsEditPage = (bool)query["isedit"];
                 setFields();
             }

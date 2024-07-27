@@ -23,12 +23,14 @@
                     Value="150" />
         </Style>
     </ContentPage.Resources>
-    <ListView ItemsSource="{Binding Path=UserDetail.Passwords}" VerticalScrollBarVisibility="Never">
+    <ListView ItemsSource="{Binding Path=Items}"
+              SelectedItem="{Binding SelectedItem}"
+              VerticalScrollBarVisibility="Never">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ViewCell>
                     <Frame ZIndex="10">
-                        <Grid>
+                        <Grid x:Name="item">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="auto" />
                                 <RowDefinition Height="auto" />
@@ -65,12 +67,14 @@
                                         StyleClass="ElevatedButton"
                                         FontFamily="OpenSansRegular"
                                         FontSize="Medium"
+                                        CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
                                         BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                         Command="{Binding EditCommand}"
                                         Margin="10" />
                                 <Button Text="Delete"
                                         StyleClass="ElevatedButton"
                                         FontFamily="OpenSansRegular"
+                                        CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
                                         BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                         FontSize="Medium"
                                         Command="{Binding DeleteCommand}"

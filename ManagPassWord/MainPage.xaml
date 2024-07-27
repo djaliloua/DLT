@@ -94,12 +94,13 @@
                         <SwipeView>
                             <SwipeView.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                      CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
                                                       BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
                                                       Command="{Binding OpenCommand}">
                                 </TapGestureRecognizer>
                             </SwipeView.GestureRecognizers>
                             <Frame>
-                                <Grid>
+                                <Grid x:Name="item">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
                                         <RowDefinition />
@@ -109,7 +110,7 @@
                                            Text="{Binding Url, StringFormat=' {0}', FallbackValue='No Value'}" />
                                     <Label FontSize="Default"
                                            FontAttributes="Bold"
-                                           Text="{Binding Passwords.Count, StringFormat=' {0} accounts', FallbackValue='No Value'}"
+                                           Text="{Binding Passwords.Count, StringFormat=' {0} >>>accounts', FallbackValue='No Value'}"
                                            Grid.Row="1" />
                                 </Grid>
                             </Frame>
