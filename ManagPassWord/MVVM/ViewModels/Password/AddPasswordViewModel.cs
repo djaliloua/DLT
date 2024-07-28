@@ -64,40 +64,43 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         private async void OnSave(object sender)
         {
             Web temp_item;
-            Password.CreateUpdateDate();
-            try
+            if(!string.IsNullOrEmpty(Url))
             {
-                if (!IsEditPage)
+                Password.CreateUpdateDate();
+                try
                 {
-                    if (await _passwordRepository.GetItemByUrl(Url) is Web web)
+                    if (!IsEditPage)
                     {
-                        web.Add(Password.Adapt<Pass.Password>());
-                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
-                        ViewModelLocator.MainPageViewModel.UpdateItem(temp_item.Adapt<WebDto>());
+                        if (await _passwordRepository.GetItemByUrl(Url) is Web web)
+                        {
+                            web.Add(Password.Adapt<Pass.Password>());
+                            temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            ViewModelLocator.MainPageViewModel.UpdateItem(temp_item.Adapt<WebDto>());
+                        }
+                        else
+                        {
+                            web = new Web(Url);
+                            web.Add(Password.Adapt<Pass.Password>());
+                            temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<WebDto>());
+                        }
                     }
                     else
                     {
-                        web = new Web(Url);
-                        web.Add(Password.Adapt<Pass.Password>());
-                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
-                        ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<WebDto>());
+                        if (await _passwordRepository.GetItemByUrl(Url) is Web web)
+                        {
+                            web.UpdatePasswordItem(Password.Adapt<Pass.Password>());
+                            var webdto = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            ViewModelLocator.MainPageViewModel.UpdateItem(webdto.Adapt<WebDto>());
+                        }
                     }
+                    await Shell.Current.GoToAsync("..");
                 }
-                else
+                catch (Exception ex)
                 {
-                    if(await _passwordRepository.GetItemByUrl(Url) is Web web)
-                    {
-                        web.UpdatePasswordItem(Password.Adapt<Pass.Password>());
-                        var webdto = await _passwordRepository.SaveOrUpdateItemAsync(web);
-                        ViewModelLocator.MainPageViewModel.UpdateItem(webdto.Adapt<WebDto>());
-                    }
+                    await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                    return;
                 }
-                await Shell.Current.GoToAsync("..");
-            }
-            catch(Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
-                return;
             }
            
         }
@@ -110,6 +113,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
                 if(query.TryGetValue("password", out var Pas))
                 {
                     Password = query["password"] as PasswordDto;
+                    Url = (string)query["url"];
                 }
                 IsEditPage = (bool)query["isedit"];
             }

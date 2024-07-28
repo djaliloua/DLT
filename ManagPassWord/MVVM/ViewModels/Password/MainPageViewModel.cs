@@ -95,6 +95,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             var navigationParameter = new Dictionary<string, object>
                         {
                             { "password", new PasswordDto() },
+                            { "url", SelectedItem != null? SelectedItem.Url: "" },
                             { "isedit", false }
                         };
             await Shell.Current.GoToAsync(nameof(AddPassworPage), navigationParameter);
