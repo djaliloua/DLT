@@ -27,7 +27,6 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             get => _password;
             set => UpdateObservable(ref _password, value);
         }
-        private WebDto _current;
         private bool _isEditPage;
         public bool IsEditPage
         {

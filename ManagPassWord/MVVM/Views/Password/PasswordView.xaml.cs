@@ -1,4 +1,4 @@
-namespace ManagPassWord.MVVM.Views;
+namespace ManagPassWord.MVVM.Views.Password;
 
 public partial class PasswordView : ContentView
 {
