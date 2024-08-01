@@ -7,7 +7,6 @@ using PurchaseManagement.MVVM.Models.MarketModels;
 using MauiNavigationHelper.NavigationLib.Models;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Utilities;
-using Patterns;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PurchaseManagement.Commons.Notifications.Abstractions;
@@ -53,10 +52,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         public PurchaseDto Purchases
         {
             get => _puchases;
-            set => UpdateObservable(ref  _puchases, value, async() =>
+            set => UpdateObservable(ref  _puchases, value, async () =>
             {
                 ShowActivity();
-                await LoadItems(Purchases.Products);
+                await Task.Run(async() => await LoadItems(Purchases.Products));
                 HideActivity();
             });
         }

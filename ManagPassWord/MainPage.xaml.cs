@@ -2,8 +2,11 @@ namespace ManagPassWord;
 
 public partial class MainPage : ContentPage
 {
-	public MainPage()
+    FingerPrintAuthentification _authentification;
+    public MainPage()
 	{
 		InitializeComponent();
+        _authentification = new FingerPrintAuthentification();
+        //_ = _authentification.Authenticate();
     }
 }
