@@ -31,7 +31,7 @@
                 <DataTemplate>
                     <ViewCell>
                         <SwipeView>
-                            <Frame ZIndex="30">
+                            <Frame ZIndex="30" CornerRadius="0">
                                 <Grid x:Name="item">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />

@@ -92,7 +92,7 @@
                                                       Command="{Binding OpenCommand}">
                                 </TapGestureRecognizer>
                             </SwipeView.GestureRecognizers>
-                            <Frame>
+                            <Frame CornerRadius="0" ZIndex="30">
                                 <Grid x:Name="item">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
