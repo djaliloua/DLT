@@ -66,7 +66,6 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             Web temp_item;
             if(!string.IsNullOrEmpty(Url))
             {
-                Password.CreateUpdateDate();
                 try
                 {
                     if (!IsEditPage)
