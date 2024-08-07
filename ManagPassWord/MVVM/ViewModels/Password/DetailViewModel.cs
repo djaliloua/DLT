@@ -24,9 +24,9 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             get => _userDetail;
             set => UpdateObservable(ref _userDetail, value, async() =>
             {
-                ShowActivity();
-                await Task.Run(async () => await LoadItems(value.Passwords));
-                HideActivity();
+                //ShowActivity();
+                //await LoadItems(value.Passwords);
+                //HideActivity();
             });
         }
         public ICommand EditCommand { get; private set; }
@@ -71,6 +71,12 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             if (query.Count > 0)
             {
                 WebSitePasswords = query["user"] as WebDto;
+                if(WebSitePasswords != null)
+                {
+                    ShowActivity();
+                    Task.Run(async() => await LoadItems(WebSitePasswords.Passwords));
+                    HideActivity();
+                }
             }
         }
     }

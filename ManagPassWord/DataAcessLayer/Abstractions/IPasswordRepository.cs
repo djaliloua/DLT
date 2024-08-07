@@ -6,6 +6,6 @@ namespace ManagPassWord.DataAcessLayer.Abstractions
     {
         Task<int> SaveToCsv();
         Task<Web> GetItemByUrl(string url);
-        Task<IList<WebDto>> GetItemsAsDtos();
+        Task<List<WebDto>> GetItemsAsDtos();
     }
 }

@@ -13,11 +13,10 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             Purchase purchase = await _table.FirstOrDefaultAsync(p => p.PurchaseDate.Equals($"{date:yyyy-MM-dd}"));
             return purchase;
         }
-        
 
-        public async Task<List<PurchaseDto>> GetAllToDto()
+        public Task<List<PurchaseDto>> GetAllAsDtos()
         {
-            return await _table.ProjectToType<PurchaseDto>().ToListAsync();
+            return Task.FromResult(_table.ProjectToType<PurchaseDto>().ToList());
         }
     }
 }

@@ -62,8 +62,9 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         private async void load()
         {
             ShowActivity();
-            var data = await _passwordRepository.GetItemsAsDtos();
-            await Task.Run(async() => await LoadItems(data));
+            var data = await _passwordRepository.GetAllItemsAsync();
+            var dataAsDtos = data.Adapt<List<WebDto>>();
+            await Task.Run(async() => await LoadItems(dataAsDtos));
             HideActivity();
         }
         private void CommandSetup()

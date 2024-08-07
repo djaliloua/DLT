@@ -7,6 +7,6 @@ namespace PurchaseManagement.DataAccessLayer.Abstractions
     public interface IPurchaseRepository : IGenericRepository<Purchase>
     {
         Task<Purchase> GetPurchaseByDate(DateTime date);
-        Task<List<PurchaseDto>> GetAllToDto();
+        Task<List<PurchaseDto>> GetAllAsDtos();
     }
 }

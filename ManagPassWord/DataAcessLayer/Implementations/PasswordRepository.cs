@@ -12,7 +12,7 @@ namespace ManagPassWord.DataAcessLayer.Implementations
             return await _table.FirstOrDefaultAsync(x => x.Url == url);
         }
 
-        public async Task<IList<WebDto>> GetItemsAsDtos()
+        public async Task<List<WebDto>> GetItemsAsDtos()
         {
             return await _table.ProjectToType<WebDto>().ToListAsync();
         }
