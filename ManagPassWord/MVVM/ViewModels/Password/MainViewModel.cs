@@ -37,7 +37,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         }
         
     }
-    public class MainPageViewModel : LoadableWebDto
+    public class MainViewModel : LoadableWebDto
     {
         private readonly IPasswordRepository _passwordRepository;
 
@@ -49,7 +49,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #endregion
 
         #region Constructor
-        public MainPageViewModel(IPasswordRepository _db, 
+        public MainViewModel(IPasswordRepository _db, 
             ILoadService<WebDto> loadService):base(loadService)
         {
             _passwordRepository = _db;

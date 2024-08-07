@@ -74,14 +74,14 @@ namespace ManagPassWord.MVVM.ViewModels.Password
                         {
                             web.Add(Password.Adapt<Pass.Password>());
                             temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
-                            ViewModelLocator.MainPageViewModel.UpdateItem(temp_item.Adapt<WebDto>());
+                            ViewModelLocator.MainViewModel.UpdateItem(temp_item.Adapt<WebDto>());
                         }
                         else
                         {
                             web = new Web(Url);
                             web.Add(Password.Adapt<Pass.Password>());
                             temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
-                            ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<WebDto>());
+                            ViewModelLocator.MainViewModel.AddItem(temp_item.Adapt<WebDto>());
                         }
                     }
                     else
@@ -90,7 +90,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
                         {
                             web.UpdatePasswordItem(Password.Adapt<Pass.Password>());
                             var webdto = await _passwordRepository.SaveOrUpdateItemAsync(web);
-                            ViewModelLocator.MainPageViewModel.UpdateItem(webdto.Adapt<WebDto>());
+                            ViewModelLocator.MainViewModel.UpdateItem(webdto.Adapt<WebDto>());
                         }
                     }
                     await Shell.Current.GoToAsync("..");

@@ -34,7 +34,7 @@ namespace ManagPassWord.ExtensionMethods
         public static MauiAppBuilder ViewModelExtension(this MauiAppBuilder mauiAppBuilder)
         {
             // ViewModels
-            mauiAppBuilder.Services.AddSingleton<MainPageViewModel>();
+            mauiAppBuilder.Services.AddSingleton<MainViewModel>();
             mauiAppBuilder.Services.AddTransient<AddPasswordViewModel>();
             mauiAppBuilder.Services.AddSingleton<SettingViewModel>();
             mauiAppBuilder.Services.AddTransient<SearchViewModel>();

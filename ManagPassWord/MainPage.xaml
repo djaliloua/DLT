@@ -8,7 +8,7 @@
              xmlns:custom="clr-namespace:ManagPassWord.CustomClasses"
              xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
              x:Class="ManagPassWord.MainPage"
-             BindingContext="{x:Static locator:ViewModelLocator.MainPageViewModel}"
+             BindingContext="{x:Static locator:ViewModelLocator.MainViewModel}"
              x:Name="page"
              Title="Password Manager">
     <Shell.SearchHandler>
