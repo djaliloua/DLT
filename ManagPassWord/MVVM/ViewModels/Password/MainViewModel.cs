@@ -79,6 +79,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #region Handlers
         private async void OnOpen(object sender)
         {
+            FingerPrintAuthentification _authentification = new FingerPrintAuthentification();
+            await _authentification.Authenticate();
             if (IsSelected)
             {
                 var navigationParameter = new Dictionary<string, object>

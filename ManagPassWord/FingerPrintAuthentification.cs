@@ -1,4 +1,5 @@
-﻿using Plugin.Fingerprint;
+﻿using ManagPassWord.CustomClasses;
+using Plugin.Fingerprint;
 using Plugin.Fingerprint.Abstractions;
 
 namespace ManagPassWord
@@ -20,15 +21,16 @@ namespace ManagPassWord
         }
         public async Task Authenticate()
         {
-            var request = new AuthenticationRequestConfiguration("Prove you have fingers!", "Because without it you can't have access");
-            var result = await CrossFingerprint.Current.AuthenticateAsync(request);
-            if (result.Authenticated)
+            await Task.Delay(2000);
+            if (!DeviceUtility.IsVirtual)
             {
-                // do secret stuff :)
-            }
-            else
-            {
-                Application.Current.Quit();
+                var request = new AuthenticationRequestConfiguration("Prove you have fingers!", "Because without it you can't have access");
+                request.AllowAlternativeAuthentication = true;
+                var result = await CrossFingerprint.Current.AuthenticateAsync(request);
+                if (!result.Authenticated)
+                {
+                    Application.Current.Quit();
+                }
             }
         }
     }
