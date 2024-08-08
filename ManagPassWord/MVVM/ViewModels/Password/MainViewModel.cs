@@ -4,6 +4,7 @@ using ManagPassWord.Pages;
 using Mapster;
 using Patterns.Abstractions;
 using Patterns.Implementations;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace ManagPassWord.MVVM.ViewModels.Password
@@ -79,8 +80,11 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #region Handlers
         private async void OnOpen(object sender)
         {
-            FingerPrintAuthentification _authentification = new FingerPrintAuthentification();
-            await _authentification.Authenticate();
+            if(!Debugger.IsAttached)
+            {
+                FingerPrintAuthentification _authentification = new FingerPrintAuthentification();
+                await _authentification.Authenticate();
+            }
             if (IsSelected)
             {
                 var navigationParameter = new Dictionary<string, object>
