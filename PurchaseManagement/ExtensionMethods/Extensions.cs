@@ -13,6 +13,8 @@ using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Commons.ExportFileStrategies;
 using PurchaseManagement.DataAccessLayer.Contexts;
 using Patterns.Abstractions;
+using Plugin.Fingerprint.Abstractions;
+using Plugin.Fingerprint;
 
 
 namespace PurchaseManagement.ExtensionMethods
@@ -64,6 +66,7 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductDto>, ProductTxtStrategy>();
             mauiAppBuilder.Services.AddScoped<INavigationService, NavigationService>();
             mauiAppBuilder.Services.AddMapster();
+            mauiAppBuilder.Services.AddSingleton(typeof(IFingerprint), CrossFingerprint.Current);
             return mauiAppBuilder;
         }
         public static MauiAppBuilder LoadBIExtension(this MauiAppBuilder mauiAppBuilder)

@@ -112,6 +112,8 @@ namespace PurchaseManagement.MVVM.ViewModels
         }
         private async void OnDoubleClick(object sender)
         {
+            FingerPrintAuthentification _authentification = new FingerPrintAuthentification();
+            await _authentification.Authenticate();
             try
             {
                 if (IsSelected)

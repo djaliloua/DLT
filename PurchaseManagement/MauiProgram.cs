@@ -5,13 +5,19 @@ using Microsoft.Extensions.Logging;
 using MauiNavigationHelper.NavigationLib.Services;
 using PurchaseManagement.ExtensionMethods;
 using Mapster;
+using Plugin.Fingerprint.Abstractions;
+using Plugin.Fingerprint;
+using Microsoft.Maui.Hosting;
 
 
 namespace PurchaseManagement
 {
     public static class MauiProgram
     {
-        
+        static MauiProgram()
+        {
+            TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
+        }
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -44,10 +50,11 @@ handlers.AddHandler(typeof(ListView), typeof(CustomListView));
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
+            
             var serviceProvider = builder.Build();
             var scope = serviceProvider.Services.CreateScope();
             ServiceResolver.RegisterScope(scope);
-            TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
+            
             return serviceProvider;
         }
     }
