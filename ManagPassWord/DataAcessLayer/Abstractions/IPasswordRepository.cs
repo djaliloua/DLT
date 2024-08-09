@@ -2,8 +2,10 @@
 
 namespace ManagPassWord.DataAcessLayer.Abstractions
 {
-    public interface IPasswordRepository: IGenericRepository<User>
+    public interface IPasswordRepository: IGenericRepository<Web>
     {
         Task<int> SaveToCsv();
+        Task<Web> GetItemByUrl(string url);
+        Task<List<WebDto>> GetItemsAsDtos();
     }
 }

@@ -11,7 +11,7 @@ public partial class AddPassworPage : ContentPage
 	}
     protected override bool OnBackButtonPressed()
     {
-        MainPageViewModel mainPageViewModel = ViewModelLocator.MainPageViewModel;
+        MainViewModel mainPageViewModel = ViewModelLocator.MainViewModel;
         AddPasswordViewModel addPasswordViewModel = (AddPasswordViewModel)BindingContext;
         return base.OnBackButtonPressed();
     }

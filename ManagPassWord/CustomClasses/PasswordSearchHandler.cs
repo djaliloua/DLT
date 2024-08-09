@@ -5,12 +5,12 @@ namespace ManagPassWord.CustomClasses
 {
     public class PasswordSearchHandler:SearchHandler
     {
-        public IList<UserDTO> Passwords { get; set; }
+        public IList<WebDto> Passwords { get; set; }
         public Type SelectedItemNavigationTarget { get; set; }
         protected override async void OnQueryChanged(string oldValue, string newValue)
         {
             base.OnQueryChanged(oldValue, newValue);
-            Passwords = Resolver.GetService<MainPageViewModel>().Items;
+            Passwords = Resolver.GetService<MainViewModel>().Items;
             await Task.Delay(1000);
             if (string.IsNullOrWhiteSpace(newValue))
             {
@@ -19,9 +19,7 @@ namespace ManagPassWord.CustomClasses
             else
             {
                 ItemsSource = Passwords
-                    .Where(data => data.Username.ToLower().Contains(newValue.ToLower())
-                    || data.Site.ToLower().Contains(newValue.ToLower())
-                    )
+                    .Where(data => data.Url.Contains(newValue) || data.Passwords.Where(p => p.PasswordName.Contains(newValue))!=null)
                     .ToList();
             }
         }
@@ -36,7 +34,7 @@ namespace ManagPassWord.CustomClasses
             // The following route works because route names are unique in this app.
             var navigationParameter = new Dictionary<string, object>
                         {
-                            { "user", (UserDTO)item },
+                            { "user", (WebDto)item },
                             { "isedit", false },
                         };
             await Shell.Current.GoToAsync(nameof(DetailPage), navigationParameter);

@@ -10,9 +10,14 @@ using Mapster;
 namespace ManagPassWord;
 public static class MauiProgram
 {
+    static MauiProgram()
+    {
+        
+    }
     // Register View mode
     public static MauiApp CreateMauiApp()
     {
+        TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
         var builder = MauiApp.CreateBuilder();
         builder
             .UseUraniumUI()
@@ -54,7 +59,6 @@ events.AddAndroid(android => android
 #endif
         
         builder.Services.AddSingleton(typeof(IFingerprint), CrossFingerprint.Current);
-        TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
 
         return builder.Build();
     }

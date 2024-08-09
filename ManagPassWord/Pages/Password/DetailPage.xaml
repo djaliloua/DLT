@@ -3,9 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              x:Class="ManagPassWord.DetailPage"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
              BindingContext="{x:Static locator:ViewModelLocator.DetailViewModel}"
+             xmlns:views="clr-namespace:ManagPassWord.MVVM.Views.Password"
              Title="Details"
+             x:Name="main"
              >
     <ContentPage.Resources>
         <Style TargetType="material:TextField">
@@ -15,60 +18,61 @@
                     Value="15" />
             <Setter Property="FontFamily"
                     Value="OpenSansRegular" />
-            
         </Style>
-        <Style TargetType="Button">
-            <Setter Property="WidthRequest"
-                    Value="150" />
-        </Style>
+       
     </ContentPage.Resources>
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <material:TextField Title="Site"
-                            Grid.Row="0"
-                            Text="{Binding UserDetail.Site}" />
-        <BoxView StyleClass="Divider"
-                 Grid.Row="1"
-                 Margin="15" />
-        <material:TextField Title="UserName"
-                            Grid.Row="2"
-                            Text="{Binding UserDetail.Username}" />
-        
-        <material:TextField Title="Password"
-                            Grid.Row="3"
-                            Text="{Binding UserDetail.Password}"
-                            IsPassword="True">
-            <material:TextField.Attachments>
-                <material:TextFieldPasswordShowHideAttachment />
-            </material:TextField.Attachments>
-        </material:TextField>
-        
-        <material:TextField Title="Note"
-                            Grid.Row="4"
-                            HeightRequest="150"
-                            Text="{Binding UserDetail.Note}" />
-        <HorizontalStackLayout Grid.Row="5"
-                               HorizontalOptions="End"
-                               Margin="15">
-            <Button Text="Edit"
-                    StyleClass="ElevatedButton"
-                    FontFamily="OpenSansRegular"
-                    FontSize="Medium"
-                    Command="{Binding EditCommand}"
-                    Margin="10" />
-            <Button Text="Delete"
-                    StyleClass="ElevatedButton"
-                    FontFamily="OpenSansRegular"
-                    FontSize="Medium"
-                    Command="{Binding DeleteCommand}"
-                    Margin="10" />
-        </HorizontalStackLayout>
+    <Grid Margin="10">
+        <ListView ItemsSource="{Binding Path=Items}"
+                  RowHeight="500"
+                  HasUnevenRows="True"
+                  SelectedItem="{Binding SelectedItem}"
+                  VerticalScrollBarVisibility="Never">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <SwipeView>
+                            <Frame ZIndex="30" CornerRadius="0">
+                                <Grid x:Name="item">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition />
+                                        <RowDefinition Height="auto" />
+                                    </Grid.RowDefinitions>
+                                    <views:PasswordView IsVisible="{OnIdiom Desktop=True}"/>
+                                    <views:PasswordPhoneView
+                                                        IsVisible="{OnIdiom Phone=True}" />
+                                    <HorizontalStackLayout Grid.Row="1"
+                                                           HorizontalOptions="End"
+                                                           Margin="10">
+                                        <Button FontAttributes="Bold"
+                                                WidthRequest="100"
+                                                CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
+                                                BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                                Command="{Binding EditCommand}"
+                                                Margin="10">
+                                            <Button.ImageSource>
+                                                <FontImageSource FontFamily="MaterialRegular"
+                                                                 Glyph="{x:Static m:MaterialRound.Edit}" />
+                                            </Button.ImageSource>
+                                        </Button>
+                                        <Button 
+                                                WidthRequest="100"
+                                                CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
+                                                BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                                FontAttributes="Bold"
+                                                Command="{Binding DeleteCommand}"
+                                                Margin="10">
+                                            <Button.ImageSource>
+                                                <FontImageSource FontFamily="MaterialRegular"
+                                                                 Glyph="{x:Static m:MaterialRound.Delete}" />
+                                            </Button.ImageSource>
+                                        </Button>
+                                    </HorizontalStackLayout>
+                                </Grid>
+                            </Frame>
+                        </SwipeView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </ContentPage>

@@ -8,7 +8,7 @@
              xmlns:custom="clr-namespace:ManagPassWord.CustomClasses"
              xmlns:controls="clr-namespace:ManagPassWord.CustomClasses"
              x:Class="ManagPassWord.MainPage"
-             BindingContext="{x:Static locator:ViewModelLocator.MainPageViewModel}"
+             BindingContext="{x:Static locator:ViewModelLocator.MainViewModel}"
              x:Name="page"
              Title="Password Manager">
     <Shell.SearchHandler>
@@ -24,10 +24,10 @@
                         </Grid.RowDefinitions>
                         <Label FontSize="Default"
                                FontAttributes="Bold"
-                               Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}" />
+                               Text="{Binding Url, StringFormat=' {0}', FallbackValue='No Value'}" />
                         <Label FontSize="Default"
                                FontAttributes="Bold"
-                               Text="{Binding Site, StringFormat=' {0}', FallbackValue='No Value'}"
+                               Text="{Binding Passwords.Count, StringFormat=' {0} >>>accounts', FallbackValue='No Value'}"
                                Grid.Row="1" />
                     </Grid>
                 </DataTemplate>
@@ -44,21 +44,14 @@
                      Command="{Binding AboutCommand}"
                      Order="Secondary" />
     </ContentPage.ToolbarItems>
-    <Grid>
+    <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <Label Text="Password Manager" />
-        </Grid>
         <ActivityIndicator IsRunning="{Binding IsActivity}"
                            Color="Blue"
-                           Grid.Row="1"
+                           Grid.Row="0"
                            VerticalOptions="Center"
                            HorizontalOptions="Center"
                            HeightRequest="80"
@@ -94,22 +87,23 @@
                         <SwipeView>
                             <SwipeView.GestureRecognizers>
                                 <TapGestureRecognizer NumberOfTapsRequired="2"
+                                                      CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
                                                       BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
                                                       Command="{Binding OpenCommand}">
                                 </TapGestureRecognizer>
                             </SwipeView.GestureRecognizers>
-                            <Frame>
-                                <Grid>
+                            <Frame CornerRadius="0" ZIndex="30">
+                                <Grid x:Name="item">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
                                     <Label FontSize="Default"
                                            FontAttributes="Bold"
-                                           Text="{Binding Username, StringFormat=' {0}', FallbackValue='No Value'}" />
+                                           Text="{Binding Url, StringFormat=' {0}', FallbackValue='No Value'}" />
                                     <Label FontSize="Default"
                                            FontAttributes="Bold"
-                                           Text="{Binding Site, StringFormat=' {0}', FallbackValue='No Value'}"
+                                           Text="{Binding Passwords.Count, StringFormat=' {0} >>>accounts', FallbackValue='No Value'}"
                                            Grid.Row="1" />
                                 </Grid>
                             </Frame>
@@ -120,7 +114,7 @@
         </ListView>
         <Button FontAttributes="Bold"
                 Grid.Row="1"
-                Margin="0,0,30,50"
+                Margin="0,20,30,50"
                 HorizontalOptions="End"
                 ZIndex="50"
                 VerticalOptions="End"

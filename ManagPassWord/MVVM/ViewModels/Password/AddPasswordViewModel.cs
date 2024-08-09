@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
 using ManagPassWord.MVVM.Models;
+using Pass=ManagPassWord.MVVM.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
 using MVVM;
@@ -9,101 +10,112 @@ namespace ManagPassWord.MVVM.ViewModels.Password
 {
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
+        #region Private Properties
         private readonly IPasswordRepository _passwordRepository;
-        private UserDTO _user;
-        public UserDTO User
+        #endregion
+
+        #region Public Properties
+        private string _url = "google.com";
+        public string Url
         {
-            get => _user;
-            set => UpdateObservable(ref _user, value);
+            get => _url.ToLower().Trim();
+            set => UpdateObservable(ref _url, value);
         }
-        private UserDTO _current;
+        private PasswordDto _password = new PasswordDto();
+        public PasswordDto Password
+        {
+            get => _password;
+            set => UpdateObservable(ref _password, value);
+        }
         private bool _isEditPage;
         public bool IsEditPage
         {
             get => _isEditPage;
             set => UpdateObservable(ref _isEditPage, value);
         }
-        private bool CanOpen => _current != null;
+        #endregion
+
+        #region Commands
         public ICommand SaveCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
+        #endregion
+
+        #region Constructor
         public AddPasswordViewModel(IPasswordRepository db)
         {
             _passwordRepository = db;
-            User = new();
+            CommandSetup();
+        }
+        #endregion
+
+        #region Private methods
+        private void CommandSetup()
+        {
             SaveCommand = new Command(OnSave);
             BackCommand = new Command(OnBack);
         }
+        #endregion
 
+        #region Handlers
         private async void OnBack(object sender)
         {
             await Shell.Current.GoToAsync("..");
         }
-
         private async void OnSave(object sender)
         {
-            User temp_item;
-            try
+            Web temp_item;
+            if(!string.IsNullOrEmpty(Url))
             {
-                if (!IsEditPage)
+                try
                 {
-                    if (User.IsValid())
+                    if (!IsEditPage)
                     {
-                        temp_item = await _passwordRepository.SaveOrUpdateItemAsync(User.Adapt<User>());
-                        ViewModelLocator.MainPageViewModel.AddItem(temp_item.Adapt<UserDTO>());
+                        if (await _passwordRepository.GetItemByUrl(Url) is Web web)
+                        {
+                            web.Add(Password.Adapt<Pass.Password>());
+                            temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            ViewModelLocator.MainViewModel.UpdateItem(temp_item.Adapt<WebDto>());
+                        }
+                        else
+                        {
+                            web = new Web(Url);
+                            web.Add(Password.Adapt<Pass.Password>());
+                            temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            ViewModelLocator.MainViewModel.AddItem(temp_item.Adapt<WebDto>());
+                        }
                     }
                     else
                     {
-                        await Shell.Current.DisplayAlert("Error", "Site or Password field is or are empty.", "OK");
-                        return;
+                        if (await _passwordRepository.GetItemByUrl(Url) is Web web)
+                        {
+                            web.UpdatePasswordItem(Password.Adapt<Pass.Password>());
+                            var webdto = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            ViewModelLocator.MainViewModel.UpdateItem(webdto.Adapt<WebDto>());
+                        }
                     }
+                    await Shell.Current.GoToAsync("..");
                 }
-                else
+                catch (Exception ex)
                 {
-                    await _passwordRepository.SaveOrUpdateItemAsync(await Update(User));
-                    ViewModelLocator.MainPageViewModel.UpdateItem(User.Adapt<UserDTO>());
+                    await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
+                    return;
                 }
-                await Shell.Current.GoToAsync("..");
-            }
-            catch(Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
-                return;
             }
            
         }
-        public void ClearFields()
-        {
-            User.Reset();
-        }
-
+        #endregion
         public void ApplyQueryAttributes(IDictionary<string, object> query)
         {
+            
             if (query.Count > 0)
             {
-                User = query["user"] as UserDTO;
+                if(query.TryGetValue("password", out var Pas))
+                {
+                    Password = query["password"] as PasswordDto;
+                    Url = (string)query["url"];
+                }
                 IsEditPage = (bool)query["isedit"];
-                setFields();
             }
         }
-        private void setFields()
-        {
-            if (IsEditPage && CanOpen)
-            {
-                User.Note = _current.Note;
-                User.Username = _current.Username ?? string.Empty;
-                User.Password = _current.Password;
-                User.Site = _current.Site;
-            }
-        }
-        public async Task<User> Update(UserDTO m)
-        {
-            User user = await _passwordRepository.GetItemByIdAsync(m.Id);
-            user.Note = User.Note;
-            user.Username = User.Username;
-            user.Password = User.Password;
-            user.Site = User.Site;
-            return user;
-        }
-
     }
 }

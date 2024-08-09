@@ -88,7 +88,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             _purchaseRepository = db;   
             _navigationService = navigationService;
             IsSavebtnEnabled = true;
-            _ = Init();
+            Init();
             CommandSetup();
         }
         #endregion
@@ -102,14 +102,18 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Handlers
-        private async Task Init()
+
+
+        private async void Init()
         {
             ShowActivity();
-            await Task.Run(async() => await LoadItems((await _purchaseRepository.GetAllItemsAsync()).Adapt<List<PurchaseDto>>()));
+            await Task.Run(async () => await LoadItems((await _purchaseRepository.GetAllItemsAsync()).Adapt<List<PurchaseDto>>()));
             HideActivity();
         }
         private async void OnDoubleClick(object sender)
         {
+            FingerPrintAuthentification _authentification = new FingerPrintAuthentification();
+            await _authentification.Authenticate();
             try
             {
                 if (IsSelected)

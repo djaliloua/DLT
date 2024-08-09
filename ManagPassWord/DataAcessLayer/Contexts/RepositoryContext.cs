@@ -5,8 +5,9 @@ namespace ManagPassWord.DataAcessLayer.Contexts
 {
     public class RepositoryContext:DbContext
     {
-        public DbSet<User> Users { get; set; }
+        public DbSet<Web> Users { get; set; }
         public DbSet<DebtModel> Debts { get; set; }
+        public DbSet<Password> Passwords { get; set; }
 
         private string DatabasePurchase;
         public RepositoryContext()

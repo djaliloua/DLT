@@ -7,7 +7,6 @@ using PurchaseManagement.MVVM.Models.MarketModels;
 using MauiNavigationHelper.NavigationLib.Models;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Utilities;
-using Patterns;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using PurchaseManagement.Commons.Notifications.Abstractions;
@@ -53,10 +52,10 @@ namespace PurchaseManagement.MVVM.ViewModels
         public PurchaseDto Purchases
         {
             get => _puchases;
-            set => UpdateObservable(ref  _puchases, value, async() =>
+            set => UpdateObservable(ref  _puchases, value, async () =>
             {
                 ShowActivity();
-                await LoadItems(Purchases.Products);
+                await Task.Run(async() => await LoadItems(Purchases.Products));
                 HideActivity();
             });
         }
@@ -122,7 +121,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             _exportContext.ExportTo("", GetItems());
         }
-        private async void On_GetMap(object parameter)
+        private async void OnGetMap(object parameter)
         {
             ShowActivity();
             ProductDto productDto = parameter as ProductDto;
@@ -135,10 +134,8 @@ namespace PurchaseManagement.MVVM.ViewModels
                     var loc = location.Adapt<ProductLocation>();
                     SelectedItem.ProductLocation = loc.Adapt<LocationDto>();
                     SelectedItem.IsLocation = SelectedItem.ProductLocation != null;
-
                     ViewModelUtility.UpdateProduct(purch, SelectedItem.Adapt<Product>());
                     await ViewModelUtility.SaveAndUpdateUI(purch);
-
                     await _notification.ShowNotification("Got location");
                 }
 
@@ -190,10 +187,8 @@ namespace PurchaseManagement.MVVM.ViewModels
                     Purchase purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
                     purchase.Remove(SelectedItem.Adapt<Product>());
                     await ViewModelUtility.SaveAndUpdateUI(purchase);
-
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
-                    
                 }
             }
             else
@@ -211,7 +206,6 @@ namespace PurchaseManagement.MVVM.ViewModels
             {
                 { "details", SelectedItem }
             };
-                //SelectedItem = null;
                 await _navigationService.Navigate(nameof(PurchaseItemDetails), navigationParameters);
             }
         }
@@ -238,7 +232,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             DeleteCommand = new Command(OnDelete);
             OpenMapCommand = new Command(OnOpenMap);
             EditCommand = new Command(OnEdit);
-            GetMapCommand = new Command(On_GetMap);
+            GetMapCommand = new Command(OnGetMap);
             OpenAnalyticCommand = new Command(OnOpenAnalyticCommand);
             ExportToPdfCommand = new Command(OnExportToPdfCommand);
         }

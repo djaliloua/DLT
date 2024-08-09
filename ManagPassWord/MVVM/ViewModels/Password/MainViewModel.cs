@@ -2,21 +2,43 @@
 using ManagPassWord.MVVM.Models;
 using ManagPassWord.Pages;
 using Mapster;
-using Patterns;
 using Patterns.Abstractions;
 using Patterns.Implementations;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace ManagPassWord.MVVM.ViewModels.Password
 {
-    public class LoaddUserService : ILoadService<UserDTO>
+    public class LoaddUserService : ILoadService<WebDto>
     {
-        public IList<UserDTO> Reorder(IList<UserDTO> items)
+        public IList<WebDto> Reorder(IList<WebDto> items)
         {
             return items.OrderByDescending(item => item.Id).ToList();
         }
+        
     }
-    public class MainPageViewModel : Loadable<UserDTO>
+    public class LoadableWebDto: Loadable<WebDto>
+    {
+        public LoadableWebDto(ILoadService<WebDto> loadService):base(loadService)
+        {
+            
+        }
+        public override bool ItemExist(WebDto item)
+        {
+            return Items.FirstOrDefault(w => w.Url == item.Url) != null;
+        }
+        protected override int Index(WebDto item)
+        {
+            WebDto w = GetWebElementByUrl(item.Url);
+            return base.Index(w);
+        }
+        public WebDto GetWebElementByUrl(string url)
+        {
+            return Items.FirstOrDefault(w => w.Url == url);
+        }
+        
+    }
+    public class MainViewModel : LoadableWebDto
     {
         private readonly IPasswordRepository _passwordRepository;
 
@@ -28,7 +50,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #endregion
 
         #region Constructor
-        public MainPageViewModel(IPasswordRepository _db, ILoadService<UserDTO> loadService):base(loadService)
+        public MainViewModel(IPasswordRepository _db, 
+            ILoadService<WebDto> loadService):base(loadService)
         {
             _passwordRepository = _db;
             load();
@@ -40,9 +63,9 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         private async void load()
         {
             ShowActivity();
-            var repo = await _passwordRepository.GetAllItemsAsync();
-            var data = repo.Adapt<List<UserDTO>>();
-            await Task.Run(async() => await LoadItems(data));
+            var data = await _passwordRepository.GetAllItemsAsync();
+            var dataAsDtos = data.Adapt<List<WebDto>>();
+            await Task.Run(async() => await LoadItems(dataAsDtos));
             HideActivity();
         }
         private void CommandSetup()
@@ -57,6 +80,11 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #region Handlers
         private async void OnOpen(object sender)
         {
+            if(!Debugger.IsAttached)
+            {
+                FingerPrintAuthentification _authentification = new FingerPrintAuthentification();
+                await _authentification.Authenticate();
+            }
             if (IsSelected)
             {
                 var navigationParameter = new Dictionary<string, object>
@@ -72,7 +100,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             SelectedItem = null;
             var navigationParameter = new Dictionary<string, object>
                         {
-                            { "user", new UserDTO() },
+                            { "password", new PasswordDto() },
+                            { "url", IsSelected? SelectedItem.Url: "" },
                             { "isedit", false }
                         };
             await Shell.Current.GoToAsync(nameof(AddPassworPage), navigationParameter);

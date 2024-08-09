@@ -2,47 +2,70 @@
 using ManagPassWord.MVVM.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
-using MVVM;
+using Patterns.Abstractions;
+using Patterns.Implementations;
 using System.Windows.Input;
 
 namespace ManagPassWord.MVVM.ViewModels.Password
 {
-    public class DetailViewModel : BaseViewModel, IQueryAttributable
+    public class LoadPasswordService : ILoadService<PasswordDto>
     {
-        private readonly IPasswordRepository _db;
-        private UserDTO _userDetail;
-        public UserDTO UserDetail
+        public IList<PasswordDto> Reorder(IList<PasswordDto> items)
+        {
+            return items.OrderByDescending(x => x.Id).ToList();
+        }
+    }
+    public class DetailViewModel : Loadable<PasswordDto>, IQueryAttributable
+    {
+        private readonly IPasswordRepository _passwordRepository;
+        private WebDto _userDetail;
+        public WebDto WebSitePasswords
         {
             get => _userDetail;
-            set => UpdateObservable(ref _userDetail, value);
+            set => UpdateObservable(ref _userDetail, value, async() =>
+            {
+                if (WebSitePasswords != null)
+                {
+                    ShowActivity();
+                    await Task.Run(async () => await LoadItems(WebSitePasswords.Passwords));
+                    HideActivity();
+                }
+            });
         }
         public ICommand EditCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
-        public DetailViewModel(IPasswordRepository db)
+        public DetailViewModel(IPasswordRepository db, ILoadService<PasswordDto> loadService):base(loadService)
         {
-            _db = db;
-            EditCommand = new Command(On_Edit);
-            DeleteCommand = new Command(delete);
+            _passwordRepository = db;
+            EditCommand = new Command(OnEdit);
+            DeleteCommand = new Command(OnDelete);
         }
-        private async void delete(object sender)
+        
+        private async void OnDelete(object sender)
         {
+            PasswordDto tempPassword = sender as PasswordDto;
+            SelectedItem = tempPassword;
             if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
             {
-                if (UserDetail.Id != 0)
+                if (tempPassword.Id != 0)
                 {
-                    await _db.DeleteItemAsync(UserDetail.Adapt<User>());
-                    ViewModelLocator.MainPageViewModel.DeleteItem(UserDetail);
+                    if(await _passwordRepository.GetItemByUrl(tempPassword?.Web.Url) is Web web)
+                    {
+                        web.DeletePasswordItem(tempPassword);
+                        await _passwordRepository.SaveOrUpdateItemAsync(web);
+                        DeleteItem(SelectedItem);
+                        ViewModelLocator.MainViewModel.UpdateItem(web.Adapt<WebDto>());
+                    }
                 }
-                await Shell.Current.GoToAsync("..");
             }
-
         }
-        private async void On_Edit(object sender)
+        private async void OnEdit(object sender)
         {
             var navigationParameter = new Dictionary<string, object>
                         {
-                            { "user", UserDetail },
-                            { "isedit", true }
+                            { "password", sender },
+                            { "isedit", true },
+                            { "url", WebSitePasswords.Url },
                         };
             await Shell.Current.GoToAsync(nameof(AddPassworPage), navigationParameter);
         }
@@ -50,7 +73,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         {
             if (query.Count > 0)
             {
-                UserDetail = query["user"] as UserDTO;
+                WebSitePasswords = query["user"] as WebDto;
             }
         }
     }

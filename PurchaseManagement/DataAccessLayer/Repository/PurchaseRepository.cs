@@ -1,6 +1,8 @@
 ﻿using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using Microsoft.EntityFrameworkCore;
+using Mapster;
+using PurchaseManagement.MVVM.Models.DTOs;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
@@ -12,5 +14,9 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             return purchase;
         }
 
+        public Task<List<PurchaseDto>> GetAllAsDtos()
+        {
+            return Task.FromResult(_table.ProjectToType<PurchaseDto>().ToList());
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace ManagPassWord.ServiceLocators
 {
     public static class ViewModelLocator
     {
-        public static MainPageViewModel MainPageViewModel => Resolver.GetService<MainPageViewModel>();
+        public static MainViewModel MainViewModel => Resolver.GetService<MainViewModel>();
         public static DebtDetailsViewModel DebtDetailsViewModel => Resolver.GetService<DebtDetailsViewModel>();
         public static DebtPageViewModel DebtPageViewModel => Resolver.GetService<DebtPageViewModel>();
         public static AddPasswordViewModel AddPasswordViewModel => Resolver.GetService<AddPasswordViewModel>();
