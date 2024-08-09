@@ -18,11 +18,9 @@ namespace ManagPassWord.CustomClasses
             }
             else
             {
-                //ItemsSource = Passwords
-                //    .Where(data => data.Username.ToLower().Contains(newValue.ToLower())
-                //    || data.Site.ToLower().Contains(newValue.ToLower())
-                //    )
-                //    .ToList();
+                ItemsSource = Passwords
+                    .Where(data => data.Url.Contains(newValue) || data.Passwords.Where(p => p.PasswordName.Contains(newValue))!=null)
+                    .ToList();
             }
         }
         protected override async void OnItemSelected(object item)
