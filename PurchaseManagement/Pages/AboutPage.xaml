@@ -5,86 +5,93 @@
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:idk="clr-namespace:Indiko.Maui.Controls.Markdown;assembly=Indiko.Maui.Controls.Markdown"
              xmlns:vm="clr-namespace:PurchaseManagement.ServiceLocator"
              BindingContext="{x:Static vm:ViewModelLocator.AboutViewModel}"
              BackgroundColor="{StaticResource Surface}"
              Title="About">
-    <Grid Margin="15" RowSpacing="50">
-        <Grid.RowDefinitions>
-            <!--<RowDefinition Height="auto"/>-->
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <VerticalStackLayout HorizontalOptions="Center"
-                             Spacing="20"
-                             Grid.Row="1">
-            <Border HeightRequest="150"
-                    WidthRequest="150"
-                    StrokeShape="RoundRectangle 80,80,80,80"
-                    HorizontalOptions="Center"
-                    StrokeThickness="8"
-                    Margin="0,0,0,0">
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <Grid Margin="15"
+              RowSpacing="50">
+            <Grid.RowDefinitions>
+                <!--<RowDefinition Height="auto"/>-->
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <idk:MarkdownView MarkdownText="{Binding Markdown}" />
+            <!--<VerticalStackLayout HorizontalOptions="Center"
+                         Spacing="20"
+                         Grid.Row="1">
+        <Border HeightRequest="150"
+                WidthRequest="150"
+                StrokeShape="RoundRectangle 80,80,80,80"
+                HorizontalOptions="Center"
+                StrokeThickness="8"
+                Margin="0,0,0,0">
 
-                <Image Aspect="AspectFit"
-                       Source="abdou.jpg"
-                       SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                       HeightRequest="160"
-                       WidthRequest="160"
-                       VerticalOptions="Center"
-                       HorizontalOptions="Center" />
-            </Border>
-            <VerticalStackLayout>
-                <Label Text="Abdou Djalilou Ali" />
-                <Label Text="Software developer" />
-                <Label Text="   I am Mr. Abdou Djalilou Ali, young and passionate software developer at Msc Technology."
-                       VerticalTextAlignment="Center"
-                       HorizontalOptions="Center" />
-            </VerticalStackLayout>
-            <!--<VerticalStackLayout Spacing="10">
-                <Label Text="Description" />
-                <Label Text="   I am Mr. Abdou Djalilou Ali, young and passionate software developer at Msc Technology."
-                       VerticalTextAlignment="Center"
-                       HorizontalOptions="Center" />
-            </VerticalStackLayout>-->
-            <VerticalStackLayout Spacing="10">
-                <Label Text="Contacts" />
-                <HorizontalStackLayout Spacing="55">
-                    <Label Text="+39-327-814-1905"
-                           FontSize="Body"
-                           x:Name="phone"
-                           FontAttributes="Bold"
-                           FontAutoScalingEnabled="True"
-                           VerticalTextAlignment="Center"
-                           HorizontalOptions="Start" />
-                    <Button Command="{Binding DialCommand}"
-                            CommandParameter="{Binding Source={x:Reference phone}, Path=Text}">
-                        <Button.ImageSource>
-                            <FontImageSource FontFamily="MaterialRegular"
-                                             
-                                             Glyph="{x:Static m:MaterialRound.Call}" />
-                        </Button.ImageSource>
-                    </Button>
-
-                </HorizontalStackLayout>
-                <HorizontalStackLayout Spacing="20">
-                    <Label Text="djailoua@gmail.com"
-                           CharacterSpacing="1"
-                           FontSize="Body"
-                           x:Name="email"
-                           FontAttributes="Bold"
-                           FontAutoScalingEnabled="True"
-                           VerticalTextAlignment="Center"
-                           HorizontalOptions="Start" />
-                    <Button 
-                            Command="{Binding CopyCommand}"
-                            CommandParameter="{Binding Source={x:Reference email}, Path=Text}">
-                        <Button.ImageSource>
-                            <FontImageSource FontFamily="MaterialRegular"
-                                             Glyph="{x:Static m:MaterialRound.Content_copy}" />
-                        </Button.ImageSource>
-                    </Button>
-
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
+            <Image Aspect="AspectFit"
+                   Source="abdou.jpg"
+                   SemanticProperties.Description="Cute dot net bot waving hi to you!"
+                   HeightRequest="160"
+                   WidthRequest="160"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+        </Border>
+        <VerticalStackLayout>
+            <Label Text="Abdou Djalilou Ali" />
+            <Label Text="Software developer" />
+            <Label Text="   I am Mr. Abdou Djalilou Ali, young and passionate software developer at Msc Technology."
+                   VerticalTextAlignment="Center"
+                   HorizontalOptions="Center" />
         </VerticalStackLayout>
-    </Grid>
+        -->
+            <!--<VerticalStackLayout Spacing="10">
+            <Label Text="Description" />
+            <Label Text="   I am Mr. Abdou Djalilou Ali, young and passionate software developer at Msc Technology."
+                   VerticalTextAlignment="Center"
+                   HorizontalOptions="Center" />
+        </VerticalStackLayout>-->
+            <!--
+        <VerticalStackLayout Spacing="10">
+            <Label Text="Contacts" />
+            <HorizontalStackLayout Spacing="55">
+                <Label Text="+39-327-814-1905"
+                       FontSize="Body"
+                       x:Name="phone"
+                       FontAttributes="Bold"
+                       FontAutoScalingEnabled="True"
+                       VerticalTextAlignment="Center"
+                       HorizontalOptions="Start" />
+                <Button Command="{Binding DialCommand}"
+                        CommandParameter="{Binding Source={x:Reference phone}, Path=Text}">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialRegular"
+                                         
+                                         Glyph="{x:Static m:MaterialRound.Call}" />
+                    </Button.ImageSource>
+                </Button>
+
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="20">
+                <Label Text="djailoua@gmail.com"
+                       CharacterSpacing="1"
+                       FontSize="Body"
+                       x:Name="email"
+                       FontAttributes="Bold"
+                       FontAutoScalingEnabled="True"
+                       VerticalTextAlignment="Center"
+                       HorizontalOptions="Start" />
+                <Button 
+                        Command="{Binding CopyCommand}"
+                        CommandParameter="{Binding Source={x:Reference email}, Path=Text}">
+                    <Button.ImageSource>
+                        <FontImageSource FontFamily="MaterialRegular"
+                                         Glyph="{x:Static m:MaterialRound.Content_copy}" />
+                    </Button.ImageSource>
+                </Button>
+
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </VerticalStackLayout>-->
+        </Grid>
+    </ScrollView>
 </ContentPage>
