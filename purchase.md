@@ -21,7 +21,7 @@ It is also possible to take location where a given product has been purchased by
 - LiveChartsCore.SkiaSharpView.Maui
 - FluentValidation
 - Indiko.Maui.Controls.Markdown
-</br>
+
 ### Author
 - Software developer @self employement
 - Abdou Djalilou Ali
