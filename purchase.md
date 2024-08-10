@@ -6,7 +6,7 @@ The app contains three main pages: Account, Purchase and Analytics pages.
 - Analytics Page: Shows barplot of daily expenses.</br>
 - Purchase Page: This page is responsible for adding products that are or will be purchased on daily basis.</br>
 It is also possible to take location where a given product has been purchased by swiping to the right on top of the product.
-</br>
+
 ### Technologies
 - MAUI
 - .Net8
