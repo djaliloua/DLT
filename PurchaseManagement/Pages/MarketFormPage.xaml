@@ -10,7 +10,7 @@
              BackgroundColor="LightBlue"
              IsEnabled="{Binding IsSavebtnEnabled}"
              x:Name="page"
-             Title="Form">
+             >
     <ContentPage.Triggers>
         <DataTrigger TargetType="ContentPage"
                      Binding="{Binding Source={x:Reference page}, Path=IsEnabled}" Value="true">

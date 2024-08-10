@@ -11,7 +11,7 @@
              BackgroundColor="LightBlue"
              x:Name="page"
              BindingContext="{x:Static local:ViewModelLocator.AccountPageViewModel}"
-             Title="Account">
+             Title="">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{Binding AccountListViewViewModel.Counter}"
                      Order="Primary" />

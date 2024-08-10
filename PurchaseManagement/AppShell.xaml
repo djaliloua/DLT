@@ -23,7 +23,7 @@
                              Color="Blue"
                              Glyph="{x:Static m:MaterialRound.Home}" />
         </FlyoutItem.FlyoutIcon>
-        <ShellContent Title="Account"
+        <ShellContent Title="Expensses"
                       ContentTemplate="{DataTemplate pages:AccountPage}"
                       Route="AccountPage">
             <ShellContent.Icon>
@@ -58,8 +58,13 @@
     </FlyoutItem>
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems"
                 IsVisible="{OnPlatform Android=True, Default=True}"
-                Title="Market">
-        <ShellContent Title="Market"
+                >
+        <!--<FlyoutItem.Icon>
+            <FontImageSource FontFamily="MaterialRegular"
+                             Color="Blue"
+                             Glyph="{x:Static m:MaterialRound.Account_balance_wallet}" />
+        </FlyoutItem.Icon>-->
+        <ShellContent Title="Purchases"
                       ContentTemplate="{DataTemplate local:MainPage}"
                       Route="MainPage">
             <ShellContent.Icon>

@@ -28,14 +28,14 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => item_name;
             set => UpdateObservable(ref item_name, value);
         }
-        private long item_price = 1000;
-        public long Item_Price
+        private double item_price = 1000;
+        public double Item_Price
         {
             get => item_price;
             set => UpdateObservable(ref item_price, value);
         }
-        private long item_quantity = 10;
-        public long Item_Quantity
+        private double item_quantity = 10;
+        public double Item_Quantity
         {
             get => item_quantity;
             set => UpdateObservable(ref item_quantity, value);
