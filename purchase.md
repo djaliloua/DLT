@@ -9,7 +9,7 @@ The app contains three main pages: Account, Purchase and Analytics pages.
 - Purchase Page: This page is responsible for adding products that are or will be purchased on daily basis.</br>
 It is also possible to take location where a given product has been purchased by swiping to the right on top of the product.
 </br></br>
-
+[Video](images/purchase.mp4)
 <video width="320" height="564" controls>
   <source src="images/purchase.mp4" type="video/mp4">
 </video>
