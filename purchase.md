@@ -9,6 +9,7 @@ It is also possible to take location where a given product has been purchased by
 </br>
 ### Technologies
 - MAUI
+- .Net8
 - MVVM
 - Sqlite
 - Urannium
@@ -19,7 +20,8 @@ It is also possible to take location where a given product has been purchased by
 - CommunityToolkit.Mvvm
 - LiveChartsCore.SkiaSharpView.Maui
 - FluentValidation
-</br></br>
+- Indiko.Maui.Controls.Markdown
+</br>
 ### Author
 - Software developer @self employement
 - Abdou Djalilou Ali
