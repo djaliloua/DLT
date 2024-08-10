@@ -19,7 +19,7 @@ It is also possible to take location where a given product has been purchased by
 - CommunityToolkit.Mvvm
 - LiveChartsCore.SkiaSharpView.Maui
 - FluentValidation
-</br>
+</br></br>
 ### Author
 - Software developer @self employement
 - Abdou Djalilou Ali
