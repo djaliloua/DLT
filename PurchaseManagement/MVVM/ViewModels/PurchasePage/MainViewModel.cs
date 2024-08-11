@@ -11,7 +11,7 @@ using Mapster;
 using Patterns.Implementations;
 using Patterns.Abstractions;
 
-namespace PurchaseManagement.MVVM.ViewModels
+namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
     public class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseDto
     {
@@ -102,8 +102,6 @@ namespace PurchaseManagement.MVVM.ViewModels
         #endregion
 
         #region Handlers
-
-
         private async void Init()
         {
             ShowActivity();
@@ -114,8 +112,9 @@ namespace PurchaseManagement.MVVM.ViewModels
         {
             if (!Debugger.IsAttached)
             {
-                FingerPrintAuthentification _authentification = new FingerPrintAuthentification();
-                await _authentification.Authenticate();
+                // Do not delete this piece of code
+                //FingerPrintAuthentification _authentification = new FingerPrintAuthentification();
+                //await _authentification.Authenticate();
             }
             try
             {

@@ -4,6 +4,7 @@ using PurchaseManagement.MVVM.ViewModels.AccountPage;
 using PurchaseManagement.DataAccessLayer.Repository;
 using Mapster;
 using PurchaseManagement.DataAccessLayer.Abstractions;
+using PurchaseManagement.MVVM.ViewModels.PurchasePage;
 using PurchaseManagement.Pages;
 using PurchaseManagement.Commons;
 using PurchaseManagement.MVVM.Models.DTOs;

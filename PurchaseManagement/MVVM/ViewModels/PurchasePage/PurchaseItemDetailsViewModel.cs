@@ -4,7 +4,7 @@ using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
 using System.Windows.Input;
 
-namespace PurchaseManagement.MVVM.ViewModels
+namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
     public class PurchaseItemDetailsViewModel:BaseViewModel, INavigatedEvents
     {

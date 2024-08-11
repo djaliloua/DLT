@@ -10,7 +10,7 @@ using System.Windows.Input;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
 
-namespace PurchaseManagement.MVVM.ViewModels
+namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
     public class Summary:BaseViewModel
     {

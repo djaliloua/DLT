@@ -80,7 +80,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                     {
                         if (!IsEmpty)
                         {
-                            await _snackBarNotification.ShowNotification($"Best day: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value} CFA");
+                            await _snackBarNotification.ShowNotification($"High expense: {MaxSaleValue.DateTime:M}, {MaxSaleValue.Value:C2}");
                         }
                     }
                     );

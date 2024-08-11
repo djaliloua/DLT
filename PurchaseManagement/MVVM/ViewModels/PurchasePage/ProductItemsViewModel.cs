@@ -15,7 +15,7 @@ using Mapster;
 using Patterns.Implementations;
 using Patterns.Abstractions;
 
-namespace PurchaseManagement.MVVM.ViewModels
+namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
     public class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: ProductDto
     {

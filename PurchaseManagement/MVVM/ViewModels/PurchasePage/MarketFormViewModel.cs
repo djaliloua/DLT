@@ -10,7 +10,7 @@ using PurchaseManagement.Validations;
 using PurchaseManagement.Utilities;
 using Mapster;
 
-namespace PurchaseManagement.MVVM.ViewModels
+namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
     public class MarketFormViewModel:BaseViewModel, IQueryAttributable
     {

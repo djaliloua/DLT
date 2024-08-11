@@ -1,4 +1,5 @@
-﻿using PurchaseManagement.MVVM.ViewModels;
+﻿using PurchaseManagement.MVVM.ViewModels.PurchasePage;
+using PurchaseManagement.MVVM.ViewModels;
 using PurchaseManagement.MVVM.ViewModels.AccountPage;
 
 namespace PurchaseManagement.ServiceLocator
