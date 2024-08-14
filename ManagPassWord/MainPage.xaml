@@ -17,28 +17,27 @@
                                         DisplayMemberName="Name">
             <controls:PasswordSearchHandler.ItemTemplate>
                 <DataTemplate>
-                    <Frame ZIndex="20" CornerRadius="0">
+                    <Frame ZIndex="20"
+                           CornerRadius="0">
                         <SwipeView>
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition />
                                     <RowDefinition />
                                 </Grid.RowDefinitions>
-                                <Label 
-                                       Text="{Binding Url, StringFormat=' {0}', FallbackValue='No Value'}" />
-                                <Label 
-                                       Text="{Binding Passwords.Count, StringFormat=' {0} >>>accounts', FallbackValue='No Value'}"
+                                <Label Text="{Binding Url, StringFormat=' {0}', FallbackValue='No Value'}" />
+                                <Label Text="{Binding Passwords.Count, StringFormat=' {0} >>>accounts', FallbackValue='No Value'}"
                                        Grid.Row="1" />
                             </Grid>
                         </SwipeView>
                     </Frame>
                 </DataTemplate>
             </controls:PasswordSearchHandler.ItemTemplate>
-            
+
         </controls:PasswordSearchHandler>
     </Shell.SearchHandler>
     <ContentPage.ToolbarItems>
-        
+
         <ToolbarItem Text="Settings"
                      Command="{Binding SettingCommand}"
                      Order="Secondary" />
@@ -94,18 +93,15 @@
                                                       Command="{Binding OpenCommand}">
                                 </TapGestureRecognizer>
                             </SwipeView.GestureRecognizers>
-                            <Frame CornerRadius="0" ZIndex="30">
+                            <Frame CornerRadius="0"
+                                   ZIndex="30">
                                 <Grid x:Name="item">
                                     <Grid.RowDefinitions>
                                         <RowDefinition />
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
-                                    <Label FontSize="Default"
-                                           FontAttributes="Bold"
-                                           Text="{Binding Url, StringFormat=' {0}', FallbackValue='No Value'}" />
-                                    <Label FontSize="Default"
-                                           FontAttributes="Bold"
-                                           Text="{Binding Passwords.Count, StringFormat=' {0} >>>accounts', FallbackValue='No Value'}"
+                                    <Label Text="{Binding Url, StringFormat=' {0}', FallbackValue='No Value'}" />
+                                    <Label Text="{Binding Passwords.Count, StringFormat=' {0} >>>accounts', FallbackValue='No Value'}"
                                            Grid.Row="1" />
                                 </Grid>
                             </Frame>

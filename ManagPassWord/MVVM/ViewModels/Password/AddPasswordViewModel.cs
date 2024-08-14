@@ -68,6 +68,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             {
                 try
                 {
+                    //await Password.CreateUpdateDate();
                     if (!IsEditPage)
                     {
                         if (await _passwordRepository.GetItemByUrl(Url) is Web web)

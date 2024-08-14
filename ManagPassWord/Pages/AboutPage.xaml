@@ -2,12 +2,18 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ManagPassWord.Pages.AboutPage"
+             xmlns:idk="clr-namespace:Indiko.Maui.Controls.Markdown;assembly=Indiko.Maui.Controls.Markdown"
              xmlns:locator="clr-namespace:ManagPassWord.ServiceLocators"
              BindingContext="{x:Static locator:ViewModelLocator.AboutViewModel}"
+             BackgroundColor="{StaticResource Surface}"
              Title="About">
-    <VerticalStackLayout>
-        <Label Text="{Binding Version}"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
-    </VerticalStackLayout>
+    <ScrollView VerticalScrollBarVisibility="Never">
+        <VerticalStackLayout Spacing="20"
+                             Margin="15">
+            <Label Text="{Binding Version}"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+            <idk:MarkdownView MarkdownText="{Binding MarkDown}" />
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

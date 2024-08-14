@@ -89,8 +89,7 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             {
                 var navigationParameter = new Dictionary<string, object>
                         {
-                            { "user", SelectedItem },
-                            { "isedit", false },
+                            { "user", SelectedItem }
                         };
                 await Shell.Current.GoToAsync(nameof(DetailPage), navigationParameter);
             }

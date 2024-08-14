@@ -4,7 +4,7 @@
 Password Management System(PMS) is an application for managing and creating password on the fly.
 </br></br>
 ### Technologies
-- MAUI
+- WPF
 - .Net8
 - MVVM
 - Sqlite

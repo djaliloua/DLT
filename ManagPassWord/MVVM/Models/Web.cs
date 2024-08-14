@@ -163,9 +163,10 @@ namespace ManagPassWord.MVVM.Models
             set => UpdateObservable(ref _web, value);
         }
 
-        public void CreateUpdateDate()
+        public Task<bool> CreateUpdateDate()
         {
             Date = DateTime.Now;
+            return Task.FromResult(true);
         }
     }
     public class Password:BaseEntity
