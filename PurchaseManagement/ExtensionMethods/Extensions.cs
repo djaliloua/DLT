@@ -34,13 +34,13 @@ namespace PurchaseManagement.ExtensionMethods
         }
         public static MauiAppBuilder RepositoryExtension(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
-            mauiAppBuilder.Services.AddSingleton<IPurchaseRepository, PurchaseRepository>();
+            mauiAppBuilder.Services.AddTransient<IAccountRepository, AccountRepository>();
+            mauiAppBuilder.Services.AddTransient<IPurchaseRepository, PurchaseRepository>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder ContextExtension(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddScoped<RepositoryContext>();
+            mauiAppBuilder.Services.AddTransient<RepositoryContext>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder ViewModelsExtension(this MauiAppBuilder mauiAppBuilder)

@@ -14,6 +14,7 @@ using PurchaseManagement.Commons.Notifications.Implementations;
 using Mapster;
 using Patterns.Implementations;
 using Patterns.Abstractions;
+using PurchaseManagement.DataAccessLayer.Repository;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
@@ -134,7 +135,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
                     var loc = location.Adapt<ProductLocation>();
                     SelectedItem.ProductLocation = loc.Adapt<LocationDto>();
                     SelectedItem.IsLocation = SelectedItem.ProductLocation != null;
-                    ViewModelUtility.UpdateProduct(purch, SelectedItem.Adapt<Product>());
                     await ViewModelUtility.SaveAndUpdateUI(purch);
                     await _notification.ShowNotification("Got location");
                 }
@@ -184,9 +184,10 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    Purchase purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    purchase.Remove(SelectedItem.Adapt<Product>());
-                    await ViewModelUtility.SaveAndUpdateUI(purchase);
+                    using var repo = new PurchaseRepository();
+                    var p = repo.RemoveProduct(SelectedItem.Adapt<Product>());
+                    p.UpdateStatistics();
+                    await ViewModelUtility.SaveAndUpdateUI(p.Adapt<Purchase>());
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
                 }
@@ -218,9 +219,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             {
                 if (p.Purchase is PurchaseDto purchaseX)
                 {
-                    var purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-                    ViewModelUtility.UpdateProduct(purchase, p.Adapt<Product>());
-                    await _purchaseRepository.SaveOrUpdateItemAsync(purchase);
+                    var purchase = ViewModelLocator.MainViewModel.GetItemByDate();
+                    await _purchaseRepository.SaveOrUpdateItemAsync(purchase.Adapt<Purchase>());
                 }
             });
         }

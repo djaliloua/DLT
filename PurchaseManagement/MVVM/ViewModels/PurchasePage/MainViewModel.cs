@@ -76,6 +76,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Commands
+        public ICommand RefreshCommand { get; private set; }
         public ICommand AddCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
         #endregion
@@ -98,15 +99,22 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             AddCommand = new Command(OnAdd);
             DoubleClickCommand = new Command(OnDoubleClick);
+            RefreshCommand = new Command(OnRefresh);
+        }
+        private async void Init()
+        {
+            ShowActivity();
+            await Task.Run(async () => await LoadItems((_purchaseRepository.GetAllItems() ?? new List<Purchase>()).Adapt<List<PurchaseDto>>()));
+            HideActivity();
         }
         #endregion
 
         #region Handlers
-        private async void Init()
+        private void OnRefresh(object parameter)
         {
-            ShowActivity();
-            await Task.Run(async () => await LoadItems((await _purchaseRepository.GetAllItemsAsync()).Adapt<List<PurchaseDto>>()));
-            HideActivity();
+            IsRefreshed = true;
+            Init();
+            IsRefreshed = false;
         }
         private async void OnDoubleClick(object sender)
         {
@@ -137,10 +145,10 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void OnAdd(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(await _purchaseRepository.GetPurchaseByDate(SelectedDate) is Purchase purchase)
+            if(GetItemByDate() is PurchaseDto purchase)
             {
-                ProductStatistics stat = purchase.ProductStatistics;
-                purchase_proxy_item = Factory.CreateObject(stat.Adapt<ProductStatisticsDto>());
+                ProductStatisticsDto stat = purchase.ProductStatistics;
+                purchase_proxy_item = Factory.CreateObject(stat);
             }
             else
             {

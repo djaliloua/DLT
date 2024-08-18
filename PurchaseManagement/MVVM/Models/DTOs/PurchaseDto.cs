@@ -1,6 +1,7 @@
 ﻿
 
 using MVVM;
+using PurchaseManagement.Utilities;
 using System.Collections.ObjectModel;
 
 namespace PurchaseManagement.MVVM.Models.DTOs
@@ -25,7 +26,7 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _purchase_Date;
             set => UpdateObservable(ref _purchase_Date, value);
         }
-        private ObservableCollection<ProductDto> _purchase_Items;
+        private ObservableCollection<ProductDto> _purchase_Items = new ObservableCollection<ProductDto>();
         public ObservableCollection<ProductDto> Products
         {
             get => _purchase_Items;
@@ -37,6 +38,34 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         {
             get => _purchaseSatistics;
             set => UpdateObservable(ref _purchaseSatistics, value);
+        }
+        public PurchaseDto(string title, DateTime dt)
+        {
+            Title = title;
+            PurchaseDate = dt.ToString("yyyy-MM-dd");
+        }
+        public PurchaseDto()
+        {
+            
+        }
+        public void UpdateStatistics()
+        {
+            PurchaseUtility.UpdateStatistics(this);
+        }
+        public void Add(ProductDto product)
+        {
+            Products.Add(product);
+            PurchaseUtility.UpdateStatistics(this);
+        }
+        public void Remove(ProductDto product)
+        {
+            ProductDto p = Products.FirstOrDefault(p => p.Id == product.Id);
+            int index = Products.IndexOf(p);
+            if (index >= 0)
+            {
+                Products.RemoveAt(index);
+            }
+            PurchaseUtility.UpdateStatistics(this);
         }
     }
 }

@@ -88,8 +88,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
-                if(!await MarketFormViewModelUtility.UpdateProductItem(await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate), 
-                    ProductItem.Adapt<Product>()))
+                if(!await MarketFormViewModelUtility.UpdateProductItem(ViewModelLocator.MainViewModel.GetItemByDate(), 
+                    ProductItem))
                 {
                     return;
                 }
@@ -99,7 +99,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         private async void OnSave(object sender)
         {
-            await MarketFormViewModelUtility.CreateAndAddProduct(ProductItem.Adapt<Product>());
+            await MarketFormViewModelUtility.CreateAndAddProduct(ProductItem);
         }
         #endregion
 

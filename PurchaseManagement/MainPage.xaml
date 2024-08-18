@@ -79,6 +79,10 @@
         <ListView ItemsSource="{Binding Items}"
                   RowHeight="150"
                   Grid.Row="1"
+                  IsPullToRefreshEnabled="True"
+                  RefreshControlColor="Red"
+                  RefreshCommand="{Binding RefreshCommand}"
+                  IsRefreshing="{Binding IsRefreshed}"
                   x:Name="listview"
                   VerticalScrollBarVisibility="Never"
                   SelectedItem="{Binding SelectedItem}">

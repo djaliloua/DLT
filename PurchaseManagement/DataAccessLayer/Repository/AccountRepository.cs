@@ -9,7 +9,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
     {
         public override async Task<IEnumerable<Account>> GetAllItemsAsync()
         {
-            return await _table.FromSql($"select *\r\nfrom Accounts acc\r\norder by acc.DateTime desc;").ToListAsync();
+            return await _context.Accounts.FromSql($"select *\r\nfrom Accounts acc\r\norder by acc.DateTime desc;").ToListAsync();
         }
         public async Task<IList<Statistics>> GetStatisticsAsync()
         {
@@ -19,7 +19,6 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         public async Task<IList<MaxMin>> GetMinAsync()
         {
             string sql = "select AC.DateTime, min(AC.Money) Value\r\nfrom Accounts AC;";
-            
             return await _context.Database.SqlQueryRaw<MaxMin>(sql).ToListAsync();
         }
         public async Task<IList<MaxMin>> GetMaxAsync()

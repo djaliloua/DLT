@@ -1,18 +1,19 @@
-﻿using PurchaseManagement.MVVM.Models.MarketModels;
+﻿using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.Utilities
 {
     public static class PurchaseUtility
     {
-        public static void UpdateStatistics(Purchase purchase)
+        public static void UpdateStatistics(PurchaseDto purchase)
         {
-            purchase.ProductStatistics ??= new ProductStatistics();
+            purchase.ProductStatistics ??= new ProductStatisticsDto();
             purchase.ProductStatistics.Id = purchase.Id;
             purchase.ProductStatistics.PurchaseCount = purchase.Products.Count;
             purchase.ProductStatistics.TotalPrice = GetTotalValue(purchase.Id, "Price", purchase);
             purchase.ProductStatistics.TotalQuantity = GetTotalValue(purchase.Id, "Quantity", purchase);
         }
-        private static double GetTotalValue(int id, string colname, Purchase purchase)
+        private static double GetTotalValue(int id, string colname, PurchaseDto purchase)
         {
             double result = 0;
             if (colname == "Price")
