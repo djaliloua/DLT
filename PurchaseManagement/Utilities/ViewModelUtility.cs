@@ -9,16 +9,18 @@ namespace PurchaseManagement.Utilities
     public static class ViewModelUtility
     {
         private static readonly IPurchaseRepository _purchaseRepository;
+        private static readonly IGenericRepositoryApi _genericRepositoryApi;
         static ViewModelUtility()
         {
             _purchaseRepository = ViewModelLocator.GetService<IPurchaseRepository>();
+            _genericRepositoryApi = ViewModelLocator.GetService<IGenericRepositoryApi>();
         }
         public static async Task<int> SaveAndUpdateUI(Purchase purchase)
         {
-            Purchase purchaseB = await _purchaseRepository.SaveOrUpdateItemAsync(purchase);
-            PurchaseDto p = purchaseB.Adapt<PurchaseDto>();
+            Purchase purchaseApi = await _genericRepositoryApi.SaveOrUpdate(purchase);
+            PurchaseDto p = purchaseApi.Adapt<PurchaseDto>();
             ViewModelLocator.MainViewModel.SaveOrUpdateItem(p);
-            return purchaseB.ProductStatistics.PurchaseCount;
+            return purchaseApi.ProductStatistics.PurchaseCount;
         }
         public static void UpdateProduct(Purchase purchase, Product product)
         {

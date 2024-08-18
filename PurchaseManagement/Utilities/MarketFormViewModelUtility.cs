@@ -12,10 +12,12 @@ namespace PurchaseManagement.Utilities
     {
         private static readonly IPurchaseRepository _purchaseRepository;
         private static readonly INotification _toastNotification;
+        private static readonly IGenericRepositoryApi _genericRepositoryApi;
         private static ProductValidation productValidation = new();
         static MarketFormViewModelUtility()
         {
             _purchaseRepository = ViewModelLocator.GetService<IPurchaseRepository>();
+            _genericRepositoryApi = ViewModelLocator.GetService<IGenericRepositoryApi>();
             _toastNotification = new ToastNotification();
         }
         public static async Task<bool> CreateAndAddProduct(Product product)
@@ -25,7 +27,7 @@ namespace PurchaseManagement.Utilities
             ValidationResult validationResult = productValidation.Validate(product);
             if (validationResult.IsValid)
             {
-                if (await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purchase)
+                if (await _genericRepositoryApi.GetByDate(ViewModelLocator.MainViewModel.SelectedDate.ToString("yyyy-MM-dd")) is Purchase purchase)
                 {
                     purchase.Add(product);
                 }

@@ -44,6 +44,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private readonly IPurchaseRepository _purchaseRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
+        private readonly IGenericRepositoryApi _genericRepositoryApi;
         private ExportContext<ProductDto> _exportContext;
         #endregion
 
@@ -89,6 +90,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         public ProductItemsViewModel(
             IPurchaseRepository purchaseDB,
             INavigationService navigationService,
+            IGenericRepositoryApi genericRepositoryApi,
             ExportContext<ProductDto> context,
             ILoadService<ProductDto> loadService
             ):base(loadService)
@@ -96,6 +98,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             _purchaseRepository = purchaseDB;
             _exportContext = context;
             _navigationService = navigationService;
+            _genericRepositoryApi = genericRepositoryApi;
             _notification = new ToastNotification();
             _messageBox = new MessageBoxNotification();
             RegisterToMessage();
@@ -129,7 +132,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             if (IsSelected)
             {
                 Location location = await ProductViewModelUtility.GetCurrentLocation();
-                if (await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purch)
+                if (await _genericRepositoryApi.GetByDate(ViewModelLocator.MainViewModel.SelectedDate.ToString("yyyy-MM-dd")) is Purchase purch)
                 {
                     var loc = location.Adapt<ProductLocation>();
                     SelectedItem.ProductLocation = loc.Adapt<LocationDto>();
@@ -184,7 +187,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    Purchase purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    Purchase purchase = await _genericRepositoryApi.GetByDate(ViewModelLocator.MainViewModel.SelectedDate.ToString("yyyy-MM-dd"));
                     purchase.Remove(SelectedItem.Adapt<Product>());
                     await ViewModelUtility.SaveAndUpdateUI(purchase);
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
@@ -218,7 +221,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             {
                 if (p.Purchase is PurchaseDto purchaseX)
                 {
-                    var purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
+                    var purchase = await _genericRepositoryApi.GetByDate(ViewModelLocator.MainViewModel.SelectedDate.ToString("yyyy-MM-dd"));
                     ViewModelUtility.UpdateProduct(purchase, p.Adapt<Product>());
                     await _purchaseRepository.SaveOrUpdateItemAsync(purchase);
                 }
@@ -236,19 +239,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             OpenAnalyticCommand = new Command(OnOpenAnalyticCommand);
             ExportToPdfCommand = new Command(OnExportToPdfCommand);
         }
-        
-        private async void UpdateUI()
-        {
-            var purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            ViewModelLocator.MainViewModel.UpdateItem(purchase.Adapt<PurchaseDto>());
-        }
-        
         #endregion
-
-        public void ResetSelectedItem()
-        {
-            SelectedItem = null;
-        }
 
         public Task OnNavigatedTo(NavigationParameters parameters)
         {
