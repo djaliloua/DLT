@@ -35,7 +35,6 @@ namespace PurchaseManagement.ExtensionMethods
         public static MauiAppBuilder RepositoryExtension(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<IAccountRepository, AccountRepository>();
-            mauiAppBuilder.Services.AddSingleton<IPurchaseRepository, PurchaseRepository>();
             mauiAppBuilder.Services.AddSingleton<IGenericRepositoryApi, PurchaseRepositoryApi>();
             return mauiAppBuilder;
         }

@@ -41,7 +41,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     {
         #region Private properties
         private readonly INavigationService _navigationService;
-        private readonly IPurchaseRepository _purchaseRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
         private readonly IGenericRepositoryApi _genericRepositoryApi;
@@ -88,14 +87,12 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 
         #region Constructor
         public ProductItemsViewModel(
-            IPurchaseRepository purchaseDB,
             INavigationService navigationService,
             IGenericRepositoryApi genericRepositoryApi,
             ExportContext<ProductDto> context,
             ILoadService<ProductDto> loadService
             ):base(loadService)
         {
-            _purchaseRepository = purchaseDB;
             _exportContext = context;
             _navigationService = navigationService;
             _genericRepositoryApi = genericRepositoryApi;
@@ -223,7 +220,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
                 {
                     var purchase = await _genericRepositoryApi.GetByDate(ViewModelLocator.MainViewModel.SelectedDate.ToString("yyyy-MM-dd"));
                     ViewModelUtility.UpdateProduct(purchase, p.Adapt<Product>());
-                    await _purchaseRepository.SaveOrUpdateItemAsync(purchase);
+                    await _genericRepositoryApi.SaveOrUpdate(purchase);
                 }
             });
         }

@@ -8,11 +8,9 @@ namespace PurchaseManagement.Utilities
 {
     public static class ViewModelUtility
     {
-        private static readonly IPurchaseRepository _purchaseRepository;
         private static readonly IGenericRepositoryApi _genericRepositoryApi;
         static ViewModelUtility()
         {
-            _purchaseRepository = ViewModelLocator.GetService<IPurchaseRepository>();
             _genericRepositoryApi = ViewModelLocator.GetService<IGenericRepositoryApi>();
         }
         public static async Task<int> SaveAndUpdateUI(Purchase purchase)

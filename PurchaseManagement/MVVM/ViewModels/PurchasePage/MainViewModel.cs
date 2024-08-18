@@ -53,7 +53,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     {
         #region Private Properties
         private readonly INavigationService _navigationService;
-        private readonly IPurchaseRepository _purchaseRepository;
         private readonly IGenericRepositoryApi _genericRepositoryApi;
         
         #endregion
@@ -82,12 +81,11 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Constructor
-        public MainViewModel(IPurchaseRepository db, 
+        public MainViewModel(
             IGenericRepositoryApi genericRepositoryApi,
             INavigationService navigationService, 
             ILoadService<PurchaseDto> loadService):base(loadService)
         {
-            _purchaseRepository = db;   
             _navigationService = navigationService;
             _genericRepositoryApi = genericRepositoryApi;
             IsSavebtnEnabled = true;
@@ -140,7 +138,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void OnAdd(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(await _purchaseRepository.GetPurchaseByDate(SelectedDate) is Purchase purchase)
+            if(await _genericRepositoryApi.GetByDate(SelectedDate.ToString("yyyy-MM-dd")) is Purchase purchase)
             {
                 ProductStatistics stat = purchase.ProductStatistics;
                 purchase_proxy_item = Factory.CreateObject(stat.Adapt<ProductStatisticsDto>());
