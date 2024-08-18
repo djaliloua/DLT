@@ -138,10 +138,10 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void OnAdd(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(await _genericRepositoryApi.GetByDate(SelectedDate.ToString("yyyy-MM-dd")) is Purchase purchase)
+            if(GetItemByDate() is PurchaseDto purchase)
             {
-                ProductStatistics stat = purchase.ProductStatistics;
-                purchase_proxy_item = Factory.CreateObject(stat.Adapt<ProductStatisticsDto>());
+                ProductStatisticsDto stat = purchase.ProductStatistics;
+                purchase_proxy_item = Factory.CreateObject(stat);
             }
             else
             {

@@ -5,6 +5,7 @@ using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Validations;
 using PurchaseManagement.Commons.Notifications.Implementations;
+using PurchaseManagement.MVVM.Models.DTOs;
 
 namespace PurchaseManagement.Utilities
 {
@@ -18,20 +19,20 @@ namespace PurchaseManagement.Utilities
             _genericRepositoryApi = ViewModelLocator.GetService<IGenericRepositoryApi>();
             _toastNotification = new ToastNotification();
         }
-        public static async Task<bool> CreateAndAddProduct(Product product)
+        public static async Task<bool> CreateAndAddProduct(ProductDto product)
         {
             ViewModelLocator.MarketFormViewModel.ShowActivity();
             bool result = false;
             ValidationResult validationResult = productValidation.Validate(product);
             if (validationResult.IsValid)
             {
-                if (await _genericRepositoryApi.GetByDate(ViewModelLocator.MainViewModel.SelectedDate.ToString("yyyy-MM-dd")) is Purchase purchase)
+                if (ViewModelLocator.MainViewModel.GetItemByDate() is PurchaseDto purchase)
                 {
                     purchase.Add(product);
                 }
                 else
                 {
-                    purchase = new Purchase("test", ViewModelLocator.MainViewModel.SelectedDate);
+                    purchase = new PurchaseDto("test", ViewModelLocator.MainViewModel.SelectedDate);
                     purchase.Add(product);
                 }
                 var count = await ViewModelUtility.SaveAndUpdateUI(purchase);
@@ -49,12 +50,12 @@ namespace PurchaseManagement.Utilities
             return result;
         }
        
-        public static async Task<bool> UpdateProductItem(Purchase purchase, Product product)
+        public static async Task<bool> UpdateProductItem(PurchaseDto purchase, ProductDto product)
         {
             ValidationResult validationResult = productValidation.Validate(product);
             if (validationResult.IsValid)
             {
-                ViewModelUtility.UpdateProduct(purchase, product);
+                purchase.UpdateStatistics();
                 await ViewModelUtility.SaveAndUpdateUI(purchase);
             }
             else

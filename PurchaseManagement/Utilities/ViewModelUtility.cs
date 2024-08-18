@@ -13,21 +13,12 @@ namespace PurchaseManagement.Utilities
         {
             _genericRepositoryApi = ViewModelLocator.GetService<IGenericRepositoryApi>();
         }
-        public static async Task<int> SaveAndUpdateUI(Purchase purchase)
+        public static async Task<int> SaveAndUpdateUI(PurchaseDto purchase)
         {
-            Purchase purchaseApi = await _genericRepositoryApi.SaveOrUpdate(purchase);
+            Purchase purchaseApi = await _genericRepositoryApi.SaveOrUpdate(purchase.Adapt<Purchase>());
             PurchaseDto p = purchaseApi.Adapt<PurchaseDto>();
             ViewModelLocator.MainViewModel.SaveOrUpdateItem(p);
             return purchaseApi.ProductStatistics.PurchaseCount;
-        }
-        public static void UpdateProduct(Purchase purchase, Product product)
-        {
-            for (int i = 0; i < purchase.Products.Count; i++)
-            {
-                if (purchase.Products[i].Id == product.Id)
-                    purchase.Products[i] = product;
-            }
-            PurchaseUtility.UpdateStatistics(purchase);
         }
     }
 }
