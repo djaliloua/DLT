@@ -38,7 +38,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #region Private Methods
         public int Counter = 0;
         private readonly INotification _toastNotification;
-        private readonly IGenericRepositoryApi _genericRepositoryApi;
+        private readonly IPurchaseRepositoryApi _genericRepositoryApi;
         private ProductValidation productValidation = new();
         #endregion
 
@@ -50,7 +50,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Constructor
-        public MarketFormViewModel(IGenericRepositoryApi genericRepositoryApi)
+        public MarketFormViewModel(IPurchaseRepositoryApi genericRepositoryApi)
         {
             _genericRepositoryApi = genericRepositoryApi;
             _toastNotification = new ToastNotification();

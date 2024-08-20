@@ -21,7 +21,7 @@ namespace PurchaseManagement.MVVM.ViewModels
     }
     public class AccountAnalyticViewModel : BaseViewModel
     {
-        private readonly IAccountRepository accountRepository;
+        private readonly IAccountRepositoryApi accountRepository;
         SolidColorPaint[] paints = new SolidColorPaint[]
         {
             new(SKColors.Red),
@@ -57,7 +57,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         public ColumnSeries<Statistics> col;
 
 
-        public AccountAnalyticViewModel(IAccountRepository _accountRepository)
+        public AccountAnalyticViewModel(IAccountRepositoryApi _accountRepository)
         {
             ShowActivity();
             accountRepository = _accountRepository;
@@ -66,7 +66,7 @@ namespace PurchaseManagement.MVVM.ViewModels
             col = new ColumnSeries<Statistics>
             {
                 Values = Statistics,
-                DataLabelsFormatter = point => $"{point.Model?.DateTime:ddd}",
+                DataLabelsFormatter = point => $"{point.Model?.Day}",
                 DataLabelsPaint = new SolidColorPaint(new SKColor(30, 30, 30)),
                 DataLabelsPosition = DataLabelsPosition.Top,
                 YToolTipLabelFormatter = point => $"{point.Model?.CountMoney}",

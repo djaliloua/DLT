@@ -20,6 +20,11 @@ namespace PurchaseManagement.DataAccessLayer.Abstractions
                 ReferenceHandler = ReferenceHandler.Preserve
             };
         }
+        public async Task<bool> DeleteAsync(Uri url)
+        {
+            var response = await _httpClient.DeleteAsync(url);
+            return response.IsSuccessStatusCode;
+        }
         public async Task<T> Deserialize<T>(Uri uri)
         {
             T item = default;

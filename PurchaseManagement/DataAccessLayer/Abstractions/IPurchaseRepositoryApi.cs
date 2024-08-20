@@ -2,7 +2,7 @@
 
 namespace PurchaseManagement.DataAccessLayer.Abstractions
 {
-    public interface IGenericRepositoryApi
+    public interface IPurchaseRepositoryApi
     {
         Task Delete(int id);
         Task<Purchase> GetById(int id);

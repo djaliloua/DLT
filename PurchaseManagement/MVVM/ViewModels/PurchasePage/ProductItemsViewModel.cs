@@ -43,7 +43,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private readonly INavigationService _navigationService;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
-        private readonly IGenericRepositoryApi _genericRepositoryApi;
+        private readonly IPurchaseRepositoryApi _genericRepositoryApi;
         private ExportContext<ProductDto> _exportContext;
         #endregion
 
@@ -88,7 +88,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #region Constructor
         public ProductItemsViewModel(
             INavigationService navigationService,
-            IGenericRepositoryApi genericRepositoryApi,
+            IPurchaseRepositoryApi genericRepositoryApi,
             ExportContext<ProductDto> context,
             ILoadService<ProductDto> loadService
             ):base(loadService)

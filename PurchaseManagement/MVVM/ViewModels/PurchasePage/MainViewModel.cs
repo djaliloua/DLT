@@ -53,7 +53,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     {
         #region Private Properties
         private readonly INavigationService _navigationService;
-        private readonly IGenericRepositoryApi _genericRepositoryApi;
+        private readonly IPurchaseRepositoryApi _genericRepositoryApi;
         
         #endregion
 
@@ -82,7 +82,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 
         #region Constructor
         public MainViewModel(
-            IGenericRepositoryApi genericRepositoryApi,
+            IPurchaseRepositoryApi genericRepositoryApi,
             INavigationService navigationService, 
             ILoadService<PurchaseDto> loadService):base(loadService)
         {
@@ -106,7 +106,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void Init()
         {
             ShowActivity();
-            await Task.Run(async () => await LoadItems((await _genericRepositoryApi.GetAllItems()).Adapt<List<PurchaseDto>>()));
+            IEnumerable<Purchase> items = await _genericRepositoryApi.GetAllItems() ?? new List<Purchase>();
+            await Task.Run(async () => await LoadItems(items.Adapt<List<PurchaseDto>>()));
             HideActivity();
         }
         private async void OnDoubleClick(object sender)

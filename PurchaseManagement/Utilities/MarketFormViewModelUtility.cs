@@ -12,11 +12,11 @@ namespace PurchaseManagement.Utilities
     public static class MarketFormViewModelUtility
     {
         private static readonly INotification _toastNotification;
-        private static readonly IGenericRepositoryApi _genericRepositoryApi;
+        private static readonly IPurchaseRepositoryApi _genericRepositoryApi;
         private static ProductValidation productValidation = new();
         static MarketFormViewModelUtility()
         {
-            _genericRepositoryApi = ViewModelLocator.GetService<IGenericRepositoryApi>();
+            _genericRepositoryApi = ViewModelLocator.GetService<IPurchaseRepositoryApi>();
             _toastNotification = new ToastNotification();
         }
         public static async Task<bool> CreateAndAddProduct(ProductDto product)

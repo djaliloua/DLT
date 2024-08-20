@@ -13,7 +13,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         }
         public async Task<IList<Statistics>> GetStatisticsAsync()
         {
-            string sql = "select AC.DateTime, avg(AC.Money) AvgMoney, sum(AC.Money) TotalMoney, count(AC.Money) CountMoney\r\nfrom Accounts AC\r\ngroup by AC.Day\r\nOrder by AC.Day desc\r\n;";
+            string sql = "select AC.Day, avg(AC.Money) AvgMoney, sum(AC.Money) TotalMoney, count(AC.Money) CountMoney\r\nfrom Accounts AC\r\ngroup by AC.Day\r\nOrder by AC.Day desc\r\n;";
             return await _context.Database.SqlQueryRaw<Statistics>(sql).ToListAsync();
         }
         public async Task<IList<MaxMin>> GetMinAsync()

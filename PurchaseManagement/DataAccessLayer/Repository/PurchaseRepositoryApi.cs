@@ -5,9 +5,9 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public class ProcessUrl
     {
-        public static string GetRestUrl(object id, string parameter)
+        public static string GetRestUrl(object id, string parameter, int port=5156)
         {
-            string baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5156" : "http://localhost:5156";
+            string baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? $"http://10.0.2.2:{port}" : $"http://localhost:{port}";
             string baseUrl;
             if (id == null)
                 baseUrl = $"{baseAddress}/api/{parameter}";
@@ -17,7 +17,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             return baseUrl;
         }
     }
-    public class PurchaseRepositoryApi : IGenericRepositoryApi
+    public class PurchaseRepositoryApi : IPurchaseRepositoryApi
     {
         public List<Purchase> Items { get; private set; }
         readonly HttpRequest _httpRequest;

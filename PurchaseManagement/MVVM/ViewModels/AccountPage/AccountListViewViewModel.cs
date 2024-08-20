@@ -20,7 +20,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
     public class AccountListViewViewModel : Loadable<AccountDTO>
     {
         #region Private methods
-        private readonly IAccountRepository _accountRepository;
+        private readonly IAccountRepositoryApi _accountRepository;
         private INotification _snackBarNotification;
         private INotification _toastNotification;
         private INotification _messageBox;
@@ -41,7 +41,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(IAccountRepository repo, ILoadService<AccountDTO> loadService):base(loadService)
+        public AccountListViewViewModel(IAccountRepositoryApi repo, ILoadService<AccountDTO> loadService):base(loadService)
         {
             _accountRepository = repo;
             SetupNotification();
@@ -72,7 +72,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             ShowActivity();
             await Task.Run(async () =>
             {
-                IEnumerable<Account> data = await _accountRepository.GetAllItemsAsync();
+                IEnumerable<Account> data = await _accountRepository.GetAllItems() ?? new List<Account>();
                 var dt = data.Adapt<List<AccountDTO>>();
                 await LoadItems(dt);
                 await GetMax()
@@ -94,7 +94,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         private async Task GetMax()
         {
             MaxMin max = new();
-            IList<MaxMin> val = await _accountRepository.GetMaxAsync();
+            IList<MaxMin> val = await _accountRepository.GetMaxAsync() ?? new List<MaxMin>();
             if (val.Count == 1)
             {
                 max = val[0];
@@ -133,7 +133,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             
             if (!ItemExist(item))
             {
-                var newAccount = await _accountRepository.SaveOrUpdateItemAsync(item.Adapt<Account>());
+                var newAccount = await _accountRepository.SaveOrUpdate(item.Adapt<Account>());
                 base.AddItem(newAccount.Adapt<AccountDTO>());
                 await _toastNotification.ShowNotification($"{newAccount.Money} added");
             }
@@ -151,7 +151,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
                     var acount = item.Adapt<Account>();
-                    await _accountRepository.DeleteItemAsync(acount);
+                    await _accountRepository.Delete(acount.Id);
                     base.DeleteItem(item);
                     await _toastNotification.ShowNotification($"{item.Money} deleted");
                 }
