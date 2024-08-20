@@ -55,8 +55,6 @@ namespace PurchaseManagement.MVVM.ViewModels
 
         public ISeries[] BarSeries { get; set; }
         public ColumnSeries<Statistics> col;
-
-
         public AccountAnalyticViewModel(IAccountRepositoryApi _accountRepository)
         {
             ShowActivity();
@@ -96,13 +94,10 @@ namespace PurchaseManagement.MVVM.ViewModels
             HideActivity();
         }
 
-
-        
-
         public async Task Load()
         {
             Statistics.Clear();
-            var data = await accountRepository.GetStatisticsAsync();
+            var data = await accountRepository.GetStatisticsAsync() ?? new List<Statistics>();
             for (int i = 0; i < data.Count; i++)
             {
                 Statistics.Add(data[i]);

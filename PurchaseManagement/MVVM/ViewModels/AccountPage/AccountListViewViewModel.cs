@@ -38,6 +38,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #region Commands
 
         public ICommand DeleteCommand { get; private set; }
+        public ICommand RefreshCommand { get; private set; }
         #endregion
 
         #region Constructor
@@ -89,7 +90,12 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         }
         private void SetupComands()
         {
-            DeleteCommand = new Command(On_Delete);
+            DeleteCommand = new Command(OnDelete);
+            RefreshCommand = new Command(OnRefresh);
+        }
+        public void OnRefresh(object parameter)
+        {
+            Init();
         }
         private async Task GetMax()
         {
@@ -122,7 +128,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         #region Handlers
 
-        private void On_Delete(object parameter)
+        private void OnDelete(object parameter)
         {
             AccountDTO accountDTO = parameter as AccountDTO;
             SelectedItem = accountDTO;
