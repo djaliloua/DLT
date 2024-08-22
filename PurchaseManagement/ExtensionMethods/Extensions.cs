@@ -16,10 +16,24 @@ using PurchaseManagement.DataAccessLayer.Contexts;
 using Patterns.Abstractions;
 using Plugin.Fingerprint.Abstractions;
 using Plugin.Fingerprint;
+using PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.MVVM.Models.Accounts;
 
 
 namespace PurchaseManagement.ExtensionMethods
 {
+    public static class MapperExtension
+    {
+        public static IList<PurchaseDto> ToDto(this List<Purchase> items) => items.Adapt<List<PurchaseDto>>();
+        public static IList<AccountDTO> ToDto(this IEnumerable<Account> items) => items.Adapt<List<AccountDTO>>();
+        public static PurchaseDto ToDto(this Purchase item) => item.Adapt<PurchaseDto>();
+        public static AccountDTO ToDto(this Account item) => item.Adapt<AccountDTO>();
+        public static ProductDto ToDto(this Product item) => item.Adapt<ProductDto>();
+        public static LocationDto ToDto(this ProductLocation item) => item.Adapt<LocationDto>();
+        public static Product FromDto(this ProductDto item) => item.Adapt<Product>();
+        public static Purchase FromDto(this PurchaseDto item) => item.Adapt<Purchase>();
+        public static Account FromDto(this AccountDTO item) => item.Adapt<Account>();
+    }
 
     public static class Extensions
     {
@@ -52,10 +66,11 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddSingleton<MainViewModel>();
             mauiAppBuilder.Services.AddSingleton<ProductItemsViewModel>();
             mauiAppBuilder.Services.AddSingleton<PurchaseItemDetailsViewModel>();
-            mauiAppBuilder.Services.AddTransient<MarketFormViewModel>();
+            mauiAppBuilder.Services.AddScoped<MarketFormViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountPageViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountHeaderViewModel>();
             mauiAppBuilder.Services.AddScoped<ProductAnalyticsViewModel>();
+            mauiAppBuilder.Services.AddScoped<AccountFormViewModel>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder UtilityExtension(this MauiAppBuilder mauiAppBuilder)

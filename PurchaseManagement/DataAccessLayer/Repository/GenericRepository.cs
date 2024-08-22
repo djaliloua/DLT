@@ -2,8 +2,6 @@
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.DataAccessLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
@@ -14,6 +12,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         public GenericRepository()
         {
             _context = new RepositoryContext();
+            _context.Database.EnsureCreated();
         }
         public virtual void DeleteItem(T item)
         {
@@ -74,17 +73,16 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public virtual async Task<T> SaveOrUpdateItemAsync(T item)
         {
-            if (_context is RepositoryContext || _isDisposed)
-                _context = new RepositoryContext();
+            using RepositoryContext context = new RepositoryContext();
             if (item.Id != 0)
             {
-                _context.Update(item);
+                context.Update(item);
             }
             else
             {
-                _context.Set<T>().Add(item);
+                context.Set<T>().Add(item);
             }
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return item;
         }
         //The following Method is going to Dispose of the Context Object

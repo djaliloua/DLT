@@ -15,6 +15,7 @@ using Mapster;
 using Patterns.Implementations;
 using Patterns.Abstractions;
 using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.ExtensionMethods;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
@@ -126,16 +127,16 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             ShowActivity();
             ProductDto productDto = parameter as ProductDto;
-            SelectedItem = productDto;
             if (IsSelected)
             {
+                SelectedItem = productDto;
                 Location location = await ProductViewModelUtility.GetCurrentLocation();
-                if (await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate) is Purchase purch)
+                if (ViewModelLocator.MainViewModel.GetItemByDate() is PurchaseDto purch)
                 {
                     var loc = location.Adapt<ProductLocation>();
-                    SelectedItem.ProductLocation = loc.Adapt<LocationDto>();
+                    SelectedItem.ProductLocation = loc.ToDto();
                     SelectedItem.IsLocation = SelectedItem.ProductLocation != null;
-                    await ViewModelUtility.SaveAndUpdateUI(purch);
+                    await MarketFormViewModelUtility.UpdateProductItem(purch,SelectedItem);
                     await _notification.ShowNotification("Got location");
                 }
 
@@ -147,13 +148,14 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void OnEdit(object parameter)
         {
             ProductDto productDto = parameter as ProductDto;
-            SelectedItem = productDto;
             if (IsSelected)
             {
+                SelectedItem = productDto;
                 Dictionary<string, object> navigationParameter = new Dictionary<string, object>
                         {
                             { "IsSave", false },
-                            {"Purchase_ItemsDTO", SelectedItem }
+                            {"Purchase_ItemsDTO", SelectedItem },
+                            {"currentDate", Purchases.PurchaseDate }
                         };
                 
                 await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
@@ -164,10 +166,9 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void OnOpenMap(object parameter)
         {
             ProductDto productDto = parameter as ProductDto;
-            SelectedItem = productDto;
             if (IsSelected)
             {
-                
+                SelectedItem = productDto;
                 if (SelectedItem.ProductLocation != null)
                     await ProductViewModelUtility.NavigateToBuilding25(SelectedItem.ProductLocation.Adapt<Location>());
                 else
@@ -179,15 +180,15 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void OnDelete(object parameter)
         {
             ProductDto productDto = parameter as ProductDto;
-            SelectedItem = productDto;
             if (IsSelected)
             {
+                SelectedItem = productDto;
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
                     using var repo = new PurchaseRepository();
-                    var p = repo.RemoveProduct(SelectedItem.Adapt<Product>());
+                    var p = repo.RemoveProduct(SelectedItem.FromDto());
                     p.UpdateStatistics();
-                    await ViewModelUtility.SaveAndUpdateUI(p.Adapt<Purchase>());
+                    await ViewModelUtility.SaveAndUpdateUI(p.FromDto());
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
                 }
@@ -220,7 +221,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
                 if (p.Purchase is PurchaseDto purchaseX)
                 {
                     var purchase = ViewModelLocator.MainViewModel.GetItemByDate();
-                    await _purchaseRepository.SaveOrUpdateItemAsync(purchase.Adapt<Purchase>());
+                    if(purchase is not null)
+                        await MarketFormViewModelUtility.UpdateProductItem(purchase, p);
                 }
             });
         }
@@ -235,12 +237,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             GetMapCommand = new Command(OnGetMap);
             OpenAnalyticCommand = new Command(OnOpenAnalyticCommand);
             ExportToPdfCommand = new Command(OnExportToPdfCommand);
-        }
-        
-        private async void UpdateUI()
-        {
-            var purchase = await _purchaseRepository.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate);
-            ViewModelLocator.MainViewModel.UpdateItem(purchase.Adapt<PurchaseDto>());
         }
         
         #endregion

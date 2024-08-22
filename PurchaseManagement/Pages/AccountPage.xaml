@@ -6,7 +6,9 @@
              xmlns:validation="clr-namespace:InputKit.Shared.Validations;assembly=InputKit.Maui"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
              xmlns:local="clr-namespace:PurchaseManagement.ServiceLocator"
+             xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
              xmlns:sk="clr-namespace:Maui.Skeleton;assembly=Maui.Skeleton"
              BackgroundColor="LightBlue"
              x:Name="page"
@@ -45,37 +47,29 @@
     <ContentPage.Behaviors>
         <toolkit:StatusBarBehavior StatusBarColor="Fuchsia"
                                    StatusBarStyle="LightContent" />
-        
+
     </ContentPage.Behaviors>
-    <Grid Margin="20" RowSpacing="25">
+    <Grid Margin="20"
+          RowSpacing="25">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0"
               VerticalOptions="Start"
               ColumnSpacing="10"
               BindingContext="{Binding AccountHeaderViewModel}"
-              x:Name="grid"
-              >
+              ZIndex="50"
+              x:Name="grid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition />
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <material:DatePickerField Date="{Binding SelectedDate}"
-                                      AllowClear="False"
-                                      Icon="{FontImageSource FontFamily=MaterialRegular, Glyph={x:Static m:MaterialRegular.Calendar_month}}"
-                                      Title="Date" />
-            <material:TextField Title="Money"
-                                x:Name="entry"
-                                Grid.Column="1"
-                                VerticalOptions="End"
-                                Text="{Binding Money}"
-                                Keyboard="Numeric"
-                                CornerRadius="10">
-            </material:TextField>
-            
+            <Image Source="https://aka.ms/campus.jpg" />
+            <Image Source="https://aka.ms/campus.jpg"
+                   Grid.Column="1" />
+
         </Grid>
         <Grid Grid.Row="1"
               BindingContext="{Binding AccountListViewViewModel}">
@@ -111,7 +105,7 @@
                       RefreshCommand="{Binding RefreshCommand}"
                       IsRefreshing="{Binding IsRefreshed}"
                       VerticalScrollBarVisibility="Never"
-                      VerticalOptions="Start"
+                      VerticalOptions="Center"
                       HandlerChanged="listview_HandlerChanged"
                       CachingStrategy="RecycleElementAndDataTemplate"
                       SelectedItem="{Binding SelectedItem}">
@@ -132,35 +126,40 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell x:Name="viewCell">
-                            <SwipeView>
-                                <Frame CornerRadius="0"
-                                       BackgroundColor="{StaticResource Surface}">
-                                    <Grid Padding="2" x:Name="grid">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Label Text="{Binding DateTime, StringFormat='{0:yyyy-MM-dd}'}"
-                                               Padding="10,0,0,0"
-                                               VerticalOptions="Center" />
-                                        <Label VerticalOptions="Center"
-                                               Text="{Binding Money, StringFormat='{0:C2}'}"
-                                               Grid.Column="1" />
-
-                                        <Button FontAttributes="Bold"
-                                                HorizontalOptions="End"
-                                                VerticalOptions="Center"
-                                                Command="{Binding DeleteCommand}"
-                                                CommandParameter="{Binding Source={x:Reference grid}, Path=BindingContext}"
-                                                BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}"
-                                                Grid.Column="2">
-                                            <Button.ImageSource>
+                            <SwipeView android:SwipeView.SwipeTransitionMode="Drag">
+                                <SwipeView.LeftItems>
+                                    <SwipeItems>
+                                        <SwipeItem BackgroundColor="{StaticResource Surface}"
+                                                   Command="{Binding DeleteCommand}"
+                                                   CommandParameter="{Binding Source={x:Reference grid}, Path=BindingContext}"
+                                                   BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}">
+                                            <SwipeItem.IconImageSource>
                                                 <FontImageSource FontFamily="MaterialRegular"
+                                                                 Color="AliceBlue"
                                                                  Glyph="{x:Static m:MaterialRound.Delete}" />
-                                            </Button.ImageSource>
-                                        </Button>
-                                    </Grid>
+                                            </SwipeItem.IconImageSource>
+                                        </SwipeItem>
+                                    </SwipeItems>
+                                   
+                                </SwipeView.LeftItems>
+                                <SwipeView.RightItems>
+                                    <SwipeItem BackgroundColor="{StaticResource Surface}"
+                                               Command="{Binding EditCommand}"
+                                               CommandParameter="{Binding Source={x:Reference grid}, Path=BindingContext}"
+                                               BindingContext="{Binding Source={x:Reference listview}, Path=BindingContext}">
+                                        <SwipeItem.IconImageSource>
+                                            <FontImageSource FontFamily="MaterialRegular"
+                                                             Color="AliceBlue"
+                                                             Glyph="{x:Static m:MaterialRound.Edit}" />
+                                        </SwipeItem.IconImageSource>
+                                    </SwipeItem>
+                                </SwipeView.RightItems>
+                                <Frame CornerRadius="0"
+                                       HasShadow="True"
+                                       Padding="10"
+                                       ZIndex="30"
+                                       BackgroundColor="{StaticResource Surface}">
+                                    <views:AccountListViewTemplate x:Name="grid"/>
                                 </Frame>
                             </SwipeView>
                         </ViewCell>
@@ -174,22 +173,7 @@
                     VerticalOptions="End"
                     Command="{Binding AddCommand}"
                     IsEnabled="True"
-                    CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"
                     Grid.Column="2">
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button"
-                                 Binding="{Binding Source={x:Reference entry}, Path=Text}"
-                                 Value="0">
-                        <Setter Property="IsEnabled"
-                                Value="False" />
-                    </DataTrigger>
-                    <DataTrigger TargetType="Button"
-                                 Binding="{Binding Source={x:Reference entry}, Path=Text}"
-                                 Value="">
-                        <Setter Property="IsEnabled"
-                                Value="False" />
-                    </DataTrigger>
-                </Button.Triggers>
                 <Button.ImageSource>
                     <FontImageSource FontFamily="MaterialRegular"
                                      Glyph="{x:Static m:MaterialRound.Add}" />

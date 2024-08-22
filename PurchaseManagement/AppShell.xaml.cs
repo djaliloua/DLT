@@ -11,6 +11,7 @@ namespace PurchaseManagement
             Routing.RegisterRoute(nameof(ProductAnalytics), typeof(ProductAnalytics));
             Routing.RegisterRoute(nameof(PurchaseItemDetails), typeof(PurchaseItemDetails));
             Routing.RegisterRoute(nameof(MarketFormPage), typeof(MarketFormPage));
+            Routing.RegisterRoute(nameof(AccountForm), typeof(AccountForm));
         }
     }
 }

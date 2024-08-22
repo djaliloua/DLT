@@ -6,6 +6,7 @@ namespace PurchaseManagement.ServiceLocator
 {
     public class ViewModelLocator
     {
+        public static AccountFormViewModel AccountFormViewModel => GetService<AccountFormViewModel>();
         public static ProductAnalyticsViewModel ProductAnalyticsViewModel => GetService<ProductAnalyticsViewModel>();   
         public static AboutViewModel AboutViewModel => GetService<AboutViewModel>();
         public static SettingsViewModel SettingsViewModel => GetService<SettingsViewModel>();

@@ -2,12 +2,10 @@
 using PurchaseManagement.Pages;
 using System.Windows.Input;
 using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.MVVM.Models.MarketModels;
 using System.Diagnostics;
 using PurchaseManagement.Commons;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
-using Mapster;
 using Patterns.Implementations;
 using Patterns.Abstractions;
 
@@ -104,7 +102,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void Init()
         {
             ShowActivity();
-            await Task.Run(async () => await LoadItems((_purchaseRepository.GetAllItems() ?? new List<Purchase>()).Adapt<List<PurchaseDto>>()));
+            await Task.Run(async () => await LoadItems(await _purchaseRepository.GetAllAsDtos() ?? new List<PurchaseDto>()));
             HideActivity();
         }
         #endregion
@@ -118,6 +116,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         private async void OnDoubleClick(object sender)
         {
+            SelectedItem = (PurchaseDto)sender;
             if (!Debugger.IsAttached)
             {
                 // Do not delete this piece of code
@@ -156,6 +155,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             }
             NavigationParametersTest.AddParameter("IsSave", true);
             NavigationParametersTest.AddParameter("Purchase_ItemsDTO", purchase_proxy_item);
+            NavigationParametersTest.AddParameter("currentDate", DateTime.Now);
             await Shell.Current.GoToAsync(nameof(MarketFormPage), NavigationParametersTest.GetParameters());
         }
         #endregion

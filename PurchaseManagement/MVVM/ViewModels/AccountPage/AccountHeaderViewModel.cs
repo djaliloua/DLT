@@ -1,5 +1,6 @@
 ﻿using MVVM;
 using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 
@@ -64,10 +65,11 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         #region Handlers
         
-        private void OnAdd(object parameter)
+        private async void OnAdd(object parameter)
         {
-            ViewModelLocator.AccountListViewViewModel.AddItem(new AccountDTO(SelectedDate, Money));
-            Money = 0;
+            //ViewModelLocator.AccountListViewViewModel.AddItem(new AccountDTO(SelectedDate, Money));
+            //Money = 0;
+            await Shell.Current.GoToAsync(nameof(AccountForm));
         }
         #endregion
     }

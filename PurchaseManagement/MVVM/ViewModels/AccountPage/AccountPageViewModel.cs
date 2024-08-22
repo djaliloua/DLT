@@ -5,6 +5,7 @@ using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
+using PurchaseManagement.Pages;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
@@ -68,9 +69,9 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Handlers
-        //private void OnAdd(object parameter)
+        //private async void OnAdd(object parameter)
         //{
-        //    AccountListViewViewModel.AddAccount(new AccountDTO(SelectedDate, Money));
+        //    await Shell.Current.GoToAsync(nameof(AccountForm));
         //}
         #endregion
     }

@@ -90,6 +90,7 @@ namespace Patterns.Implementations
         {
             Items = new ObservableCollection<TItem>(items);
             NumberOfItems = Items.Count;
+            OnPropertyChanged(nameof(Items));
         }
         public virtual void SaveOrUpdateItem(TItem item)
         {
