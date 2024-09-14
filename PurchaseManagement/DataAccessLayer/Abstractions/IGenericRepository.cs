@@ -3,7 +3,7 @@
     public interface IGenericRepository<TItem>:IGenericRepositoryAsync<TItem> where TItem : class
     {
         TItem GetItemById(int id);
-        IEnumerable<TItem> GetAllItems();
+        List<TItem> GetAllItems();
         TItem SaveOrUpdateItem(TItem item);
         void DeleteItem(TItem item);
     }

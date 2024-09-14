@@ -1,13 +1,13 @@
 ﻿using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
-using PurchaseManagement.DataAccessLayer.Abstractions;
 using System.Diagnostics;
 using PurchaseManagement.Commons;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
 using Patterns.Implementations;
 using Patterns.Abstractions;
+using PurchaseManagement.DataAccessLayer.Repository;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
@@ -51,7 +51,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     {
         #region Private Properties
         private readonly INavigationService _navigationService;
-        private readonly IPurchaseRepository _purchaseRepository;
         
         #endregion
 
@@ -80,11 +79,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Constructor
-        public MainViewModel(IPurchaseRepository db, 
-            INavigationService navigationService, 
-            ILoadService<PurchaseDto> loadService):base(loadService)
+        public MainViewModel( INavigationService navigationService, ILoadService<PurchaseDto> loadService):base(loadService)
         {
-            _purchaseRepository = db;   
             _navigationService = navigationService;
             IsSavebtnEnabled = true;
             Init();
@@ -102,7 +98,12 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void Init()
         {
             ShowActivity();
-            await Task.Run(async () => await LoadItems(await _purchaseRepository.GetAllAsDtos() ?? new List<PurchaseDto>()));
+            await Task.Run(async () =>
+            {
+                using var repo = new PurchaseRepository();
+                var data = await repo.GetAllAsDtos() ?? new List<PurchaseDto>();
+                await LoadItems(data);
+            });
             HideActivity();
         }
         #endregion

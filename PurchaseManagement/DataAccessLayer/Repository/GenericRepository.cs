@@ -2,6 +2,7 @@
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.DataAccessLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
@@ -34,7 +35,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             }
         }
 
-        public virtual IEnumerable<T> GetAllItems()
+        public virtual List<T> GetAllItems()
         {
             return _context.Set<T>().ToList();
         }
@@ -73,16 +74,23 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public virtual async Task<T> SaveOrUpdateItemAsync(T item)
         {
-            using RepositoryContext context = new RepositoryContext();
-            if (item.Id != 0)
+            try
             {
-                context.Update(item);
+                using RepositoryContext context = new RepositoryContext();
+                if (item.Id != 0)
+                {
+                    context.Update(item);
+                }
+                else
+                {
+                    context.Set<T>().Add(item);
+                }
+                await context.SaveChangesAsync();
             }
-            else
+            catch(DbUpdateException ex)
             {
-                context.Set<T>().Add(item);
+                Debug.WriteLine(ex.Message);
             }
-            await context.SaveChangesAsync();
             return item;
         }
         //The following Method is going to Dispose of the Context Object

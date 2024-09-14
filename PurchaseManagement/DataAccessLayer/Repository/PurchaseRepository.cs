@@ -1,14 +1,19 @@
 ﻿using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using Mapster;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.ExtensionMethods;
+using PurchaseManagement.DataAccessLayer.Contexts;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public class PurchaseRepository : GenericRepository<Purchase>,IPurchaseRepository
     {
+        public PurchaseRepository()
+        {
+            _context = new RepositoryContext();
+            _context.Database.EnsureCreated();
+        }
         public async Task<Purchase> GetPurchaseByDate(DateTime date)
         {
             Purchase purchase = await _context.Purchases.FirstOrDefaultAsync(p => p.PurchaseDate.Equals($"{date:yyyy-MM-dd}"));
@@ -17,7 +22,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public Task<IList<PurchaseDto>> GetAllAsDtos()
         {
-            return Task.FromResult(_context.Purchases.ToList().ToDto());
+            return Task.FromResult(GetAllItems().ToDto());
         }
         public PurchaseDto RemoveProduct(Product product)
         {

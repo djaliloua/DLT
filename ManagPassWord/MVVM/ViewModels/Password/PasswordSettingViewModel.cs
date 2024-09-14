@@ -1,4 +1,5 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
+using ManagPassWord.DataAcessLayer.Implementations;
 using MVVM;
 using System.Windows.Input;
 
@@ -7,7 +8,6 @@ namespace ManagPassWord.MVVM.ViewModels.Password
     public class PasswordSettingViewModel:BaseViewModel
     {
         private string basePath = FileSystem.AppDataDirectory;
-        private readonly IPasswordRepository _userRepository;
         private string temp;
         private string _fileName = "";
         public string FileName
@@ -23,9 +23,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         };
         public ICommand ExportCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
-        public PasswordSettingViewModel(IPasswordRepository db)
+        public PasswordSettingViewModel()
         {
-            _userRepository = db;
             temp = Path.Combine(basePath, "passwords.csv");
             load();
             OpenCommand = new Command(open);
@@ -50,7 +49,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         }
         private async void export(object sender)
         {
-            var res = await _userRepository.SaveToCsv();
+            using PasswordRepository passwordRepository = new PasswordRepository();
+            var res = await passwordRepository.SaveToCsv();
             if (res == 1)
             {
                 //FileName = Path.Combine(UserRepository.folderName, "passwords.txt");

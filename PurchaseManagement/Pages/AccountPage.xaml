@@ -100,6 +100,7 @@
                       Margin="0,20,0,0"
                       x:Name="listview"
                       RowHeight="150"
+                      HasUnevenRows="True"
                       IsPullToRefreshEnabled="True"
                       RefreshControlColor="Red"
                       RefreshCommand="{Binding RefreshCommand}"
@@ -126,7 +127,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell x:Name="viewCell">
-                            <SwipeView android:SwipeView.SwipeTransitionMode="Drag">
+                            <SwipeView>
                                 <SwipeView.LeftItems>
                                     <SwipeItems>
                                         <SwipeItem BackgroundColor="{StaticResource Surface}"

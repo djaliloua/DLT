@@ -1,17 +1,16 @@
-﻿using ManagPassWord.DataAcessLayer.Abstractions;
-using ManagPassWord.MVVM.Models;
-using Pass=ManagPassWord.MVVM.Models;
+﻿using ManagPassWord.MVVM.Models;
+using Pass = ManagPassWord.MVVM.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
 using MVVM;
 using System.Windows.Input;
+using ManagPassWord.DataAcessLayer.Implementations;
 
 namespace ManagPassWord.MVVM.ViewModels.Password
 {
     public class AddPasswordViewModel : BaseViewModel, IQueryAttributable
     {
         #region Private Properties
-        private readonly IPasswordRepository _passwordRepository;
         #endregion
 
         #region Public Properties
@@ -41,9 +40,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #endregion
 
         #region Constructor
-        public AddPasswordViewModel(IPasswordRepository db)
+        public AddPasswordViewModel()
         {
-            _passwordRepository = db;
             CommandSetup();
         }
         #endregion
@@ -68,29 +66,31 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             {
                 try
                 {
-                    //await Password.CreateUpdateDate();
+                    await Password.CreateUpdateDate();
                     if (!IsEditPage)
                     {
-                        if (await _passwordRepository.GetItemByUrl(Url) is Web web)
+                        using PasswordRepository passwordRepository = new PasswordRepository();
+                        if (await passwordRepository.GetItemByUrl(Url) is Web web)
                         {
                             web.Add(Password.Adapt<Pass.Password>());
-                            temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            temp_item = await passwordRepository.SaveOrUpdateItemAsync(web);
                             ViewModelLocator.MainViewModel.UpdateItem(temp_item.Adapt<WebDto>());
                         }
                         else
                         {
                             web = new Web(Url);
                             web.Add(Password.Adapt<Pass.Password>());
-                            temp_item = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            temp_item = await passwordRepository.SaveOrUpdateItemAsync(web);
                             ViewModelLocator.MainViewModel.AddItem(temp_item.Adapt<WebDto>());
                         }
                     }
                     else
                     {
-                        if (await _passwordRepository.GetItemByUrl(Url) is Web web)
+                        using PasswordRepository passwordRepository = new PasswordRepository();
+                        if (await passwordRepository.GetItemByUrl(Url) is Web web)
                         {
                             web.UpdatePasswordItem(Password.Adapt<Pass.Password>());
-                            var webdto = await _passwordRepository.SaveOrUpdateItemAsync(web);
+                            var webdto = await passwordRepository.SaveOrUpdateItemAsync(web);
                             ViewModelLocator.MainViewModel.UpdateItem(webdto.Adapt<WebDto>());
                         }
                     }
@@ -101,6 +101,10 @@ namespace ManagPassWord.MVVM.ViewModels.Password
                     await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
                     return;
                 }
+            }
+            else
+            {
+                await Shell.Current.DisplayAlert("Info", "Please add the web site Url", "Ok");
             }
            
         }

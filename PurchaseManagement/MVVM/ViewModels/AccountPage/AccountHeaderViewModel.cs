@@ -1,7 +1,5 @@
 ﻿using MVVM;
-using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
-using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage

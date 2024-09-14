@@ -17,7 +17,7 @@ Password Management System(PMS) is an application for managing and creating pass
 - Indiko.Maui.Controls.Markdown
 
 ### Author
-- Software developer @self employement
+- Software developer
 - Abdou Djalilou Ali
 - djalilouagmail.com
 

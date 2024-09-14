@@ -1,4 +1,5 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
+using ManagPassWord.DataAcessLayer.Implementations;
 using ManagPassWord.MVVM.Models;
 using ManagPassWord.ServiceLocators;
 using Mapster;
@@ -17,7 +18,6 @@ namespace ManagPassWord.MVVM.ViewModels.Password
     }
     public class DetailViewModel : Loadable<PasswordDto>, IQueryAttributable
     {
-        private readonly IPasswordRepository _passwordRepository;
         private WebDto _userDetail;
         public WebDto WebSitePasswords
         {
@@ -34,9 +34,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         }
         public ICommand EditCommand { get; private set; }
         public ICommand DeleteCommand { get; private set; }
-        public DetailViewModel(IPasswordRepository db, ILoadService<PasswordDto> loadService):base(loadService)
+        public DetailViewModel(ILoadService<PasswordDto> loadService):base(loadService)
         {
-            _passwordRepository = db;
             EditCommand = new Command(OnEdit);
             DeleteCommand = new Command(OnDelete);
         }
@@ -49,10 +48,11 @@ namespace ManagPassWord.MVVM.ViewModels.Password
             {
                 if (tempPassword.Id != 0)
                 {
-                    if(await _passwordRepository.GetItemByUrl(tempPassword?.Web.Url) is Web web)
+                    using PasswordRepository passwordRepository = new PasswordRepository();
+                    if (await passwordRepository.GetItemByUrl(tempPassword?.Web.Url) is Web web)
                     {
                         web.DeletePasswordItem(tempPassword);
-                        await _passwordRepository.SaveOrUpdateItemAsync(web);
+                        await passwordRepository.SaveOrUpdateItemAsync(web);
                         DeleteItem(SelectedItem);
                         ViewModelLocator.MainViewModel.UpdateItem(web.Adapt<WebDto>());
                     }

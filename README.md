@@ -7,4 +7,5 @@ The following projects are created with MAUI, MVVM, Entity framework, sqlite etc
 - [Password Management System](password.md)
 
 
+
 ## [ADB over WI-FI](adboverwifi.md)

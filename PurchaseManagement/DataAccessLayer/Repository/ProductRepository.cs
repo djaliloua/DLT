@@ -7,6 +7,11 @@ namespace PurchaseManagement.DataAccessLayer.Abstractions
 {
     public class ProductRepository : GenericRepository<Product>,IProductRepository
     {
+        public ProductRepository()
+        {
+            _context = new RepositoryContext();
+            _context.Database.EnsureCreated();
+        }
         public IList<Product> GetAllItemById(int id)
         {
             using(var context = new RepositoryContext())

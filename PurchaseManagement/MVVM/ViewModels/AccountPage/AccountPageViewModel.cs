@@ -5,7 +5,6 @@ using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
-using PurchaseManagement.Pages;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {

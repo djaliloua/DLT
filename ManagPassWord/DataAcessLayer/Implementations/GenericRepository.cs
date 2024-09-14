@@ -5,16 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ManagPassWord.DataAcessLayer.Implementations
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
+    public class GenericRepository<T> : IGenericRepository<T>, IDisposable where T : BaseEntity, new()
     {
         protected RepositoryContext _context;
+        private bool _isDisposed;
         protected DbSet<T> _table;
-        public GenericRepository(RepositoryContext context)
-        {
-            _context = context;
-            _table = _context.Set<T>();
-            _context.Database.EnsureCreated();
-        }
+       
         public GenericRepository()
         {
             _context = Resolver.GetService<RepositoryContext>();
@@ -78,7 +74,7 @@ namespace ManagPassWord.DataAcessLayer.Implementations
         {
             if (item.Id != 0)
             {
-                _context.Entry(item).OriginalValues.SetValues(item);
+                _context.Update(item);
             }
             else
             {
@@ -87,5 +83,12 @@ namespace ManagPassWord.DataAcessLayer.Implementations
             await _context.SaveChangesAsync();
             return item;
         }
+        public void Dispose()
+        {
+            if (_context != null)
+                _context.Dispose();
+            _isDisposed = true;
+        }
+
     }
 }

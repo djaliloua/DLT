@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PurchaseManagement.DataAccessLayer.Abstractions;
+using PurchaseManagement.DataAccessLayer.Contexts;
 using PurchaseManagement.MVVM.Models.Accounts;
 
 
@@ -7,6 +8,11 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 {
     public class AccountRepository : GenericRepository<Account>,IAccountRepository
     {
+        public AccountRepository()
+        {
+            _context = new RepositoryContext();
+            _context.Database.EnsureCreated();
+        }
         public override async Task<IEnumerable<Account>> GetAllItemsAsync()
         {
             return await _context.Accounts.FromSql($"select *\r\nfrom Accounts acc\r\norder by acc.DateTime desc;").AsNoTracking().ToListAsync();

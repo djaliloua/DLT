@@ -130,10 +130,10 @@ namespace ManagPassWord.MVVM.Models
     public class PasswordDto:BaseViewModel
     {
         public int Id { get; set; }
-        private string _userName = "djaliloua@gmail.com";
+        private string _userName = "*********@gmail.com";
         private string _password = "**************";
         private DateTime _dateOnly;
-        private string _note = "Hello world";
+        private string _note = "Hello *********";
         private WebDto _web;
 
         public string UserName
