@@ -23,7 +23,7 @@ It is also possible to take location where a given product has been purchased by
 - Indiko.Maui.Controls.Markdown
 
 ### Author
-- Software developer @self employement
+- Software developer
 - Abdou Djalilou Ali
 - djalilouagmail.com
 

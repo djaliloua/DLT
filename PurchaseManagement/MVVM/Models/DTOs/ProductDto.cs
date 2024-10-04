@@ -50,10 +50,15 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         public bool IsPurchased
         {
             get => _isPurchased;
-            set => UpdateObservable(ref _isPurchased, value, () =>
+            set
             {
-                WeakReferenceMessenger.Default.Send(this, "update");
-            });
+                if(_isPurchased != value)
+                {
+                    _isPurchased = value;
+                    WeakReferenceMessenger.Default.Send(this, "update");
+                    OnPropertyChanged();
+                }
+            }
         }
         private int _location_id;
         public int Location_Id

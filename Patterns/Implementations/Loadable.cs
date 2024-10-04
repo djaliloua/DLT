@@ -25,6 +25,12 @@ namespace Patterns.Implementations
             get => _selectedItem;
             set => UpdateObservable(ref _selectedItem, value, () => SelectedItemCallBack(value));
         }
+        private bool isRefreshed;
+        public bool IsRefreshed
+        {
+            get => isRefreshed;
+            set => UpdateObservable(ref isRefreshed, value);
+        }
 
         public bool IsSelected => SelectedItem != null;
         private int _counter;
@@ -84,6 +90,7 @@ namespace Patterns.Implementations
         {
             Items = new ObservableCollection<TItem>(items);
             NumberOfItems = Items.Count;
+            OnPropertyChanged(nameof(Items));
         }
         public virtual void SaveOrUpdateItem(TItem item)
         {

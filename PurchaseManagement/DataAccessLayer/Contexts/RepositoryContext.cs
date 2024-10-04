@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.MVVM.Models.MarketModels;
 
@@ -21,6 +22,7 @@ namespace PurchaseManagement.DataAccessLayer.Contexts
             
             optionsBuilder.UseSqlite($"Data Source={DatabasePurchase}");
             optionsBuilder.UseLazyLoadingProxies();
+            optionsBuilder.ConfigureWarnings(warn => warn.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning));
         }
 
     }

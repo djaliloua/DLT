@@ -1,15 +1,13 @@
 ﻿using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
-using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.MVVM.Models.MarketModels;
 using System.Diagnostics;
 using PurchaseManagement.Commons;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
-using Mapster;
 using Patterns.Implementations;
 using Patterns.Abstractions;
+using PurchaseManagement.DataAccessLayer.Repository;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
@@ -53,7 +51,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     {
         #region Private Properties
         private readonly INavigationService _navigationService;
-        private readonly IPurchaseRepository _purchaseRepository;
         
         #endregion
 
@@ -76,16 +73,14 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Commands
+        public ICommand RefreshCommand { get; private set; }
         public ICommand AddCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
         #endregion
 
         #region Constructor
-        public MainViewModel(IPurchaseRepository db, 
-            INavigationService navigationService, 
-            ILoadService<PurchaseDto> loadService):base(loadService)
+        public MainViewModel( INavigationService navigationService, ILoadService<PurchaseDto> loadService):base(loadService)
         {
-            _purchaseRepository = db;   
             _navigationService = navigationService;
             IsSavebtnEnabled = true;
             Init();
@@ -98,18 +93,31 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             AddCommand = new Command(OnAdd);
             DoubleClickCommand = new Command(OnDoubleClick);
+            RefreshCommand = new Command(OnRefresh);
+        }
+        private async void Init()
+        {
+            ShowActivity();
+            await Task.Run(async () =>
+            {
+                using var repo = new PurchaseRepository();
+                var data = await repo.GetAllAsDtos() ?? new List<PurchaseDto>();
+                await LoadItems(data);
+            });
+            HideActivity();
         }
         #endregion
 
         #region Handlers
-        private async void Init()
+        private void OnRefresh(object parameter)
         {
-            ShowActivity();
-            await Task.Run(async () => await LoadItems((await _purchaseRepository.GetAllItemsAsync()).Adapt<List<PurchaseDto>>()));
-            HideActivity();
+            IsRefreshed = true;
+            Init();
+            IsRefreshed = false;
         }
         private async void OnDoubleClick(object sender)
         {
+            SelectedItem = (PurchaseDto)sender;
             if (!Debugger.IsAttached)
             {
                 // Do not delete this piece of code
@@ -137,10 +145,10 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void OnAdd(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(await _purchaseRepository.GetPurchaseByDate(SelectedDate) is Purchase purchase)
+            if(GetItemByDate() is PurchaseDto purchase)
             {
-                ProductStatistics stat = purchase.ProductStatistics;
-                purchase_proxy_item = Factory.CreateObject(stat.Adapt<ProductStatisticsDto>());
+                ProductStatisticsDto stat = purchase.ProductStatistics;
+                purchase_proxy_item = Factory.CreateObject(stat);
             }
             else
             {
@@ -148,6 +156,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             }
             NavigationParametersTest.AddParameter("IsSave", true);
             NavigationParametersTest.AddParameter("Purchase_ItemsDTO", purchase_proxy_item);
+            NavigationParametersTest.AddParameter("currentDate", DateTime.Now);
             await Shell.Current.GoToAsync(nameof(MarketFormPage), NavigationParametersTest.GetParameters());
         }
         #endregion

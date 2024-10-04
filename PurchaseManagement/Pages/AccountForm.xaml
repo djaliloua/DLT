@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PurchaseManagement.Pages.AccountForm"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
+             xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
+             BindingContext="{x:Static service:ViewModelLocator.AccountFormViewModel}"
+             Title="">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <VerticalStackLayout Spacing="50">
+            <material:DatePickerField Date="{Binding SelectedDate}"
+                                      AllowClear="False"
+                                      Icon="{FontImageSource FontFamily=MaterialRegular, Glyph={x:Static m:MaterialRegular.Calendar_month}}"
+                                      Title="Date" />
+            <material:TextField Title="Money"
+                                x:Name="entry"
+                                Grid.Column="1"
+                                VerticalOptions="End"
+                                Text="{Binding Money}"
+                                Keyboard="Numeric"
+                                CornerRadius="10">
+            </material:TextField>
+        </VerticalStackLayout>
+        <Button FontAttributes="Bold"
+                HorizontalOptions="End"
+                Margin="0,0,20,20"
+                VerticalOptions="End"
+                Command="{Binding AddCommand}"
+                IsEnabled="True"
+                CommandParameter="{Binding Source={x:Reference entry}, Path=Text}"
+                Grid.Row="1">
+            <Button.Triggers>
+                <DataTrigger TargetType="Button"
+                             Binding="{Binding Source={x:Reference entry}, Path=Text}"
+                             Value="0">
+                    <Setter Property="IsEnabled"
+                            Value="False" />
+                </DataTrigger>
+                <DataTrigger TargetType="Button"
+                             Binding="{Binding Source={x:Reference entry}, Path=Text}"
+                             Value="">
+                    <Setter Property="IsEnabled"
+                            Value="False" />
+                </DataTrigger>
+            </Button.Triggers>
+            <Button.ImageSource>
+                <FontImageSource FontFamily="MaterialRegular"
+                                 Glyph="{x:Static m:MaterialRound.Add}" />
+            </Button.ImageSource>
+        </Button>
+    </Grid>
+</ContentPage>

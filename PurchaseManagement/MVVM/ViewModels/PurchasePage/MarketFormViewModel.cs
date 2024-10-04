@@ -5,16 +5,23 @@ using System.Windows.Input;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
-using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Validations;
 using PurchaseManagement.Utilities;
-using Mapster;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
     public class MarketFormViewModel:BaseViewModel, IQueryAttributable
     {
         #region Public Properties
+        private DateTime _selectedDate;
+        public DateTime SelectedDate
+        {
+            get => _selectedDate;
+            set => UpdateObservable(ref _selectedDate, value, () =>
+            {
+                ViewModelLocator.MainViewModel.DateTime = value;
+            });
+        }
         private ProductDto _purchaseItem;
         public ProductDto ProductItem
         {
@@ -37,7 +44,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 
         #region Private Methods
         public int Counter = 0;
-        private readonly IPurchaseRepository _purchaseDB;
         private readonly INotification _toastNotification;
         private ProductValidation productValidation = new();
         #endregion
@@ -50,9 +56,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Constructor
-        public MarketFormViewModel(IPurchaseRepository db)
+        public MarketFormViewModel()
         {
-            _purchaseDB = db;
             _toastNotification = new ToastNotification();
             IsSavebtnEnabled = true;
             CommandSetup();
@@ -88,8 +93,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             if (ViewModelLocator.ProductItemsViewModel.IsSelected)
             {
-                if(!await MarketFormViewModelUtility.UpdateProductItem(await _purchaseDB.GetPurchaseByDate(ViewModelLocator.MainViewModel.SelectedDate), 
-                    ProductItem.Adapt<Product>()))
+                if(!await MarketFormViewModelUtility.UpdateProductItem(ViewModelLocator.MainViewModel.GetItemByDate(), 
+                    ProductItem))
                 {
                     return;
                 }
@@ -99,7 +104,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         private async void OnSave(object sender)
         {
-            await MarketFormViewModelUtility.CreateAndAddProduct(ProductItem.Adapt<Product>());
+            await MarketFormViewModelUtility.CreateAndAddProduct(ProductItem);
         }
         #endregion
 
@@ -109,6 +114,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             {
                 IsSave = (bool)query["IsSave"];
                 ProductItem = query["Purchase_ItemsDTO"] as ProductDto;
+                SelectedDate = IsSave ? (DateTime)query["currentDate"] : DateTime.Parse(query["currentDate"] as string);
                 Counter = ProductItem.Counter;
             }
         }

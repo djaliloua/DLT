@@ -11,7 +11,7 @@ namespace PurchaseManagement
         }
         private void MainPage_NavigatedTo(object sender, NavigatedToEventArgs e)
         {
-            ViewModelLocator.MainViewModel.SelectedDate = DateTime.Now;
+            //ViewModelLocator.MarketFormViewModel.SelectedDate = DateTime.Now;
         }
     }
 }
