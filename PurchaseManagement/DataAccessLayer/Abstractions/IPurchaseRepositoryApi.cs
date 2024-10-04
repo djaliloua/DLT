@@ -1,4 +1,5 @@
-﻿using PurchaseManagement.MVVM.Models.MarketModels;
+﻿using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.DataAccessLayer.Abstractions
 {
@@ -8,7 +9,7 @@ namespace PurchaseManagement.DataAccessLayer.Abstractions
         Task<Purchase> GetById(int id);
         Task<Purchase> GetByDate(string dt);
         Task<Purchase> SaveOrUpdate(Purchase purchase);
-        Task<IEnumerable<Purchase>> GetAllItems();
-
+        Task<List<Purchase>> GetAllItems();
+        Task<PurchaseDto> RemoveProduct(Product product);
     }
 }

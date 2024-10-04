@@ -6,6 +6,7 @@
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialIcons;assembly=UraniumUI.Icons.MaterialIcons"
              xmlns:service="clr-namespace:PurchaseManagement.ServiceLocator"
              xmlns:views="clr-namespace:PurchaseManagement.MVVM.Views"
+             xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
              x:Name="main"
              NavigationPage.BackButtonTitle="Back"
              BindingContext="{x:Static service:ViewModelLocator.ProductItemsViewModel}"

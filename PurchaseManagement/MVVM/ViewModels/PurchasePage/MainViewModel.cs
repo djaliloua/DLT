@@ -1,15 +1,16 @@
 ﻿using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
-using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.MVVM.Models.MarketModels;
 using System.Diagnostics;
 using PurchaseManagement.Commons;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
-using Mapster;
 using Patterns.Implementations;
 using Patterns.Abstractions;
+using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.DataAccessLayer.Abstractions;
+using PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.ExtensionMethods;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
@@ -76,6 +77,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Commands
+        public ICommand RefreshCommand { get; private set; }
         public ICommand AddCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
         #endregion
@@ -99,19 +101,27 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             AddCommand = new Command(OnAdd);
             DoubleClickCommand = new Command(OnDoubleClick);
+            RefreshCommand = new Command(OnRefresh);
+        }
+        private async void Init()
+        {
+            ShowActivity();
+            List<Purchase> items = await _genericRepositoryApi.GetAllItems() ?? new List<Purchase>();
+            await Task.Run(async () => await LoadItems(items.ToDto()));
+            HideActivity();
         }
         #endregion
 
         #region Handlers
-        private async void Init()
+        private void OnRefresh(object parameter)
         {
-            ShowActivity();
-            IEnumerable<Purchase> items = await _genericRepositoryApi.GetAllItems() ?? new List<Purchase>();
-            await Task.Run(async () => await LoadItems(items.Adapt<List<PurchaseDto>>()));
-            HideActivity();
+            IsRefreshed = true;
+            Init();
+            IsRefreshed = false;
         }
         private async void OnDoubleClick(object sender)
         {
+            SelectedItem = (PurchaseDto)sender;
             if (!Debugger.IsAttached)
             {
                 // Do not delete this piece of code
@@ -150,6 +160,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             }
             NavigationParametersTest.AddParameter("IsSave", true);
             NavigationParametersTest.AddParameter("Purchase_ItemsDTO", purchase_proxy_item);
+            NavigationParametersTest.AddParameter("currentDate", DateTime.Now);
             await Shell.Current.GoToAsync(nameof(MarketFormPage), NavigationParametersTest.GetParameters());
         }
         #endregion

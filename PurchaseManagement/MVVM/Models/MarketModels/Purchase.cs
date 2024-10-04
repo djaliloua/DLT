@@ -22,7 +22,21 @@ namespace PurchaseManagement.MVVM.Models.MarketModels
 
         }
         #endregion
-        
+        //public void Add(Product product)
+        //{
+        //    Products.Add(product);
+        //    PurchaseUtility.UpdateStatistics(this);
+        //}
+        //public void Remove(Product product)
+        //{
+        //    Product p = Products.FirstOrDefault(p => p.Id==product.Id);  
+        //    int index = Products.IndexOf(p);
+        //    if(index >= 0)
+        //    {
+        //        Products.RemoveAt(index);
+        //    }
+        //    PurchaseUtility.UpdateStatistics(this);
+        //}
         public Purchase Clone() => MemberwiseClone() as Purchase;
     }
 }

@@ -5,16 +5,23 @@ using System.Windows.Input;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
-using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.Validations;
 using PurchaseManagement.Utilities;
-using Mapster;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
     public class MarketFormViewModel:BaseViewModel, IQueryAttributable
     {
         #region Public Properties
+        private DateTime _selectedDate;
+        public DateTime SelectedDate
+        {
+            get => _selectedDate;
+            set => UpdateObservable(ref _selectedDate, value, () =>
+            {
+                ViewModelLocator.MainViewModel.DateTime = value;
+            });
+        }
         private ProductDto _purchaseItem;
         public ProductDto ProductItem
         {
@@ -109,6 +116,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             {
                 IsSave = (bool)query["IsSave"];
                 ProductItem = query["Purchase_ItemsDTO"] as ProductDto;
+                SelectedDate = IsSave ? (DateTime)query["currentDate"] : DateTime.Parse(query["currentDate"] as string);
                 Counter = ProductItem.Counter;
             }
         }

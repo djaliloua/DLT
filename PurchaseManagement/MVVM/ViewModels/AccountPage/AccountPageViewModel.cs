@@ -68,9 +68,9 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Handlers
-        //private void OnAdd(object parameter)
+        //private async void OnAdd(object parameter)
         //{
-        //    AccountListViewViewModel.AddAccount(new AccountDTO(SelectedDate, Money));
+        //    await Shell.Current.GoToAsync(nameof(AccountForm));
         //}
         #endregion
     }

@@ -3,13 +3,28 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Text;
 using System;
+using PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.DataAccessLayer.Abstractions
 {
+    public class HttpRequestPurchase:HttpRequest
+    {
+        public async Task<Purchase> Delete(Uri url)
+        {
+            Purchase purchase = null;
+            var response = await _httpClient.DeleteAsync(url);
+            if (response.IsSuccessStatusCode)
+            {
+                string content = await response.Content.ReadAsStringAsync();
+                purchase = JsonSerializer.Deserialize<Purchase>(content, _serializerOptions);
+            }
+            return purchase;
+        }
+    }
     public class HttpRequest
     {
-        readonly JsonSerializerOptions _serializerOptions;
-        readonly HttpClient _httpClient;
+        protected readonly JsonSerializerOptions _serializerOptions;
+        protected readonly HttpClient _httpClient;
         public HttpRequest()
         {
             _httpClient = new HttpClient();
@@ -25,6 +40,7 @@ namespace PurchaseManagement.DataAccessLayer.Abstractions
             var response = await _httpClient.DeleteAsync(url);
             return response.IsSuccessStatusCode;
         }
+        
         public async Task<T> Deserialize<T>(Uri uri)
         {
             T item = default;

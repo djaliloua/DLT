@@ -1,5 +1,6 @@
 ﻿using ManagPassWord.MVVM.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace ManagPassWord.DataAcessLayer.Contexts
 {
@@ -18,6 +19,7 @@ namespace ManagPassWord.DataAcessLayer.Contexts
         {
             optionsBuilder.UseSqlite($"Data Source={DatabasePurchase}");
             optionsBuilder.UseLazyLoadingProxies(true);
+            optionsBuilder.ConfigureWarnings(warn => warn.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning));
         }
     }
 }

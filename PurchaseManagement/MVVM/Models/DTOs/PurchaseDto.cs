@@ -46,7 +46,19 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         }
         public PurchaseDto()
         {
-            
+
+        }
+        public void Update(ProductDto product)
+        {
+            if (product == null) return;
+            for (int i = 0; i < Products.Count; i++)
+            {
+                if (Products[i].Id == product.Id)
+                {
+                    Products[i] = product;
+                    return;
+                }
+            }
         }
         public void UpdateStatistics()
         {

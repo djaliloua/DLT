@@ -1,12 +1,14 @@
-﻿using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.DTOs;
 using System.Windows.Input;
 using PurchaseManagement.MVVM.Models.Accounts;
-using Mapster;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
 using Patterns.Implementations;
 using Patterns.Abstractions;
+using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.ServiceLocator;
+using PurchaseManagement.ExtensionMethods;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
@@ -33,19 +35,20 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             get => _maxSaleValue;
             set => UpdateObservable(ref _maxSaleValue, value);
         }
+        
         #endregion
 
         #region Commands
-
-        public ICommand DeleteCommand { get; private set; }
         public ICommand RefreshCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
+        public ICommand EditCommand { get; private set; }
         #endregion
 
         #region Constructor
         public AccountListViewViewModel(IAccountRepositoryApi repo, ILoadService<AccountDTO> loadService):base(loadService)
         {
-            _accountRepository = repo;
             SetupNotification();
+            _accountRepository = repo;
             Init();
             SetupComands();
         }
@@ -74,7 +77,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             await Task.Run(async () =>
             {
                 IEnumerable<Account> data = await _accountRepository.GetAllItems() ?? new List<Account>();
-                var dt = data.Adapt<List<AccountDTO>>();
+                var dt = data.ToDto();
                 await LoadItems(dt);
                 await GetMax()
                     .ContinueWith(async (t) =>
@@ -92,10 +95,11 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         {
             DeleteCommand = new Command(OnDelete);
             RefreshCommand = new Command(OnRefresh);
+            EditCommand = new Command(OnEdit);
         }
-        public void OnRefresh(object parameter)
+        public async void OnEdit(object parameter)
         {
-            Init();
+            await _toastNotification.ShowNotification("Not yet implemented");
         }
         private async Task GetMax()
         {
@@ -110,24 +114,16 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Overriden methods
-        //protected override void Reorder()
-        //{
-        //    var data = Items.OrderByDescending(a => a.DateTime).ToList();
-        //    SetItems(data);
-        //}
-        //public override async Task LoadItems()
-        //{
-        //    ShowActivity();
-        //    IEnumerable<Account> data =  await _accountRepository.GetAllItemsAsync();
-        //    var dt = data.Adapt<List<AccountDTO>>();
-        //    SetItems(dt);
-        //    HideActivity();
-
-        //}
+        
         #endregion
 
         #region Handlers
-
+        private void OnRefresh(object parameter)
+        {
+            IsRefreshed = true;
+            Init();
+            IsRefreshed = false;
+        }
         private void OnDelete(object parameter)
         {
             AccountDTO accountDTO = parameter as AccountDTO;
@@ -139,9 +135,10 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             
             if (!ItemExist(item))
             {
-                var newAccount = await _accountRepository.SaveOrUpdate(item.Adapt<Account>());
-                base.AddItem(newAccount.Adapt<AccountDTO>());
+                var newAccount = await _accountRepository.SaveOrUpdate(item.FromDto());
+                base.AddItem(newAccount.ToDto());
                 await _toastNotification.ShowNotification($"{newAccount.Money} added");
+                ViewModelLocator.AccountFormViewModel.Money = 0;
             }
             else
             {
@@ -156,7 +153,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    var acount = item.Adapt<Account>();
+                    var acount = item.FromDto();
                     await _accountRepository.Delete(acount.Id);
                     base.DeleteItem(item);
                     await _toastNotification.ShowNotification($"{item.Money} deleted");

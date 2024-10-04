@@ -1,4 +1,5 @@
 ﻿using ManagPassWord.DataAcessLayer.Abstractions;
+using ManagPassWord.DataAcessLayer.Implementations;
 using ManagPassWord.MVVM.Models;
 using ManagPassWord.Pages;
 using Mapster;
@@ -40,7 +41,6 @@ namespace ManagPassWord.MVVM.ViewModels.Password
     }
     public class MainViewModel : LoadableWebDto
     {
-        private readonly IPasswordRepository _passwordRepository;
 
         #region Commands
         public ICommand AddCommand { get; private set; }
@@ -50,10 +50,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         #endregion
 
         #region Constructor
-        public MainViewModel(IPasswordRepository _db, 
-            ILoadService<WebDto> loadService):base(loadService)
+        public MainViewModel(ILoadService<WebDto> loadService):base(loadService)
         {
-            _passwordRepository = _db;
             load();
             CommandSetup();
         }
@@ -63,7 +61,8 @@ namespace ManagPassWord.MVVM.ViewModels.Password
         private async void load()
         {
             ShowActivity();
-            var data = await _passwordRepository.GetAllItemsAsync();
+            using PasswordRepository passwordRepository = new PasswordRepository();
+            var data = await passwordRepository.GetAllItemsAsync();
             var dataAsDtos = data.Adapt<List<WebDto>>();
             await Task.Run(async() => await LoadItems(dataAsDtos));
             HideActivity();

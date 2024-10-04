@@ -100,6 +100,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <MauiXaml Update="MVVM\Views\AccountListViewTemplate.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
     <MauiXaml Update="MVVM\Views\ControlView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
@@ -113,6 +116,9 @@
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\AccountAnalyticPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </MauiXaml>
+    <MauiXaml Update="Pages\AccountForm.xaml">
       <Generator>MSBuild:Compile</Generator>
     </MauiXaml>
     <MauiXaml Update="Pages\AccountPage.xaml">

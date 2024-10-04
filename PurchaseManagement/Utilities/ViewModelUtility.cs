@@ -1,8 +1,9 @@
-﻿using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.ServiceLocator;
+﻿using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.MVVM.Models.DTOs;
-using Mapster;
+using PurchaseManagement.DataAccessLayer.Repository;
+using PurchaseManagement.ExtensionMethods;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 
 namespace PurchaseManagement.Utilities
 {
@@ -15,10 +16,10 @@ namespace PurchaseManagement.Utilities
         }
         public static async Task<int> SaveAndUpdateUI(PurchaseDto purchase)
         {
-            Purchase purchaseApi = await _genericRepositoryApi.SaveOrUpdate(purchase.Adapt<Purchase>());
-            PurchaseDto p = purchaseApi.Adapt<PurchaseDto>();
+            Purchase purchaseB = await _genericRepositoryApi.SaveOrUpdate(purchase.FromDto());
+            PurchaseDto p = purchaseB.ToDto();
             ViewModelLocator.MainViewModel.SaveOrUpdateItem(p);
-            return purchaseApi.ProductStatistics.PurchaseCount;
+            return purchaseB.ProductStatistics.PurchaseCount;
         }
     }
 }

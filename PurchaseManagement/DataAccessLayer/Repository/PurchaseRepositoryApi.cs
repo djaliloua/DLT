@@ -1,4 +1,7 @@
-﻿using PurchaseManagement.DataAccessLayer.Abstractions;
+﻿using Mapster;
+using PurchaseManagement.DataAccessLayer.Abstractions;
+using PurchaseManagement.ExtensionMethods;
+using PurchaseManagement.MVVM.Models.DTOs;
 using PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
@@ -20,7 +23,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
     public class PurchaseRepositoryApi : IPurchaseRepositoryApi
     {
         public List<Purchase> Items { get; private set; }
-        readonly HttpRequest _httpRequest;
+        private HttpRequest _httpRequest;
         public PurchaseRepositoryApi()
         {
             _httpRequest = new HttpRequest();
@@ -29,8 +32,14 @@ namespace PurchaseManagement.DataAccessLayer.Repository
         {
             throw new NotImplementedException();
         }
-       
-        public async Task<IEnumerable<Purchase>> GetAllItems()
+        public async Task<PurchaseDto> DeleteProduct(Product product)
+        {
+            Uri uri = new Uri(ProcessUrl.GetRestUrl($"product/{product.Id}", "Purchases"));
+            HttpRequestPurchase httpRequest = new HttpRequestPurchase();
+            var res = await httpRequest.Delete(uri);
+            return res.Adapt<PurchaseDto>();
+        }
+        public async Task<List<Purchase>> GetAllItems()
         {
             Items = new List<Purchase>();
 
@@ -60,6 +69,12 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             Uri uri = new Uri(ProcessUrl.GetRestUrl(null, "Purchases"));
             Purchase purch = await _httpRequest.Serialize(purchase, uri);
             return purch;
+        }
+        public async Task<PurchaseDto> RemoveProduct(Product product)
+        {
+            await DeleteProduct(product);
+            Purchase p = (await GetAllItems()).FirstOrDefault(x => x.Id == product.Purchase.Id);
+            return p.ToDto();
         }
     }
 }

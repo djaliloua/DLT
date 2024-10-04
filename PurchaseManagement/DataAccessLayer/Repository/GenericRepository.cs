@@ -2,28 +2,22 @@
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.DataAccessLayer.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
-    public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity, new()
+    public class GenericRepository<T> : IGenericRepository<T>, IDisposable where T : BaseEntity
     {
-        protected RepositoryContext _context;
-        protected DbSet<T> _table;
-        public GenericRepository(RepositoryContext context)
-        {
-            _context = context;
-            _table = _context.Set<T>();
-            _context.Database.EnsureCreated();
-        }
+        private bool _isDisposed;
+        public RepositoryContext _context;
         public GenericRepository()
         {
-            _context = ServiceLocator.ViewModelLocator.GetService<RepositoryContext>();
-            _table = _context.Set<T>();
+            _context = new RepositoryContext();
             _context.Database.EnsureCreated();
         }
         public virtual void DeleteItem(T item)
         {
-            T trackedItem = _table.Find(item.Id);
+            T trackedItem = _context.Set<T>().Find(item.Id);
             if (trackedItem != null)
             {
                 _context.Remove(trackedItem);
@@ -33,7 +27,7 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public virtual async Task DeleteItemAsync(T item)
         {
-            T trackedItem = await _table.FindAsync(item.Id);
+            T trackedItem = await _context.Set<T>().FindAsync(item.Id);
             if (trackedItem != null)
             {
                 _context.Remove(trackedItem);
@@ -41,35 +35,38 @@ namespace PurchaseManagement.DataAccessLayer.Repository
             }
         }
 
-        public virtual IEnumerable<T> GetAllItems()
+        public virtual List<T> GetAllItems()
         {
-            return _table.ToList();
+            return _context.Set<T>().ToList();
         }
 
         public virtual async Task<IEnumerable<T>> GetAllItemsAsync()
         {
-            return await _table.ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
         public virtual T GetItemById(int id)
         {
-            return _table.Find(id);
+            return _context.Set<T>().Find(id);
         }
 
         public async Task<T> GetItemByIdAsync(int id)
         {
-            return await _table.FindAsync(id);
+            return await _context.Set<T>().FindAsync(id);
         }
 
         public virtual T SaveOrUpdateItem(T item)
         {
-            if(item.Id != 0)
+            if (_context is RepositoryContext || _isDisposed)
+                _context = new RepositoryContext();
+
+            if (item.Id != 0)
             {
-                _context.Entry(item).OriginalValues.SetValues(item);
+                _context.Update(item);
             }
             else
             {
-                _table.Add(item);
+                _context.Set<T>().Add(item);
             }
             _context.SaveChanges();
             return item;
@@ -77,16 +74,42 @@ namespace PurchaseManagement.DataAccessLayer.Repository
 
         public virtual async Task<T> SaveOrUpdateItemAsync(T item)
         {
-            if (item.Id != 0)
+            try
             {
-                _context.Entry(item).OriginalValues.SetValues(item);
+                using RepositoryContext context = new RepositoryContext();
+                if (item.Id != 0)
+                {
+                    context.Update(item);
+                }
+                else
+                {
+                    context.Set<T>().Add(item);
+                }
+                await context.SaveChangesAsync();
             }
-            else
+            catch(DbUpdateException ex)
             {
-                _table.Add(item);
+                Debug.WriteLine(ex.Message);
             }
-            await _context.SaveChangesAsync();
             return item;
+        }
+        //The following Method is going to Dispose of the Context Object
+        public void Dispose()
+        {
+            if (_context != null)
+                _context.Dispose();
+            _isDisposed = true;
+        }
+        //The following Method is going to Dispose of the Context Object
+        
+        ~GenericRepository()
+        {
+
+        }
+        
+        public void Save()
+        {
+            _context.SaveChanges();
         }
     }
 }

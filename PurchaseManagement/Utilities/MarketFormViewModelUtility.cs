@@ -1,11 +1,11 @@
 ﻿using FluentValidation.Results;
-using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.MVVM.Models.MarketModels;
 using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Validations;
 using PurchaseManagement.Commons.Notifications.Implementations;
 using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.ExtensionMethods;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 
 namespace PurchaseManagement.Utilities
 {
@@ -32,7 +32,7 @@ namespace PurchaseManagement.Utilities
                 }
                 else
                 {
-                    purchase = new PurchaseDto("test", ViewModelLocator.MainViewModel.SelectedDate);
+                    purchase = new PurchaseDto("test", ViewModelLocator.MarketFormViewModel.SelectedDate);
                     purchase.Add(product);
                 }
                 var count = await ViewModelUtility.SaveAndUpdateUI(purchase);
@@ -55,6 +55,7 @@ namespace PurchaseManagement.Utilities
             ValidationResult validationResult = productValidation.Validate(product);
             if (validationResult.IsValid)
             {
+                purchase.Update(product);
                 purchase.UpdateStatistics();
                 await ViewModelUtility.SaveAndUpdateUI(purchase);
             }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.MarketModels;
 
 namespace PurchaseManagement.Validations
 {
