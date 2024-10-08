@@ -12,7 +12,7 @@
              BackgroundColor="LightBlue"
              BindingContext="{x:Static service:ViewModelLocator.MainViewModel}">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{Binding Counter}"
+        <ToolbarItem Text="{Binding PurchasesListViewModel.Counter}"
                      Order="Primary" />
         <ToolbarItem Text="Export PDF"
                      Order="Secondary">
@@ -59,7 +59,7 @@
         </Grid>
 
         <Grid Grid.Row="1">
-            <ActivityIndicator IsRunning="{Binding IsActivity}"
+            <ActivityIndicator IsRunning="{Binding PurchasesListViewModel.IsActivity}"
                                Color="Blue"
                                Grid.Row="1"
                                VerticalOptions="Center"
@@ -70,38 +70,38 @@
                                ZIndex="10">
                 <ActivityIndicator.Triggers>
                     <DataTrigger TargetType="ActivityIndicator"
-                                 Binding="{Binding IsActivity}"
+                                 Binding="{Binding PurchasesListViewModel.IsActivity}"
                                  Value="True">
                         <Setter Property="IsVisible"
                                 Value="Visible" />
                     </DataTrigger>
                     <DataTrigger TargetType="ActivityIndicator"
-                                 Binding="{Binding IsActivity}"
+                                 Binding="{Binding PurchasesListViewModel.IsActivity}"
                                  Value="False">
                         <Setter Property="IsVisible"
                                 Value="Hidden" />
                     </DataTrigger>
                 </ActivityIndicator.Triggers>
             </ActivityIndicator>
-            <ListView ItemsSource="{Binding Items}"
+            <ListView ItemsSource="{Binding PurchasesListViewModel.Items}"
                       RowHeight="150"
                       Grid.Row="1"
                       IsPullToRefreshEnabled="True"
                       RefreshControlColor="Red"
-                      RefreshCommand="{Binding RefreshCommand}"
-                      IsRefreshing="{Binding IsRefreshed}"
+                      RefreshCommand="{Binding PurchasesListViewModel.RefreshCommand}"
+                      IsRefreshing="{Binding PurchasesListViewModel.IsRefreshed}"
                       x:Name="listview"
                       VerticalScrollBarVisibility="Never"
-                      SelectedItem="{Binding SelectedItem}">
+                      SelectedItem="{Binding PurchasesListViewModel.SelectedItem}">
                 <ListView.Triggers>
                     <DataTrigger TargetType="ListView"
-                                 Binding="{Binding IsActivity}"
+                                 Binding="{Binding PurchasesListViewModel.IsActivity}"
                                  Value="True">
                         <Setter Property="IsVisible"
                                 Value="Hidden" />
                     </DataTrigger>
                     <DataTrigger TargetType="ListView"
-                                 Binding="{Binding IsActivity}"
+                                 Binding="{Binding PurchasesListViewModel.IsActivity}"
                                  Value="False">
                         <Setter Property="IsVisible"
                                 Value="Visible" />
@@ -118,7 +118,7 @@
                                         <VerticalStackLayout.GestureRecognizers>
                                             <TapGestureRecognizer NumberOfTapsRequired="2"
                                                                   CommandParameter="{Binding Source={x:Reference items}, Path=BindingContext}"
-                                                                  BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
+                                                                  BindingContext="{Binding Source={x:Reference main}, Path=BindingContext.PurchasesListViewModel}"
                                                                   Command="{Binding DoubleClickCommand}" />
                                         </VerticalStackLayout.GestureRecognizers>
 

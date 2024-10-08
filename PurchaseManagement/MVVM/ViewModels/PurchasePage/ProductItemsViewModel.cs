@@ -16,6 +16,7 @@ using Patterns.Implementations;
 using Patterns.Abstractions;
 using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.ExtensionMethods;
+using MVVM;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
@@ -39,14 +40,13 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             return items;
         }
     }
-    public class ProductItemsViewModel: PurchaseItemsViewModelLoadable<ProductDto>, INavigatedEvents
+    public class ProductListViewModel: PurchaseItemsViewModelLoadable<ProductDto>
     {
         #region Private properties
         private readonly INavigationService _navigationService;
         private readonly IPurchaseRepository _purchaseRepository;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
-        private ExportContext<ProductDto> _exportContext;
         #endregion
 
         #region Public Properties
@@ -54,10 +54,10 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         public PurchaseDto Purchases
         {
             get => _puchases;
-            set => UpdateObservable(ref  _puchases, value, async () =>
+            set => UpdateObservable(ref _puchases, value, async () =>
             {
                 ShowActivity();
-                await Task.Run(async() => await LoadItems(Purchases.Products));
+                await Task.Run(async () => await LoadItems(Purchases.Products));
                 HideActivity();
             });
         }
@@ -77,7 +77,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 
         #region Commands
         public ICommand OpenAnalyticCommand { get; private set; }
-        public ICommand ExportToPdfCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand OpenMapCommand { get; private set; }
@@ -86,43 +85,42 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         public ICommand GetMapCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
         #endregion
-
-        #region Constructor
-        public ProductItemsViewModel(
-            IPurchaseRepository purchaseDB,
-            INavigationService navigationService,
-            ExportContext<ProductDto> context,
-            ILoadService<ProductDto> loadService
-            ):base(loadService)
+        public ProductListViewModel(INavigationService navigationService, 
+            ILoadService<ProductDto> loadService):base(loadService)
         {
-            _purchaseRepository = purchaseDB;
-            _exportContext = context;
             _navigationService = navigationService;
             _notification = new ToastNotification();
             _messageBox = new MessageBoxNotification();
             RegisterToMessage();
             CommandSetup();
         }
+
+        #region Private Methods
+        private void RegisterToMessage()
+        {
+            WeakReferenceMessenger.Default.Register<ProductDto, string>(this, "update", async (sender, p) =>
+            {
+                if (p.Purchase is PurchaseDto purchaseX)
+                {
+                    var purchase = ViewModelLocator.PurchasesListViewModel.GetItemByDate();
+                    if (purchase is not null)
+                        await MarketFormViewModelUtility.UpdateProductItem(purchase, p);
+                }
+            });
+        }
+        private void CommandSetup()
+        {
+            DoubleClickCommand = new Command(OnDoubleClick);
+            OpenCommand = new Command(OnOpen);
+            DeleteCommand = new Command(OnDelete);
+            OpenMapCommand = new Command(OnOpenMap);
+            EditCommand = new Command(OnEdit);
+            GetMapCommand = new Command(OnGetMap);
+        }
+
         #endregion
 
         #region Handlers
-        private async void OnBackCommand(object parameter)
-        {
-            await _navigationService.Navigate("..");
-        }
-        public async void OnOpenAnalyticCommand(object parameter)
-        {
-            var navigationParameters = new NavigationParameters
-            {
-                { "product", GetItems() }
-            };
-            await _navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
-            
-        }
-        private void OnExportToPdfCommand(object parameter)
-        {
-            _exportContext.ExportTo("", GetItems());
-        }
         private async void OnGetMap(object parameter)
         {
             ShowActivity();
@@ -131,12 +129,12 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             {
                 SelectedItem = productDto;
                 Location location = await ProductViewModelUtility.GetCurrentLocation();
-                if (ViewModelLocator.MainViewModel.GetItemByDate() is PurchaseDto purch)
+                if (ViewModelLocator.PurchasesListViewModel.GetItemByDate() is PurchaseDto purch)
                 {
                     var loc = location.Adapt<ProductLocation>();
                     SelectedItem.ProductLocation = loc.ToDto();
                     SelectedItem.IsLocation = SelectedItem.ProductLocation != null;
-                    await MarketFormViewModelUtility.UpdateProductItem(purch,SelectedItem);
+                    await MarketFormViewModelUtility.UpdateProductItem(purch, SelectedItem);
                     await _notification.ShowNotification("Got location");
                 }
 
@@ -157,7 +155,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
                             {"Purchase_ItemsDTO", SelectedItem },
                             {"currentDate", Purchases.PurchaseDate }
                         };
-                
+
                 await Shell.Current.GoToAsync(nameof(MarketFormPage), navigationParameter);
             }
             else
@@ -212,49 +210,96 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             }
         }
         #endregion
+    }
+    public class ProductItemsViewModel:BaseViewModel, IQueryAttributable
+    {
+        #region Private properties
+        private readonly INavigationService _navigationService;
+        private ExportContext<ProductDto> _exportContext;
+
+        #endregion
+
+        #region Public Properties
+        private ProductListViewModel _productListViewModel;
+        public ProductListViewModel ProductListViewModel
+        {
+            get => _productListViewModel;
+            set => UpdateObservable(ref _productListViewModel, value);
+        }
+        private bool _isLocAvailable;
+        public bool IsLocAvailable
+        {
+            get => _isLocAvailable;
+            set => UpdateObservable(ref _isLocAvailable, value);
+        }
+        private bool _isSavebtnEnabled;
+        public bool IsSavebtnEnabled
+        {
+            get => _isSavebtnEnabled;
+            set => UpdateObservable(ref _isSavebtnEnabled, value);
+        }
+        #endregion
+
+        #region Commands
+        public ICommand OpenAnalyticCommand { get; private set; }
+        public ICommand ExportToPdfCommand { get; private set; }
+        public ICommand DoubleClickCommand { get; private set; }
+        public ICommand OpenCommand { get; private set; }
+        public ICommand OpenMapCommand { get; private set; }
+        public ICommand DeleteCommand { get; private set; }
+        public ICommand EditCommand { get; private set; }
+        public ICommand GetMapCommand { get; private set; }
+        public ICommand BackCommand { get; private set; }
+        #endregion
+
+        #region Constructor
+        public ProductItemsViewModel(IPurchaseRepository purchaseDB, 
+            INavigationService navigationService,
+            ExportContext<ProductDto> context)
+        {
+            _navigationService = navigationService;
+            _exportContext = context;
+            ProductListViewModel = ViewModelLocator.ProductListViewModel;
+            CommandSetup();
+        }
+        #endregion
+
+        #region Handlers
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.Count > 0)
+            {
+                ProductListViewModel.Purchases = query.GetValue<PurchaseDto>("purchase");
+            }
+        }
+        private async void OnBackCommand(object parameter)
+        {
+            await _navigationService.Navigate("..");
+        }
+        public async void OnOpenAnalyticCommand(object parameter)
+        {
+            var navigationParameters = new NavigationParameters
+            {
+                { "product", ProductListViewModel.GetItems() }
+            };
+            await _navigationService.Navigate(nameof(ProductAnalytics), navigationParameters);
+            
+        }
+        private void OnExportToPdfCommand(object parameter)
+        {
+            _exportContext.ExportTo("", ProductListViewModel.GetItems());
+        }
+        
+        #endregion
 
         #region Private Methods
-        private void RegisterToMessage()
-        {
-            WeakReferenceMessenger.Default.Register<ProductDto, string>(this, "update", async (sender, p) =>
-            {
-                if (p.Purchase is PurchaseDto purchaseX)
-                {
-                    var purchase = ViewModelLocator.MainViewModel.GetItemByDate();
-                    if(purchase is not null)
-                        await MarketFormViewModelUtility.UpdateProductItem(purchase, p);
-                }
-            });
-        }
         private void CommandSetup()
         {
-            BackCommand = new Command(OnBackCommand);
-            DoubleClickCommand = new Command(OnDoubleClick);
-            OpenCommand = new Command(OnOpen);
-            DeleteCommand = new Command(OnDelete);
-            OpenMapCommand = new Command(OnOpenMap);
-            EditCommand = new Command(OnEdit);
-            GetMapCommand = new Command(OnGetMap);
             OpenAnalyticCommand = new Command(OnOpenAnalyticCommand);
             ExportToPdfCommand = new Command(OnExportToPdfCommand);
         }
         
         #endregion
-
-        public void ResetSelectedItem()
-        {
-            SelectedItem = null;
-        }
-
-        public Task OnNavigatedTo(NavigationParameters parameters)
-        {
-            Purchases = parameters.GetValue<PurchaseDto>("purchase");
-            return Task.CompletedTask;
-        }
-
-        public Task OnNavigatedFrom(NavigationParameters parameters)
-        {
-           return Task.CompletedTask;
-        }
+        
     }
 }

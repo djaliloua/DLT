@@ -13,7 +13,7 @@ namespace PurchaseManagement.Utilities
             using var repo = new PurchaseRepository();
             Purchase purchaseB = await repo.SaveOrUpdateItemAsync(purchase);
             PurchaseDto p = purchaseB.ToDto();
-            ViewModelLocator.MainViewModel.SaveOrUpdateItem(p);
+            ViewModelLocator.PurchasesListViewModel.SaveOrUpdateItem(p);
             return purchaseB.ProductStatistics.PurchaseCount;
         }
         
