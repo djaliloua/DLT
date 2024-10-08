@@ -8,9 +8,8 @@ using MauiNavigationHelper.NavigationLib.Models;
 using Patterns.Implementations;
 using Patterns.Abstractions;
 using PurchaseManagement.DataAccessLayer.Repository;
-using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.MVVM.Models.MarketModels;
-using PurchaseManagement.ExtensionMethods;
+using MVVM;
+using PurchaseManagement.ServiceLocator;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
@@ -50,15 +49,11 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             return items.OrderByDescending(a => a.PurchaseDate).ToList();
         }
     }
-    public class MainViewModel: LaodableMainViewModel<PurchaseDto>
+    public class PurchasesListViewModel: LaodableMainViewModel<PurchaseDto>
     {
         #region Private Properties
-        private readonly INavigationService _navigationService;
-        private readonly IPurchaseRepositoryApi _genericRepositoryApi;
-        
-        #endregion
 
-        #region Public Properites
+        #endregion
         private DateTime _selectedDate;
         public DateTime SelectedDate
         {
@@ -68,38 +63,11 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
                 DateTime = value;
             });
         }
-        private bool _isSavebtnEnabled;
-        public bool IsSavebtnEnabled
-        {
-            get => _isSavebtnEnabled;
-            set => UpdateObservable(ref _isSavebtnEnabled, value);
-        }
-        #endregion
-
-        #region Commands
         public ICommand RefreshCommand { get; private set; }
-        public ICommand AddCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
-        #endregion
-
-        #region Constructor
-        public MainViewModel(
-            IPurchaseRepositoryApi genericRepositoryApi,
-            INavigationService navigationService, 
-            ILoadService<PurchaseDto> loadService):base(loadService)
+        public PurchasesListViewModel(ILoadService<PurchaseDto> loadService) : base(loadService)
         {
-            _navigationService = navigationService;
-            _genericRepositoryApi = genericRepositoryApi;
-            IsSavebtnEnabled = true;
             Init();
-            CommandSetup();
-        }
-        #endregion
-
-        #region Private Methods
-        private void CommandSetup()
-        {
-            AddCommand = new Command(OnAdd);
             DoubleClickCommand = new Command(OnDoubleClick);
             RefreshCommand = new Command(OnRefresh);
         }
@@ -110,9 +78,6 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             await Task.Run(async () => await LoadItems(items.ToDto()));
             HideActivity();
         }
-        #endregion
-
-        #region Handlers
         private void OnRefresh(object parameter)
         {
             IsRefreshed = true;
@@ -137,7 +102,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
                     {
                         { "purchase", SelectedItem }
                     };
-                    await _navigationService.Navigate(nameof(ProductsPage), navigationParameters);
+                    await Shell.Current.GoToAsync(nameof(ProductsPage), navigationParameters);
                 }
             }
             catch (Exception ex)
@@ -145,11 +110,56 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
                 Debug.WriteLine(ex);
             }
         }
+    }
+    public class MainViewModel: BaseViewModel
+    {
+        #region Private Properties
+        private readonly INavigationService _navigationService;
+        
+        #endregion
+
+        #region Public Properites
+        public PurchasesListViewModel PurchasesListViewModel { get; private set; }
+        
+        private bool _isSavebtnEnabled;
+        public bool IsSavebtnEnabled
+        {
+            get => _isSavebtnEnabled;
+            set => UpdateObservable(ref _isSavebtnEnabled, value);
+        }
+        #endregion
+
+        #region Commands
+        
+        public ICommand AddCommand { get; private set; }
+        
+        #endregion
+
+        #region Constructor
+        public MainViewModel(INavigationService navigationService)
+        {
+            _navigationService = navigationService;
+            IsSavebtnEnabled = true;
+            PurchasesListViewModel = ViewModelLocator.PurchasesListViewModel; 
+            CommandSetup();
+        }
+        #endregion
+
+        #region Private Methods
+        private void CommandSetup()
+        {
+            AddCommand = new Command(OnAdd);
+        }
+        
+        #endregion
+
+        #region Handlers
+        
         
         private async void OnAdd(object sender)
         {
             ProductDto purchase_proxy_item;
-            if(GetItemByDate() is PurchaseDto purchase)
+            if(PurchasesListViewModel.GetItemByDate() is PurchaseDto purchase)
             {
                 ProductStatisticsDto stat = purchase.ProductStatistics;
                 purchase_proxy_item = Factory.CreateObject(stat);

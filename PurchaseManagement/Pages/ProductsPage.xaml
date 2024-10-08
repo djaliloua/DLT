@@ -12,11 +12,8 @@
              BindingContext="{x:Static service:ViewModelLocator.ProductItemsViewModel}"
              BackgroundColor="LightBlue"
              Title="Products">
-    <!--<Shell.BackButtonBehavior>
-        <BackButtonBehavior Command="{Binding BackCommand}" />
-    </Shell.BackButtonBehavior>-->
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="{Binding Counter}"
+        <ToolbarItem Text="{Binding ProductListViewModel.Counter}"
                      Order="Primary" />
         <ToolbarItem Text="Dashboard"
                      Command="{Binding OpenAnalyticCommand}"
@@ -58,7 +55,7 @@
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>
-        <ActivityIndicator IsRunning="{Binding IsActivity}"
+        <ActivityIndicator IsRunning="{Binding ProductListViewModel.IsActivity}"
                            Color="Blue"
                            Grid.Row="0"
                            VerticalOptions="Center"
@@ -69,26 +66,26 @@
                            ZIndex="10">
             <ActivityIndicator.Triggers>
                 <DataTrigger TargetType="ActivityIndicator"
-                             Binding="{Binding IsActivity}"
+                             Binding="{Binding ProductListViewModel.IsActivity}"
                              Value="True">
                     <Setter Property="IsVisible"
                             Value="Visible" />
                 </DataTrigger>
                 <DataTrigger TargetType="ActivityIndicator"
-                             Binding="{Binding IsActivity}"
+                             Binding="{Binding ProductListViewModel.IsActivity}"
                              Value="False">
                     <Setter Property="IsVisible"
                             Value="Hidden" />
                 </DataTrigger>
             </ActivityIndicator.Triggers>
         </ActivityIndicator>
-        <ListView SelectedItem="{Binding SelectedItem}"
+        <ListView SelectedItem="{Binding ProductListViewModel.SelectedItem}"
                   HasUnevenRows="True"
                   x:Name="listview"
                   Grid.Row="0"
                   VerticalScrollBarVisibility="Never"
                   CachingStrategy="RecycleElementAndDataTemplate"
-                  ItemsSource="{Binding Items, Mode=TwoWay}">
+                  ItemsSource="{Binding ProductListViewModel.Items, Mode=TwoWay}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
@@ -96,7 +93,7 @@
                             <SwipeView.LeftItems >
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
-                                           Command="{Binding EditCommand}"
+                                           Command="{Binding ProductListViewModel.EditCommand}"
                                            CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}">
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialRegular"
@@ -107,7 +104,7 @@
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
                                            CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
-                                           Command="{Binding DeleteCommand}">
+                                           Command="{Binding ProductListViewModel.DeleteCommand}">
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialRegular"
                                                          Glyph="{x:Static m:MaterialRound.Delete}" />
@@ -118,7 +115,7 @@
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
                                            CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
-                                           Command="{Binding OpenMapCommand}">
+                                           Command="{Binding ProductListViewModel.OpenMapCommand}">
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialRegular"
                                                          Glyph="{x:Static m:MaterialRound.Map}" />
@@ -127,7 +124,7 @@
                                 <SwipeItem BindingContext="{Binding Source={x:Reference main}, Path=BindingContext}"
                                            BackgroundColor="{StaticResource Surface}"
                                            CommandParameter="{Binding Source={x:Reference item}, Path=BindingContext}"
-                                           Command="{Binding GetMapCommand}"
+                                           Command="{Binding ProductListViewModel.GetMapCommand}"
                                            >
                                     <SwipeItem.IconImageSource>
                                         <FontImageSource FontFamily="MaterialOutlined"
@@ -144,7 +141,7 @@
                                 <Frame.GestureRecognizers>
                                     <TapGestureRecognizer BindingContext="{Binding Path=BindingContext, 
                                         Source={x:Reference main}}"
-                                                          Command="{Binding DoubleClickCommand}"
+                                                          Command="{Binding ProductListViewModel.DoubleClickCommand}"
                                                           NumberOfTapsRequired="2" />
                                 </Frame.GestureRecognizers>
                                 

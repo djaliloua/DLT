@@ -18,7 +18,7 @@ namespace PurchaseManagement.Utilities
         {
             Purchase purchaseB = await _genericRepositoryApi.SaveOrUpdate(purchase.FromDto());
             PurchaseDto p = purchaseB.ToDto();
-            ViewModelLocator.MainViewModel.SaveOrUpdateItem(p);
+            ViewModelLocator.PurchasesListViewModel.SaveOrUpdateItem(p);
             return purchaseB.ProductStatistics.PurchaseCount;
         }
     }

@@ -26,7 +26,7 @@ namespace PurchaseManagement.Utilities
             ValidationResult validationResult = productValidation.Validate(product);
             if (validationResult.IsValid)
             {
-                if (ViewModelLocator.MainViewModel.GetItemByDate() is PurchaseDto purchase)
+                if (ViewModelLocator.PurchasesListViewModel.GetItemByDate() is PurchaseDto purchase)
                 {
                     purchase.Add(product);
                 }

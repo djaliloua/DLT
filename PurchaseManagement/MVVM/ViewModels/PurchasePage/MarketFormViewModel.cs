@@ -19,7 +19,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             get => _selectedDate;
             set => UpdateObservable(ref _selectedDate, value, () =>
             {
-                ViewModelLocator.MainViewModel.DateTime = value;
+                ViewModelLocator.PurchasesListViewModel.DateTime = value;
             });
         }
         private ProductDto _purchaseItem;
@@ -93,16 +93,16 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         
         private async void OnUpdate(object parameter)
         {
-            if (ViewModelLocator.ProductItemsViewModel.IsSelected)
+            if (ViewModelLocator.ProductListViewModel.IsSelected)
             {
-                if(!await MarketFormViewModelUtility.UpdateProductItem(ViewModelLocator.MainViewModel.GetItemByDate(), 
+                if(!await MarketFormViewModelUtility.UpdateProductItem(ViewModelLocator.PurchasesListViewModel.GetItemByDate(), 
                     ProductItem))
                 {
                     return;
                 }
             }
             await Shell.Current.GoToAsync("..");
-            await _toastNotification.ShowNotification($"{ViewModelLocator.ProductItemsViewModel.SelectedItem.Item_Name} updated");
+            await _toastNotification.ShowNotification($"{ViewModelLocator.ProductListViewModel.SelectedItem.Item_Name} updated");
         }
         private async void OnSave(object sender)
         {

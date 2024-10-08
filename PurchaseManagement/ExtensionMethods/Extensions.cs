@@ -22,6 +22,20 @@ using PurchaseManagement.MVVM.Models.Accounts;
 
 namespace PurchaseManagement.ExtensionMethods
 {
+    public static class DictExtension
+    {
+        public static T GetValue<T>(this IDictionary<string, object> item, string key)
+        {
+            T res = default(T);
+            object obj = null;
+            if(item.TryGetValue(key, out obj))
+            {
+                res = (T)obj;
+            }
+            
+            return res;
+        }
+    }
     public static class MapperExtension
     {
         public static IList<PurchaseDto> ToDto(this List<Purchase> items) => items.Adapt<List<PurchaseDto>>();
@@ -34,7 +48,6 @@ namespace PurchaseManagement.ExtensionMethods
         public static Purchase FromDto(this PurchaseDto item) => item.Adapt<Purchase>();
         public static Account FromDto(this AccountDTO item) => item.Adapt<Account>();
     }
-
     public static class Extensions
     {
         public static MauiAppBuilder PagesExtensions(this MauiAppBuilder mauiAppBuilder)
@@ -71,6 +84,8 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddScoped<AccountHeaderViewModel>();
             mauiAppBuilder.Services.AddScoped<ProductAnalyticsViewModel>();
             mauiAppBuilder.Services.AddScoped<AccountFormViewModel>();
+            mauiAppBuilder.Services.AddSingleton<PurchasesListViewModel>();
+            mauiAppBuilder.Services.AddSingleton<ProductListViewModel>();
             return mauiAppBuilder;
         }
         public static MauiAppBuilder UtilityExtension(this MauiAppBuilder mauiAppBuilder)
