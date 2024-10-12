@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patterns", "Patterns\Patter
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MVVM", "MVVM\MVVM.csproj", "{B9E11411-33CB-442C-9D8E-09C1C126CC53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiNavigationHelper", "MauiNavigationHelper\MauiNavigationHelper.csproj", "{FD1299F9-B66E-41AF-8590-37362E4FD62F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiNavigationHelper", "MauiNavigationHelper\MauiNavigationHelper.csproj", "{FD1299F9-B66E-41AF-8590-37362E4FD62F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CameraApp", "CameraApp\CameraApp.csproj", "{E5BDF418-29ED-4FD4-8EDA-B1DD3184044F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +45,12 @@ Global
 		{FD1299F9-B66E-41AF-8590-37362E4FD62F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD1299F9-B66E-41AF-8590-37362E4FD62F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD1299F9-B66E-41AF-8590-37362E4FD62F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5BDF418-29ED-4FD4-8EDA-B1DD3184044F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5BDF418-29ED-4FD4-8EDA-B1DD3184044F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5BDF418-29ED-4FD4-8EDA-B1DD3184044F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E5BDF418-29ED-4FD4-8EDA-B1DD3184044F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5BDF418-29ED-4FD4-8EDA-B1DD3184044F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5BDF418-29ED-4FD4-8EDA-B1DD3184044F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
