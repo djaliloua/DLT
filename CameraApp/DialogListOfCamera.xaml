@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CameraApp.DialogListOfCamera"
+             xmlns:cam="clr-namespace:CameraApp"
+             xmlns:converter="clr-namespace:CameraApp.Converters"
+             BindingContext="{x:Static cam:ServiceLocation.DialogListOfCameraViewModel}"
+             x:Name="contentPage">
+    <ContentPage.Resources>
+        <converter:ConvertBoolToString TrueString="Active" FalseString="Inactive" x:Key="boolToString"/>
+    </ContentPage.Resources>
+    <Grid Margin="10">
+        <ListView ItemsSource="{Binding ListOfCamera.Items}"
+                  RowHeight="150"
+                  HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItem Text="Update"
+                                           CommandParameter="{Binding Source={x:Reference grid}, Path=BindingContext}"
+                                           BindingContext="{Binding Source={x:Reference contentPage}, Path=BindingContext}"
+                                           Command="{Binding ListOfCamera.UpdateCommand}" />
+                            </SwipeView.RightItems>
+                            <SwipeView.LeftItems>
+                                <SwipeItem Text="Delete"
+                                           CommandParameter="{Binding Source={x:Reference grid}, Path=BindingContext}"
+                                           BindingContext="{Binding Source={x:Reference contentPage}, Path=BindingContext}"
+                                           Command="{Binding ListOfCamera.DeleteCommand}" />
+                            </SwipeView.LeftItems>
+                            <Frame CornerRadius="0"
+                                   HasShadow="True"
+                                   Padding="10"
+                                   ZIndex="30"
+                                   >
+                                <Grid x:Name="grid"
+                                      RowSpacing="20"
+                                      Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Label Text="{Binding Name}"
+                                           HorizontalOptions="Start"
+                                           VerticalTextAlignment="Center"
+                                           VerticalOptions="Center" />
+                                    <Label Text="{Binding Address}"
+                                           Grid.Column="1"
+                                           HorizontalOptions="Center"
+                                           VerticalTextAlignment="Center"
+                                           VerticalOptions="Center" />
+                                    <Label Text="{Binding IsActive, Converter={x:StaticResource boolToString}}"
+                                           HorizontalOptions="Center"
+                                           VerticalTextAlignment="Center"
+                                           VerticalOptions="Center"
+                                           Grid.Column="2" />
+
+                                </Grid>
+                            </Frame>
+                            
+                        </SwipeView>
+                        
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</ContentPage>
