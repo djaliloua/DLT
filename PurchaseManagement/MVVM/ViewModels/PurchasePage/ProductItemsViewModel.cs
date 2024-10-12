@@ -43,6 +43,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     public class ProductListViewModel: PurchaseItemsViewModelLoadable<ProductDto>
     {
         #region Private properties
+        private readonly IPurchaseRepositoryApi _genericRepositoryApi;
         private readonly INavigationService _navigationService;
         private readonly INotification _notification;
         private readonly INotification _messageBox;
@@ -84,7 +85,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         public ICommand GetMapCommand { get; private set; }
         public ICommand BackCommand { get; private set; }
         #endregion
-        public ProductListViewModel(INavigationService navigationService, 
+        public ProductListViewModel(INavigationService navigationService, IPurchaseRepositoryApi genericRepositoryApi,
             ILoadService<ProductDto> loadService):base(loadService)
         {
             _navigationService = navigationService;
@@ -252,9 +253,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Constructor
-        public ProductItemsViewModel(IPurchaseRepository purchaseDB, 
-            INavigationService navigationService,
-            ExportContext<ProductDto> context)
+        public ProductItemsViewModel(INavigationService navigationService, ExportContext<ProductDto> context)
         {
             _navigationService = navigationService;
             _exportContext = context;

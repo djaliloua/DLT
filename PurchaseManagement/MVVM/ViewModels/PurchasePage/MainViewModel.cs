@@ -10,6 +10,9 @@ using Patterns.Abstractions;
 using PurchaseManagement.DataAccessLayer.Repository;
 using MVVM;
 using PurchaseManagement.ServiceLocator;
+using PurchaseManagement.MVVM.Models.MarketModels;
+using PurchaseManagement.ExtensionMethods;
+using PurchaseManagement.DataAccessLayer.Abstractions;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
@@ -52,7 +55,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     public class PurchasesListViewModel: LaodableMainViewModel<PurchaseDto>
     {
         #region Private Properties
-
+        private readonly IPurchaseRepositoryApi _genericRepositoryApi;
         #endregion
         private DateTime _selectedDate;
         public DateTime SelectedDate
@@ -65,8 +68,9 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         public ICommand RefreshCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
-        public PurchasesListViewModel(ILoadService<PurchaseDto> loadService) : base(loadService)
+        public PurchasesListViewModel(IPurchaseRepositoryApi genericRepositoryApi, ILoadService<PurchaseDto> loadService) : base(loadService)
         {
+            _genericRepositoryApi = genericRepositoryApi;
             Init();
             DoubleClickCommand = new Command(OnDoubleClick);
             RefreshCommand = new Command(OnRefresh);
