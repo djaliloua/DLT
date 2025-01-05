@@ -73,9 +73,9 @@ namespace Patterns.Implementations
 
         }
         
-        public Task LoadItems(IEnumerable<TItem> items)
+        public Task LoadItems(IList<TItem> items)
         {
-            SetItems(_loadService.Reorder(items.ToList()));
+            SetItems(_loadService.Reorder(items));
             return Task.CompletedTask;
         }
         public virtual void ItemsCallBack(IList<TItem> item)
