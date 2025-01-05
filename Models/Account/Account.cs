@@ -1,6 +1,6 @@
-﻿namespace PurchaseManagement.MVVM.Models.Accounts
+﻿namespace Models.Account
 {
-    public class Account:BaseEntity
+    public class Account : BaseEntity
     {
         public double Money { get; set; }
         public DateTime DateTime { get; set; }

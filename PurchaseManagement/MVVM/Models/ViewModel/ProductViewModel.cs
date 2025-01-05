@@ -1,24 +1,24 @@
 ﻿using MVVM;
 using CommunityToolkit.Mvvm.Messaging;
 
-namespace PurchaseManagement.MVVM.Models.DTOs
+namespace PurchaseManagement.MVVM.Models.ViewModel
 {
     public class Factory
     {
-        public static ProductDto CreateObject(int counter)
+        public static ProductViewModel CreateObject(int counter)
         {
-            return new ProductDto(0);
+            return new ProductViewModel(0);
         }
-        public static ProductDto CreateObject(ProductStatisticsDto stat)
+        public static ProductViewModel CreateObject(ProductStatisticsDto stat)
         {
-            return stat == null ? new ProductDto(0) : new ProductDto(stat.PurchaseCount);
+            return stat == null ? new ProductViewModel(0) : new ProductViewModel(stat.PurchaseCount);
         }
-        public static ProductDto CreateObject()
+        public static ProductViewModel CreateObject()
         {
-            return new ProductDto();
+            return new ProductViewModel();
         }
     }
-    public class ProductDto : BaseViewModel
+    public class ProductViewModel : BaseViewModel
     {
         public int Id { get; set; }
         public int PurchaseId { get; set; }
@@ -66,8 +66,8 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _location_id;
             set => _location_id = value;
         }
-        private LocationDto _location;
-        public LocationDto ProductLocation
+        private LocationViewModel _location;
+        public LocationViewModel ProductLocation
         {
             get => _location;
             set => UpdateObservable(ref _location, value, () =>
@@ -76,8 +76,8 @@ namespace PurchaseManagement.MVVM.Models.DTOs
                     IsLocation = true;
             });
         }
-        private PurchaseDto _purchases;
-        public PurchaseDto Purchase
+        private PurchaseViewModel _purchases;
+        public PurchaseViewModel Purchase
         {
             get => _purchases;
             set => UpdateObservable(ref _purchases, value);
@@ -91,17 +91,17 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         public int Counter { get; set; }
 
         #region Constructors
-        public ProductDto(int counter)
+        public ProductViewModel(int counter)
         {
             Counter = counter;
         }
-        public ProductDto()
+        public ProductViewModel()
         {
             Counter = 0;
         }
         #endregion
         
-        public ProductDto Clone() => (ProductDto)MemberwiseClone();
+        public ProductViewModel Clone() => (ProductViewModel)MemberwiseClone();
 
     }
 }

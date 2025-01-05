@@ -1,4 +1,4 @@
-﻿namespace PurchaseManagement.MVVM.Models.Accounts
+﻿namespace Models.Account
 {
     public class MaxMin
     {

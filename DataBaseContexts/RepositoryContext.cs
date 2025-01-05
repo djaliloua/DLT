@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using PurchaseManagement.MVVM.Models.Accounts;
-using PurchaseManagement.MVVM.Models.MarketModels;
+using Microsoft.Extensions.Configuration;
+using Models.Account;
+using Models.Market;
 
-namespace PurchaseManagement.DataAccessLayer.Contexts
+namespace DataBaseContexts
 {
-    public class RepositoryContext:DbContext
+    public class RepositoryContext : DbContext
     {
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Product> Products { get; set; }
@@ -15,11 +16,21 @@ namespace PurchaseManagement.DataAccessLayer.Contexts
         private string DatabasePurchase;
         public RepositoryContext()
         {
-            DatabasePurchase = Path.Combine(FileSystem.AppDataDirectory, "Management.db3");
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            if (OperatingSystem.IsWindows())
+            {
+                IConfiguration Configuration = new ConfigurationBuilder()
+                .AddUserSecrets<RepositoryContext>()
+                .Build();
+                DatabasePurchase = Configuration["local_db_folder"];
+            }
+            else
+            {
+                DatabasePurchase = Path.Combine(appDataPath, "Management.db3");
+            }
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
             optionsBuilder.UseSqlite($"Data Source={DatabasePurchase}");
             optionsBuilder.UseLazyLoadingProxies();
             optionsBuilder.ConfigureWarnings(warn => warn.Ignore(CoreEventId.LazyLoadOnDisposedContextWarning));

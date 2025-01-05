@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using PurchaseManagement.Commons;
 using PurchaseManagement.ServiceLocator;
-using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.ViewModel;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
 
@@ -12,7 +12,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
     {
         #region Private methods
         private INotification toastNotification;
-        private ExportContext<AccountDTO> exportContext;
+        private ExportContext<AccountViewModel> exportContext;
         #endregion
 
         #region Properties
@@ -37,7 +37,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountPageViewModel(ExportContext<AccountDTO> context)
+        public AccountPageViewModel(ExportContext<AccountViewModel> context)
         {
             AccountListViewViewModel = ViewModelLocator.AccountListViewViewModel;
             AccountHeaderViewModel = ViewModelLocator.AccountHeaderViewModel;

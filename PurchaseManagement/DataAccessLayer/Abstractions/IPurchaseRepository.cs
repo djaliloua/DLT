@@ -1,5 +1,6 @@
-﻿using PurchaseManagement.MVVM.Models.MarketModels;
-using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.ViewModel;
+using Repository.Interface;
+using Models.Market;
 
 
 namespace PurchaseManagement.DataAccessLayer.Abstractions
@@ -7,6 +8,6 @@ namespace PurchaseManagement.DataAccessLayer.Abstractions
     public interface IPurchaseRepository : IGenericRepository<Purchase>
     {
         Task<Purchase> GetPurchaseByDate(DateTime date);
-        Task<IList<PurchaseDto>> GetAllAsDtos();
+        Task<IList<PurchaseViewModel>> GetAllAsDtos();
     }
 }

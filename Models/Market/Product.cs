@@ -1,6 +1,6 @@
-﻿namespace PurchaseManagement.MVVM.Models.MarketModels
+﻿namespace Models.Market
 {
-    public class Product:BaseEntity
+    public class Product : BaseEntity
     {
         public string Item_Name { get; set; }
         public double Item_Price { get; set; }

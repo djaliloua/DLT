@@ -1,4 +1,5 @@
-﻿using PurchaseManagement.MVVM.Models.Accounts;
+﻿using Models.Account;
+using Repository.Interface;
 
 
 namespace PurchaseManagement.DataAccessLayer.Abstractions

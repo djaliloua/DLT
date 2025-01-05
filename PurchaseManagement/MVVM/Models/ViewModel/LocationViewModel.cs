@@ -1,8 +1,8 @@
 ﻿using MVVM;
 
-namespace PurchaseManagement.MVVM.Models.DTOs
+namespace PurchaseManagement.MVVM.Models.ViewModel
 {
-    public class LocationDto:BaseViewModel
+    public class LocationViewModel:BaseViewModel
     {
         private int _location_id;
         public int Id

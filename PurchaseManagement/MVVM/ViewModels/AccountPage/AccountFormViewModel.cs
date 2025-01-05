@@ -1,5 +1,5 @@
 ﻿using MVVM;
-using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.ViewModel;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
 
@@ -37,7 +37,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 
         private void OnAdd(object parameter)
         {
-            ViewModelLocator.AccountListViewViewModel.AddItem(new AccountDTO(SelectedDate, Money));
+            ViewModelLocator.AccountListViewViewModel.AddItem(new AccountViewModel(SelectedDate, Money));
         }
         #endregion
     }

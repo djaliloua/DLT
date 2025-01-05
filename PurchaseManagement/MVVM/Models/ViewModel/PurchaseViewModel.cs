@@ -1,12 +1,9 @@
-﻿
-
-using MVVM;
+﻿using MVVM;
 using PurchaseManagement.Utilities;
-using System.Collections.ObjectModel;
 
-namespace PurchaseManagement.MVVM.Models.DTOs
+namespace PurchaseManagement.MVVM.Models.ViewModel
 {
-    public class PurchaseDto:BaseViewModel
+    public class PurchaseViewModel:BaseViewModel
     {
         private int _purchase_Id;
         public int Id
@@ -26,8 +23,8 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _purchase_Date;
             set => UpdateObservable(ref _purchase_Date, value);
         }
-        private ObservableCollection<ProductDto> _purchase_Items = new ObservableCollection<ProductDto>();
-        public ObservableCollection<ProductDto> Products
+        private IList<ProductViewModel> _purchase_Items = new List<ProductViewModel>();
+        public IList<ProductViewModel> Products
         {
             get => _purchase_Items;
             set => UpdateObservable(ref _purchase_Items, value);
@@ -39,16 +36,16 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _purchaseSatistics;
             set => UpdateObservable(ref _purchaseSatistics, value);
         }
-        public PurchaseDto(string title, DateTime dt)
+        public PurchaseViewModel(string title, DateTime dt)
         {
             Title = title;
             PurchaseDate = dt.ToString("yyyy-MM-dd");
         }
-        public PurchaseDto()
+        public PurchaseViewModel()
         {
             
         }
-        public void Update(ProductDto product)
+        public void Update(ProductViewModel product)
         {
             if (product == null) return;
             for(int i = 0; i < Products.Count; i++)
@@ -64,14 +61,14 @@ namespace PurchaseManagement.MVVM.Models.DTOs
         {
             PurchaseUtility.UpdateStatistics(this);
         }
-        public void Add(ProductDto product)
+        public void Add(ProductViewModel product)
         {
             Products.Add(product);
             PurchaseUtility.UpdateStatistics(this);
         }
-        public void Remove(ProductDto product)
+        public void Remove(ProductViewModel product)
         {
-            ProductDto p = Products.FirstOrDefault(p => p.Id == product.Id);
+            ProductViewModel p = Products.FirstOrDefault(p => p.Id == product.Id);
             int index = Products.IndexOf(p);
             if (index >= 0)
             {

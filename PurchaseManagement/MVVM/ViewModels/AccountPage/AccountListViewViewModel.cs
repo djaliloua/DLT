@@ -1,6 +1,5 @@
-﻿using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.ViewModel;
 using System.Windows.Input;
-using PurchaseManagement.MVVM.Models.Accounts;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
 using Patterns.Implementations;
@@ -8,17 +7,19 @@ using Patterns.Abstractions;
 using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.ExtensionMethods;
+using Models.Account;
+using Repository;
 
 namespace PurchaseManagement.MVVM.ViewModels.AccountPage
 {
-    public class LoadAccountService : ILoadService<AccountDTO>
+    public class LoadAccountService : ILoadService<AccountViewModel>
     {
-        public IList<AccountDTO> Reorder(IList<AccountDTO> items)
+        public IList<AccountViewModel> Reorder(IList<AccountViewModel> items)
         {
             return items.OrderByDescending(a => a.DateTime).ToList();
         }
     }
-    public class AccountListViewViewModel : Loadable<AccountDTO>
+    public class AccountListViewViewModel : Loadable<AccountViewModel>
     {
         #region Private methods
         private INotification _snackBarNotification;
@@ -43,7 +44,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Constructor
-        public AccountListViewViewModel(ILoadService<AccountDTO> loadService):base(loadService)
+        public AccountListViewViewModel(ILoadService<AccountViewModel> loadService):base(loadService)
         {
             SetupNotification();
             Init();
@@ -52,9 +53,9 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         #endregion
 
         #region Private methods
-        public override bool ItemExist(AccountDTO newAccount)
+        public override bool ItemExist(AccountViewModel newAccount)
         {
-            foreach (AccountDTO account in Items)
+            foreach (AccountViewModel account in Items)
             {
                 if ($"{account.DateTime:yyyy-MM-dd}".Equals($"{newAccount.DateTime:yyyy-MM-dd}"))
                     return true;
@@ -74,8 +75,8 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             await Task.Run(async () =>
             {
                 using var repo = new AccountRepository();
-                IEnumerable<Account> data = await repo.GetAllItemsAsync();
-                await LoadItems(data.ToDto());
+                IList<Account> data = await repo.GetAllItemsAsync();
+                await LoadItems(data.ToVM<Account, AccountViewModel>());
                 await GetMax()
                     .ContinueWith(async (t) =>
                     {
@@ -124,18 +125,18 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
         }
         private void OnDelete(object parameter)
         {
-            AccountDTO accountDTO = parameter as AccountDTO;
+            AccountViewModel accountDTO = parameter as AccountViewModel;
             SelectedItem = accountDTO;
             DeleteItem(SelectedItem);
         }
-        public override async void AddItem(AccountDTO item)
+        public override async void AddItem(AccountViewModel item)
         {
             
             if (!ItemExist(item))
             {
                 using var repo = new AccountRepository();
-                var newAccount = await repo.SaveOrUpdateItemAsync(item.FromDto());
-                base.AddItem(newAccount.ToDto());
+                var newAccount = repo.Save(item);
+                base.AddItem(newAccount);
                 await _toastNotification.ShowNotification($"{newAccount.Money} added");
                 ViewModelLocator.AccountFormViewModel.Money = 0;
             }
@@ -145,16 +146,16 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             }
         }
         
-        public async override void DeleteItem(AccountDTO item)
+        public async override void DeleteItem(AccountViewModel item)
         {
             
             if (IsSelected)
             {
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
-                    var acount = item.FromDto();
+                    var acount = item;
                     using var repo = new AccountRepository();
-                    await repo.DeleteItemAsync(acount);
+                    await repo.DeleteAsync(acount.Id);
                     base.DeleteItem(item);
                     await _toastNotification.ShowNotification($"{item.Money} deleted");
                 }

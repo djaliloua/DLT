@@ -1,9 +1,8 @@
-﻿using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.ViewModel;
 using PurchaseManagement.Pages;
 using PurchaseManagement.ServiceLocator;
 using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons;
-using PurchaseManagement.MVVM.Models.MarketModels;
 using MauiNavigationHelper.NavigationLib.Models;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Utilities;
@@ -17,10 +16,12 @@ using Patterns.Abstractions;
 using PurchaseManagement.DataAccessLayer.Repository;
 using PurchaseManagement.ExtensionMethods;
 using MVVM;
+using Models.Market;
+using Repository;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
-    public class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: ProductDto
+    public class PurchaseItemsViewModelLoadable<TItem>: Loadable<TItem> where TItem: ProductViewModel
     {
         public PurchaseItemsViewModelLoadable(ILoadService<TItem> loadService):base(loadService)
         {
@@ -33,14 +34,14 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
 
     }
-    public class LoadProductService : ILoadService<ProductDto>
+    public class LoadProductService : ILoadService<ProductViewModel>
     {
-        public IList<ProductDto> Reorder(IList<ProductDto> items)
+        public IList<ProductViewModel> Reorder(IList<ProductViewModel> items)
         {
             return items;
         }
     }
-    public class ProductListViewModel: PurchaseItemsViewModelLoadable<ProductDto>
+    public class ProductListViewModel: PurchaseItemsViewModelLoadable<ProductViewModel>
     {
         #region Private properties
         private readonly INavigationService _navigationService;
@@ -50,8 +51,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #endregion
 
         #region Public Properties
-        private PurchaseDto _puchases;
-        public PurchaseDto Purchases
+        private PurchaseViewModel _puchases;
+        public PurchaseViewModel Purchases
         {
             get => _puchases;
             set => UpdateObservable(ref _puchases, value, async () =>
@@ -86,7 +87,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         public ICommand BackCommand { get; private set; }
         #endregion
         public ProductListViewModel(INavigationService navigationService, 
-            ILoadService<ProductDto> loadService):base(loadService)
+            ILoadService<ProductViewModel> loadService):base(loadService)
         {
             _navigationService = navigationService;
             _notification = new ToastNotification();
@@ -98,9 +99,9 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #region Private Methods
         private void RegisterToMessage()
         {
-            WeakReferenceMessenger.Default.Register<ProductDto, string>(this, "update", async (sender, p) =>
+            WeakReferenceMessenger.Default.Register<ProductViewModel, string>(this, "update", async (sender, p) =>
             {
-                if (p.Purchase is PurchaseDto purchaseX)
+                if (p.Purchase is PurchaseViewModel purchaseX)
                 {
                     var purchase = ViewModelLocator.PurchasesListViewModel.GetItemByDate();
                     if (purchase is not null)
@@ -124,15 +125,15 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         private async void OnGetMap(object parameter)
         {
             ShowActivity();
-            ProductDto productDto = parameter as ProductDto;
+            ProductViewModel productDto = parameter as ProductViewModel;
             if (IsSelected)
             {
                 SelectedItem = productDto;
                 Location location = await ProductViewModelUtility.GetCurrentLocation();
-                if (ViewModelLocator.PurchasesListViewModel.GetItemByDate() is PurchaseDto purch)
+                if (ViewModelLocator.PurchasesListViewModel.GetItemByDate() is PurchaseViewModel purch)
                 {
                     var loc = location.Adapt<ProductLocation>();
-                    SelectedItem.ProductLocation = loc.ToDto();
+                    SelectedItem.ProductLocation = loc.ToVM<ProductLocation, LocationViewModel>();
                     SelectedItem.IsLocation = SelectedItem.ProductLocation != null;
                     await MarketFormViewModelUtility.UpdateProductItem(purch, SelectedItem);
                     await _notification.ShowNotification("Got location");
@@ -145,7 +146,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         private async void OnEdit(object parameter)
         {
-            ProductDto productDto = parameter as ProductDto;
+            ProductViewModel productDto = parameter as ProductViewModel;
             if (IsSelected)
             {
                 SelectedItem = productDto;
@@ -163,7 +164,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         private async void OnOpenMap(object parameter)
         {
-            ProductDto productDto = parameter as ProductDto;
+            ProductViewModel productDto = parameter as ProductViewModel;
             if (IsSelected)
             {
                 SelectedItem = productDto;
@@ -177,16 +178,16 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         private async void OnDelete(object parameter)
         {
-            ProductDto productDto = parameter as ProductDto;
+            ProductViewModel productDto = parameter as ProductViewModel;
             if (IsSelected)
             {
                 SelectedItem = productDto;
                 if (await Shell.Current.DisplayAlert("Warning", "Do you want to delete", "Yes", "No"))
                 {
                     using var repo = new PurchaseRepository();
-                    var p = repo.RemoveProduct(SelectedItem.FromDto());
+                    var p = repo.RemoveProduct(SelectedItem.ToVM<ProductViewModel, Product>());
                     p.UpdateStatistics();
-                    await ViewModelUtility.SaveAndUpdateUI(p.FromDto());
+                    await ViewModelUtility.SaveAndUpdateUI(p.ToVM<PurchaseViewModel, Purchase>());
                     await _notification.ShowNotification($"{SelectedItem.Item_Name} deleted");
                     DeleteItem(SelectedItem);
                 }
@@ -215,7 +216,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     {
         #region Private properties
         private readonly INavigationService _navigationService;
-        private ExportContext<ProductDto> _exportContext;
+        private ExportContext<ProductViewModel> _exportContext;
 
         #endregion
 
@@ -255,7 +256,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #region Constructor
         public ProductItemsViewModel(IPurchaseRepository purchaseDB, 
             INavigationService navigationService,
-            ExportContext<ProductDto> context)
+            ExportContext<ProductViewModel> context)
         {
             _navigationService = navigationService;
             _exportContext = context;
@@ -269,7 +270,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             if (query.Count > 0)
             {
-                ProductListViewModel.Purchases = query.GetValue<PurchaseDto>("purchase");
+                ProductListViewModel.Purchases = query.GetValue<PurchaseViewModel>("purchase");
             }
         }
         private async void OnBackCommand(object parameter)

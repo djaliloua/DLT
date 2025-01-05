@@ -1,5 +1,5 @@
 ﻿using MVVM;
-using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.ViewModel;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using MauiNavigationHelper.NavigationLib.Models;
 using System.Windows.Input;
@@ -9,8 +9,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     public class PurchaseItemDetailsViewModel:BaseViewModel, INavigatedEvents
     {
         private readonly INavigationService _navigationService;
-        private ProductDto _purchaseDetails;
-        public ProductDto PurchaseDetails
+        private ProductViewModel _purchaseDetails;
+        public ProductViewModel PurchaseDetails
         {
             get => _purchaseDetails;
             set => UpdateObservable(ref _purchaseDetails, value);
@@ -29,7 +29,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         public Task OnNavigatedTo(NavigationParameters parameters)
         {
-            PurchaseDetails = parameters.GetValue<ProductDto>("details");
+            PurchaseDetails = parameters.GetValue<ProductViewModel>("details");
             return Task.CompletedTask;
         }
 
