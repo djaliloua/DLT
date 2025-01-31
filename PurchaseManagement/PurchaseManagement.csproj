@@ -60,9 +60,6 @@
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Resources\Images\abdou.jpg" />
-    <None Remove="Resources\Images\ali.jpg" />
-    <None Remove="Resources\Images\tof.jpg" />
     <None Remove="Resources\Raw\purchase.md" />
   </ItemGroup>
   <ItemGroup>
