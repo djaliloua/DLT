@@ -1,16 +1,16 @@
-﻿using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.ViewModel;
 using System.Text;
 
 namespace PurchaseManagement.Commons.ExportFileStrategies
 {
-    public class ProductTxtStrategy : IExportStrategy<ProductDto>
+    public class ProductTxtStrategy : IExportStrategy<ProductViewModel>
     {
         readonly StringBuilder sb = new StringBuilder();
         public ProductTxtStrategy()
         {
             sb.AppendLine($"Id;Day;Name;Price;Quantity;Description");
         }
-        public string Export(IList<ProductDto> items)
+        public string Export(IList<ProductViewModel> items)
         {
             foreach (var item in items)
             {

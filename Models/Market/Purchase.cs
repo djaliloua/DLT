@@ -1,8 +1,6 @@
-﻿using PurchaseManagement.Utilities;
-
-namespace PurchaseManagement.MVVM.Models.MarketModels
+﻿namespace Models.Market
 {
-    public class Purchase:BaseEntity
+    public class Purchase : BaseEntity
     {
         #region Properties
         public string Title { get; set; }

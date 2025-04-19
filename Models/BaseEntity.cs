@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PurchaseManagement.MVVM.Models
+namespace Models
 {
     public abstract class BaseEntity
     {

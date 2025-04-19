@@ -1,8 +1,8 @@
 ﻿using MVVM;
 
-namespace PurchaseManagement.MVVM.Models.DTOs
+namespace PurchaseManagement.MVVM.Models.ViewModel
 {
-    public class AccountDTO:BaseViewModel
+    public class AccountViewModel:BaseViewModel
     {
         private int _id;
         public int Id
@@ -28,19 +28,19 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _day;
             set => UpdateObservable(ref _day, value);
         }
-        public AccountDTO(double _money)
+        public AccountViewModel(double _money)
         {
             Money = _money;
             DateTime = DateTime.Now;
             Day = DateTime.Now.ToString("dddd");
         }
-        public AccountDTO(DateTime _date, double _money)
+        public AccountViewModel(DateTime _date, double _money)
         {
             Money = _money;
             DateTime = _date;
             Day = _date.ToString("dddd");
         }
-        public AccountDTO()
+        public AccountViewModel()
         {
 
         }

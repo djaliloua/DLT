@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PurchaseManagement.DataAccessLayer.Contexts;
-using PurchaseManagement.DataAccessLayer.Repository;
-using PurchaseManagement.MVVM.Models.MarketModels;
+﻿using DataBaseContexts;
+using Microsoft.EntityFrameworkCore;
+using Models.Market;
+using Repository.Implementation;
 
 namespace PurchaseManagement.DataAccessLayer.Abstractions
 {
@@ -9,8 +9,7 @@ namespace PurchaseManagement.DataAccessLayer.Abstractions
     {
         public ProductRepository()
         {
-            _context = new RepositoryContext();
-            _context.Database.EnsureCreated();
+           
         }
         public IList<Product> GetAllItemById(int id)
         {

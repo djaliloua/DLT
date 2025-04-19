@@ -1,6 +1,6 @@
 ﻿using MVVM;
 
-namespace PurchaseManagement.MVVM.Models.DTOs
+namespace PurchaseManagement.MVVM.Models.ViewModel
 {
     public class ProductStatisticsDto:BaseViewModel
     {
@@ -34,8 +34,8 @@ namespace PurchaseManagement.MVVM.Models.DTOs
             get => _totalQuantity;
             set => UpdateObservable(ref _totalQuantity, value);
         }
-        private PurchaseDto _purchases;
-        public PurchaseDto Purchase
+        private PurchaseViewModel _purchases;
+        public PurchaseViewModel Purchase
         {
             get => _purchases;
             set => UpdateObservable(ref _purchases, value);

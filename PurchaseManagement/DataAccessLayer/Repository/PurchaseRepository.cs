@@ -1,35 +1,34 @@
-﻿using PurchaseManagement.MVVM.Models.MarketModels;
-using PurchaseManagement.DataAccessLayer.Abstractions;
+﻿using PurchaseManagement.DataAccessLayer.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using PurchaseManagement.MVVM.Models.DTOs;
-using PurchaseManagement.ExtensionMethods;
-using PurchaseManagement.DataAccessLayer.Contexts;
+using PurchaseManagement.MVVM.Models.ViewModel;
+using Repository.Implementation;
+using Models.Market;
+using Repository;
 
 namespace PurchaseManagement.DataAccessLayer.Repository
 {
-    public class PurchaseRepository : GenericRepository<Purchase>,IPurchaseRepository
+    public class PurchaseRepository : GenericRepositoryViewModel<Purchase, PurchaseViewModel>,IPurchaseRepository
     {
         public PurchaseRepository()
         {
-            _context = new RepositoryContext();
-            _context.Database.EnsureCreated();
+           
         }
         public async Task<Purchase> GetPurchaseByDate(DateTime date)
         {
-            Purchase purchase = await _context.Purchases.FirstOrDefaultAsync(p => p.PurchaseDate.Equals($"{date:yyyy-MM-dd}"));
+            Purchase purchase = await _table.FirstOrDefaultAsync(p => p.PurchaseDate.Equals($"{date:yyyy-MM-dd}"));
             return purchase;
         }
 
-        public Task<IList<PurchaseDto>> GetAllAsDtos()
+        public async Task<IList<PurchaseViewModel>> GetAllAsDtos()
         {
-            return Task.FromResult(GetAllItems().ToDto());
+            return await GetAllAsDtos();
         }
-        public PurchaseDto RemoveProduct(Product product)
+        public PurchaseViewModel RemoveProduct(Product product)
         {
-            Purchase p = _context.Purchases.FirstOrDefault(x => x.Id==product.Purchase.Id);
+            Purchase p = _table.FirstOrDefault(x => x.Id==product.Purchase.Id);
             p.Products.Remove(p.Products.FirstOrDefault(x => x.Id==product.Id));
-            Save();
-            return p.ToDto();
+            //Save();
+            return p.ToVM<Purchase, PurchaseViewModel>();
         }
     }
 }

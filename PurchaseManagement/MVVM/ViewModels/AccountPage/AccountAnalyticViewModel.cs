@@ -4,13 +4,13 @@ using LiveChartsCore.SkiaSharpView;
 using LiveChartsCore.SkiaSharpView.Painting;
 using LiveChartsCore.SkiaSharpView.VisualElements;
 using PurchaseManagement.DataAccessLayer.Abstractions;
-using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.ViewModel;
 using PurchaseManagement.ServiceLocator;
-using PurchaseManagement.MVVM.Models.Accounts;
 using MVVM;
 using SkiaSharp;
 using System.Collections.ObjectModel;
 using LiveChartsCore.ConditionalDraw;
+using Models.Account;
 
 namespace PurchaseManagement.MVVM.ViewModels
 {
@@ -31,7 +31,7 @@ namespace PurchaseManagement.MVVM.ViewModels
         };
         public ISeries[] LineSeries { get; set; } =
     {
-        new LineSeries<AccountDTO>
+        new LineSeries<AccountViewModel>
         {
             Values = ViewModelLocator.AccountListViewViewModel.GetItems(),
             DataLabelsFormatter = point => $"{point.Model?.Money} CFA",

@@ -1,7 +1,7 @@
 ﻿using LiveChartsCore.SkiaSharpView.Extensions;
 using LiveChartsCore;
 using MVVM;
-using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.ViewModel;
 using LiveChartsCore.SkiaSharpView.Painting;
 using SkiaSharp;
 using System.Collections.ObjectModel;
@@ -67,7 +67,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             return values;
         }
-        public void Load(List<ProductDto> Items)
+        public void Load(List<ProductViewModel> Items)
         {
             var GB = Items.GroupBy(item => item.IsPurchased).Select(item => new Summary(item.Key == true ? "Bought" : "Not Bought", item.Count(), 
                 item.Sum(x => x.Item_Price), item.Sum(x => x.Item_Quantity)));
@@ -89,8 +89,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
     public class ProductAnalyticsViewModel : BaseViewModel, INavigatedEvents
     {
         private readonly INavigationService navigationService;
-        private ObservableCollection<ProductDto> _products;
-        public ObservableCollection<ProductDto> Products
+        private ObservableCollection<ProductViewModel> _products;
+        public ObservableCollection<ProductViewModel> Products
         {
             get => _products;
             set
@@ -158,7 +158,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         public async Task OnNavigatedTo(NavigationParameters parameters)
         {
             await Task.Delay(1);
-            Products = parameters.GetValue<ObservableCollection<ProductDto>>("product");
+            Products = parameters.GetValue<ObservableCollection<ProductViewModel>>("product");
         }
 
         public async Task OnNavigatedFrom(NavigationParameters parameters)

@@ -1,8 +1,7 @@
 ﻿using MVVM;
-using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.ViewModel;
 using PurchaseManagement.ServiceLocator;
 using System.Windows.Input;
-using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.Commons.Notifications.Abstractions;
 using PurchaseManagement.Commons.Notifications.Implementations;
 using PurchaseManagement.Validations;
@@ -22,8 +21,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
                 ViewModelLocator.PurchasesListViewModel.DateTime = value;
             });
         }
-        private ProductDto _purchaseItem;
-        public ProductDto ProductItem
+        private ProductViewModel _purchaseItem;
+        public ProductViewModel ProductItem
         {
             get => _purchaseItem;
             set => UpdateObservable(ref _purchaseItem, value);
@@ -113,7 +112,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             if(query.Count() > 0)
             {
                 IsSave = (bool)query["IsSave"];
-                ProductItem = query["Purchase_ItemsDTO"] as ProductDto;
+                ProductItem = query["Purchase_ItemsDTO"] as ProductViewModel;
                 SelectedDate = IsSave ? (DateTime)query["currentDate"] : DateTime.Parse(query["currentDate"] as string);
                 Counter = ProductItem.Counter;
             }

@@ -1,16 +1,16 @@
-﻿using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.ViewModel;
 using System.Text;
 
 namespace PurchaseManagement.Commons.ExportFileStrategies
 {
-    public class AccountTxtStrategy : IExportStrategy<AccountDTO>
+    public class AccountTxtStrategy : IExportStrategy<AccountViewModel>
     {
         readonly StringBuilder sb = new StringBuilder();
         public AccountTxtStrategy()
         {
             sb.AppendLine($"Id;Day;Money");
         }
-        public string Export(IList<AccountDTO> items)
+        public string Export(IList<AccountViewModel> items)
         {
             foreach (var item in items)
             {

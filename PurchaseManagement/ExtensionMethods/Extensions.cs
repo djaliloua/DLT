@@ -7,17 +7,16 @@ using PurchaseManagement.DataAccessLayer.Abstractions;
 using PurchaseManagement.MVVM.ViewModels.PurchasePage;
 using PurchaseManagement.Pages;
 using PurchaseManagement.Commons;
-using PurchaseManagement.MVVM.Models.DTOs;
+using PurchaseManagement.MVVM.Models.ViewModel;
 using CommunityToolkit.Maui.Storage;
 using MauiNavigationHelper.NavigationLib.Services;
 using MauiNavigationHelper.NavigationLib.Abstractions;
 using PurchaseManagement.Commons.ExportFileStrategies;
-using PurchaseManagement.DataAccessLayer.Contexts;
 using Patterns.Abstractions;
 using Plugin.Fingerprint.Abstractions;
 using Plugin.Fingerprint;
-using PurchaseManagement.MVVM.Models.MarketModels;
-using PurchaseManagement.MVVM.Models.Accounts;
+using Models.Market;
+using DataBaseContexts;
 
 
 namespace PurchaseManagement.ExtensionMethods
@@ -36,18 +35,7 @@ namespace PurchaseManagement.ExtensionMethods
             return res;
         }
     }
-    public static class MapperExtension
-    {
-        public static IList<PurchaseDto> ToDto(this List<Purchase> items) => items.Adapt<List<PurchaseDto>>();
-        public static IList<AccountDTO> ToDto(this IEnumerable<Account> items) => items.Adapt<List<AccountDTO>>();
-        public static PurchaseDto ToDto(this Purchase item) => item.Adapt<PurchaseDto>();
-        public static AccountDTO ToDto(this Account item) => item.Adapt<AccountDTO>();
-        public static ProductDto ToDto(this Product item) => item.Adapt<ProductDto>();
-        public static LocationDto ToDto(this ProductLocation item) => item.Adapt<LocationDto>();
-        public static Product FromDto(this ProductDto item) => item.Adapt<Product>();
-        public static Purchase FromDto(this PurchaseDto item) => item.Adapt<Purchase>();
-        public static Account FromDto(this AccountDTO item) => item.Adapt<Account>();
-    }
+    
     public static class Extensions
     {
         public static MauiAppBuilder PagesExtensions(this MauiAppBuilder mauiAppBuilder)
@@ -91,10 +79,10 @@ namespace PurchaseManagement.ExtensionMethods
         public static MauiAppBuilder UtilityExtension(this MauiAppBuilder mauiAppBuilder)
         {
             mauiAppBuilder.Services.AddSingleton<IFileSaver>(FileSaver.Default);
-            mauiAppBuilder.Services.AddScoped<ExportContext<AccountDTO>>();
-            mauiAppBuilder.Services.AddScoped<IExportStrategy<AccountDTO>, AccountTxtStrategy>();
-            mauiAppBuilder.Services.AddScoped<ExportContext<ProductDto>>();
-            mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductDto>, ProductTxtStrategy>();
+            mauiAppBuilder.Services.AddScoped<ExportContext<AccountViewModel>>();
+            mauiAppBuilder.Services.AddScoped<IExportStrategy<AccountViewModel>, AccountTxtStrategy>();
+            mauiAppBuilder.Services.AddScoped<ExportContext<ProductViewModel>>();
+            mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductViewModel>, ProductTxtStrategy>();
             mauiAppBuilder.Services.AddScoped<INavigationService, NavigationService>();
             mauiAppBuilder.Services.AddMapster();
             mauiAppBuilder.Services.AddSingleton(typeof(IFingerprint), CrossFingerprint.Current);
@@ -102,9 +90,9 @@ namespace PurchaseManagement.ExtensionMethods
         }
         public static MauiAppBuilder LoadBIExtension(this MauiAppBuilder mauiAppBuilder)
         {
-            mauiAppBuilder.Services.AddScoped<ILoadService<AccountDTO>, LoadAccountService>();
-            mauiAppBuilder.Services.AddScoped<ILoadService<PurchaseDto>, LoadPurchaseService>();
-            mauiAppBuilder.Services.AddScoped<ILoadService<ProductDto>, LoadProductService>();
+            mauiAppBuilder.Services.AddScoped<ILoadService<AccountViewModel>, LoadAccountService>();
+            mauiAppBuilder.Services.AddScoped<ILoadService<PurchaseViewModel>, LoadPurchaseService>();
+            mauiAppBuilder.Services.AddScoped<ILoadService<ProductViewModel>, LoadProductService>();
 
             return mauiAppBuilder;
         }

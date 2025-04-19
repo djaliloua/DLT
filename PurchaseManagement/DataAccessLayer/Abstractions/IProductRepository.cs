@@ -1,4 +1,5 @@
-﻿using PurchaseManagement.MVVM.Models.MarketModels;
+﻿using Models.Market;
+using Repository.Interface;
 
 namespace PurchaseManagement.DataAccessLayer.Abstractions
 {

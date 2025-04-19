@@ -5,9 +5,6 @@ using Microsoft.Extensions.Logging;
 using MauiNavigationHelper.NavigationLib.Services;
 using PurchaseManagement.ExtensionMethods;
 using Mapster;
-using Plugin.Fingerprint.Abstractions;
-using Plugin.Fingerprint;
-using Microsoft.Maui.Hosting;
 
 
 namespace PurchaseManagement

@@ -1,4 +1,4 @@
-﻿using PurchaseManagement.MVVM.Models.DTOs;
+﻿using PurchaseManagement.MVVM.Models.ViewModel;
 using PurchaseManagement.Pages;
 using System.Windows.Input;
 using System.Diagnostics;
@@ -13,7 +13,7 @@ using PurchaseManagement.ServiceLocator;
 
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
-    public class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseDto
+    public class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseViewModel
     {
         public LaodableMainViewModel(ILoadService<TItem> loadService):base(loadService)
         {
@@ -42,14 +42,14 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
 
     }
-    public class LoadPurchaseService : ILoadService<PurchaseDto>
+    public class LoadPurchaseService : ILoadService<PurchaseViewModel>
     {
-        public IList<PurchaseDto> Reorder(IList<PurchaseDto> items)
+        public IList<PurchaseViewModel> Reorder(IList<PurchaseViewModel> items)
         {
             return items.OrderByDescending(a => a.PurchaseDate).ToList();
         }
     }
-    public class PurchasesListViewModel: LaodableMainViewModel<PurchaseDto>
+    public class PurchasesListViewModel: LaodableMainViewModel<PurchaseViewModel>
     {
         #region Private Properties
 
@@ -65,7 +65,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         public ICommand RefreshCommand { get; private set; }
         public ICommand DoubleClickCommand { get; private set; }
-        public PurchasesListViewModel(ILoadService<PurchaseDto> loadService) : base(loadService)
+        public PurchasesListViewModel(ILoadService<PurchaseViewModel> loadService) : base(loadService)
         {
             Init();
             DoubleClickCommand = new Command(OnDoubleClick);
@@ -77,7 +77,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
             await Task.Run(async () =>
             {
                 using var repo = new PurchaseRepository();
-                var data = await repo.GetAllAsDtos() ?? new List<PurchaseDto>();
+                var data = repo.GetAllToViewModel() ?? new List<PurchaseViewModel>();
                 await LoadItems(data);
             });
             HideActivity();
@@ -90,7 +90,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         }
         private async void OnDoubleClick(object sender)
         {
-            SelectedItem = (PurchaseDto)sender;
+            SelectedItem = (PurchaseViewModel)sender;
             if (!Debugger.IsAttached)
             {
                 // Do not delete this piece of code
@@ -162,8 +162,8 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         
         private async void OnAdd(object sender)
         {
-            ProductDto purchase_proxy_item;
-            if(PurchasesListViewModel.GetItemByDate() is PurchaseDto purchase)
+            ProductViewModel purchase_proxy_item;
+            if(PurchasesListViewModel.GetItemByDate() is PurchaseViewModel purchase)
             {
                 ProductStatisticsDto stat = purchase.ProductStatistics;
                 purchase_proxy_item = Factory.CreateObject(stat);

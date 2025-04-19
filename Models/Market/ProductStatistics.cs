@@ -1,8 +1,6 @@
-﻿
-
-namespace PurchaseManagement.MVVM.Models.MarketModels
+﻿namespace Models.Market
 {
-    public class ProductStatistics:BaseEntity
+    public class ProductStatistics : BaseEntity
     {
         public int PurchaseCount { get; set; }
         public double TotalPrice { get; set; }
