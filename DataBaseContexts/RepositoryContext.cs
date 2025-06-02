@@ -8,6 +8,8 @@ namespace DataBaseContexts
 {
     public class RepositoryContext : DbContext
     {
+        //cd PurchaseManagement
+        //dotnet ef database update --context RepositoryContext --project ../DataBaseContexts
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<ProductLocation> ProductLocations { get; set; }

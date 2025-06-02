@@ -11,7 +11,7 @@ namespace PurchaseManagement.Utilities
         public static async Task<int> SaveAndUpdateUI(Purchase purchase)
         {
             using var repo = new PurchaseRepository();
-            Purchase purchaseB = await repo.SaveAsync(purchase);
+            Purchase purchaseB = await repo.UpdateAsync(purchase);
             PurchaseViewModel p = purchaseB.ToVM<Purchase, PurchaseViewModel>();
             ViewModelLocator.PurchasesListViewModel.SaveOrUpdateItem(p);
             return purchaseB.ProductStatistics.PurchaseCount;

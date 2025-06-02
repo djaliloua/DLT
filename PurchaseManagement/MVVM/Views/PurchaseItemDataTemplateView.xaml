@@ -379,6 +379,7 @@
             <VerticalStackLayout Grid.Column="1">
                 <Switch VerticalOptions="Start"
                         IsToggled="{Binding IsPurchased}"
+                        
                         ToolTipProperties.Text="IsPurchased" />
                 <!--<Switch VerticalOptions="Start"
                         IsToggled="{Binding IsLocation}"

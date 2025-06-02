@@ -9,7 +9,12 @@ namespace Repository.Implementation
     {
         public virtual IList<TDestination> GetAllToViewModel()
         {
-            return _table.ProjectToType<TDestination>().ToList();
+            List< TDestination > result = new List<TDestination>();
+            foreach (var item in _table)
+            {
+                result.Add(item.ToVM<TSource, TDestination>());
+            }
+            return result;
         }
         public virtual void Update(TDestination entity)
         {
