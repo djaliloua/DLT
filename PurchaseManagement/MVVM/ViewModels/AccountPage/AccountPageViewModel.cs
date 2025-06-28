@@ -46,6 +46,7 @@ namespace PurchaseManagement.MVVM.ViewModels.AccountPage
             //Init();
             CommandSetup();
         }
+
         #endregion
 
         #region Private Methods

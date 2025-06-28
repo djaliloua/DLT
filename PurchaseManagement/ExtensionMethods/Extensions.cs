@@ -83,7 +83,7 @@ namespace PurchaseManagement.ExtensionMethods
             mauiAppBuilder.Services.AddScoped<IExportStrategy<AccountViewModel>, AccountTxtStrategy>();
             mauiAppBuilder.Services.AddScoped<ExportContext<ProductViewModel>>();
             mauiAppBuilder.Services.AddScoped<IExportStrategy<ProductViewModel>, ProductTxtStrategy>();
-            mauiAppBuilder.Services.AddScoped<INavigationService, NavigationService>();
+            mauiAppBuilder.Services.AddSingleton<INavigationService, NavigationService>();
             mauiAppBuilder.Services.AddMapster();
             mauiAppBuilder.Services.AddSingleton(typeof(IFingerprint), CrossFingerprint.Current);
             return mauiAppBuilder;

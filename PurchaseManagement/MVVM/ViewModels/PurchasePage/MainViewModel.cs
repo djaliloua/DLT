@@ -11,6 +11,8 @@ using PurchaseManagement.DataAccessLayer.Repository;
 using MVVM;
 using PurchaseManagement.ServiceLocator;
 
+
+
 namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
 {
     public class LaodableMainViewModel<TItem>: Loadable<TItem> where TItem : PurchaseViewModel
@@ -136,7 +138,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         #region Commands
         
         public ICommand AddCommand { get; private set; }
-        
+
         #endregion
 
         #region Constructor
@@ -144,7 +146,7 @@ namespace PurchaseManagement.MVVM.ViewModels.PurchasePage
         {
             _navigationService = navigationService;
             IsSavebtnEnabled = true;
-            PurchasesListViewModel = ViewModelLocator.PurchasesListViewModel; 
+            PurchasesListViewModel = ViewModelLocator.PurchasesListViewModel;
             CommandSetup();
         }
         #endregion

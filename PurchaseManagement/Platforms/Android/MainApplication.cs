@@ -10,6 +10,13 @@ namespace PurchaseManagement
             : base(handle, ownership)
         {
         }
+        public override void OnCreate()
+        {
+            base.OnCreate();
+            // Initialize Firebase Push Notifications
+            // Initialize any libraries or services here
+            Platform.Init(this);
+        }
 
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
     }

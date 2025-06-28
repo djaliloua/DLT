@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "636930484325",
+    "project_id": "my-notification-isolution",
+    "storage_bucket": "my-notification-isolution.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636930484325:android:07281b9d2b757b4bf2be8c",
+        "android_client_info": {
+          "package_name": "com.companyname.mauicammqttclient"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUwadPKggznlpT8oLENjOfQW335fwd_AE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636930484325:android:724f2269b9d94248f2be8c",
+        "android_client_info": {
+          "package_name": "com.digitalsolution.echakishop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUwadPKggznlpT8oLENjOfQW335fwd_AE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

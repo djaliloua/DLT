@@ -1,14 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="2" android:versionName="beta" package="com.digitalsolution.echakishop">
-	<application android:allowBackup="true" android:supportsRtl="true" android:icon="@mipmap/project_management" android:networkSecurityConfig="@xml/network_security_config" android:label="eChakiShop"></application>
+	<application android:allowBackup="true" android:supportsRtl="true" android:icon="@mipmap/project_management" android:networkSecurityConfig="@xml/network_security_config" android:label="eChakiShop">
+		
+	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.USE_FINGERPRINT" />
-	<uses-permission android:name="android.permission.USE_BIOMETRIC" />
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+	<uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 	<queries>
 		<intent>
 			<action android:name="android.intent.action.VIEW" />

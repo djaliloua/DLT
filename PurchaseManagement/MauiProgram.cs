@@ -7,6 +7,16 @@ using PurchaseManagement.ExtensionMethods;
 using Mapster;
 
 
+#if ANDROID
+using PurchaseManagement.Platforms.Android.Notifications;
+using Plugin.FirebasePushNotifications;
+using Plugin.FirebasePushNotifications.Model.Queues;
+using Android.App;
+using Firebase;
+#endif
+
+
+
 namespace PurchaseManagement
 {
     public static class MauiProgram
@@ -30,6 +40,21 @@ namespace PurchaseManagement
                 .UseUraniumUI()
                 .UseSkiaSharp(true)
                 .UseUraniumUIMaterial()
+#if ANDROID
+                .UseFirebasePushNotifications(option =>
+                {
+                    option.AutoInitEnabled = false;
+                    option.QueueFactory = new PersistentQueueFactory();
+                    option.Android.NotificationActivityType = typeof(MainActivity);
+                    option.Android.NotificationChannels = NotificationChannelSamples.GetAll().ToArray();
+                    //option.Android.FirebaseOptions = new FirebaseOptions.Builder()
+                    //    .SetApplicationId("1:636930484325:android:724f2269b9d94248f2be8c") // Replace with your actual application ID
+                    //    .SetApiKey("AIzaSyD")
+                    //    .SetProjectId("my-notification-isolution")
+                    //    .SetDatabaseUrl("https://my-notification-isolution.firebaseio.com/")
+                    //    .Build();
+                })
+#endif
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
